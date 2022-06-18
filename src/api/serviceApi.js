@@ -14,6 +14,20 @@ class ServiceApi{
         const url = "/service/" + "?id=" + service_id;
         return axiosClient.get(url);
      }
+     insertService =  (data, image) => {
+        const urlService = this.SERVICE_PATH + '/add-service';
+        const urlImage = this.SERVICE_PATH + '/add-image';
+         axiosClient.post(urlImage, image
+           ).then((res) => {
+            console.log("Image: ", res);
+        })
+        .then(() => {
+            return  axiosClient.post(urlService, data).then((res) => {
+                console.log("response: ", res)
+            })
+        })
+       
+     }
 
 }
 

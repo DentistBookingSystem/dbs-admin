@@ -9,7 +9,7 @@ import queryString from "query-string";
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
-    "Content-type": "application/json",
+    "Content-Type": "application/json",
     "Accept": "multipart/form-data",
     "Access-Control-Allow-Origin": "http://localhost:3000",
     "Access-Control-Allow-Methods": "Get, PUT, POST, DELETE, OPTIONS",

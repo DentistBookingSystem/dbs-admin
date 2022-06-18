@@ -223,15 +223,7 @@ class NewBranchPage extends Component {
       };
 
       console.log(data);
-
-      // const blobBranchData = new Blob(JSON.stringify(data), {
-      //   type: "application/json",
-      // });
-      // const blobImageData = new Blob(this.state.image, {
-      //   type: "multipart/form-data"
-      // })
       const formData = new FormData();
-      // const tempt = JSON.stringify(data)
 
       formData.append("img", this.state.image);
       formData.append("branchDTO", JSON.stringify(data));
@@ -256,7 +248,7 @@ class NewBranchPage extends Component {
         </PanelHeader>
 
         <div className="content">
-          <Form enctype="multipart/form-data">
+          <Form>
             <Row>
               <div className="container rounded bg-white mt-30 mb-15 ml-15">
                 <div className="row">
