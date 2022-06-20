@@ -27,8 +27,10 @@ function BranchTable() {
   useEffect(() => {
     const fetchBranchList = async () => {
       try {
-        const response = await branchApi.getAll();
-        setBranchList(response);
+        const response = await branchApi.getAll().then((res) => {
+          setBranchList(res.data);
+        });
+        // setBranchList(response);
         // branchList.map((branch) =>{
         //   console.log(branch.name)
         // })

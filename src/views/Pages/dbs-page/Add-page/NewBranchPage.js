@@ -9,6 +9,7 @@ import branchApi from "api/branchApi";
 import provinceApi from "api/provinceApi";
 import Select from "react-select";
 import districtApi from "api/districtApi";
+import axios from "axios";
 
 class NewBranchPage extends Component {
   constructor(props) {
@@ -29,15 +30,16 @@ class NewBranchPage extends Component {
       selectProvince: false,
       changeProvince: true,
       imagePreviewUrl: defaultImage,
+      selectedFile: null,
     };
 
     const rules = [
       {
         field: "name",
         method: "isLength",
-        args: [{ min: 1 }],
+        args: [{ min: 8 }],
         validWhen: true,
-        message: "The name field is required.",
+        message: "The name field is required 8 character.",
       },
       {
         field: "address",
@@ -79,7 +81,7 @@ class NewBranchPage extends Component {
     this.onHandleChange = this.onHandleChange.bind(this);
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
     this.validator = new Validator(rules);
-    this.selectedHandler = this.selectedHandler.bind(this);
+    this.onFileChange = this.onFileChange.bind(this);
     this.getProvinceList = this.getProvinceList.bind(this);
     this.onHandleSelect = this.onHandleSelect.bind(this);
     this.onHandleSelectDistrict = this.onHandleSelectDistrict.bind(this);
@@ -165,20 +167,20 @@ class NewBranchPage extends Component {
   }
 
   //handle selected image
-  selectedHandler(event) {
-    let reader = new FileReader();
-    let file = event.target.files[0];
-    console.log(file);
-    reader.onloadend = () => {
-      this.setState({
-        imagePreviewUrl: reader.result,
-        image: file,
-      });
-    };
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-  }
+  // selectedHandler(event) {
+  //   let reader = new FileReader();
+  //   let file = event.target.files[0];
+  //   console.log(file);
+  //   reader.onloadend = () => {
+  //     this.setState({
+  //       imagePreviewUrl: reader.result,
+  //       image: file,
+  //     });
+  //   };
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
 
   validDropdownProvince(province) {
     if (province.value === -1) {
@@ -196,22 +198,41 @@ class NewBranchPage extends Component {
 
   // handle data sent back to server
   _insertNewData = async (formData) => {
+    var data;
+    console.log("click add");
     try {
-      await branchApi.insert(formData).then((res) => {
-        console.log("Insert ok", res);
-      });
+      await branchApi
+        .insert(formData)
+        .then((res) => {
+          console.log("Insert ok", res);
+          data = {
+            name: this.state.name,
+            url: res.data,
+            address: this.state.address,
+            open_time: this.state.open_time,
+            close_time: this.state.close_time,
+            district_id: this.state.district.value,
+            status: 1,
+          };
+        })
+        .then(async () => {
+          console.log(data);
+          await branchApi.insertBranch(data).then((res) => {
+            console.log("add branch thành công");
+          });
+        });
     } catch (error) {
       console.log("Insert data failed", error);
     }
   };
 
-  onHandleSubmit(event) {
+  async onHandleSubmit(event) {
     event.preventDefault();
     this.setState({
       errors: this.validator.validate(this.state, event),
     });
     if (this.validator.isValid) {
-      //Đưa data xuống ở đây
+      // Đưa data xuống ở đây
       const data = {
         name: this.state.name,
         url: "",
@@ -224,13 +245,30 @@ class NewBranchPage extends Component {
 
       console.log(data);
       const formData = new FormData();
-
-      formData.append("img", this.state.image);
-      formData.append("branchDTO", JSON.stringify(data));
+      console.log(this.state.selectedFile);
+      formData.append("url", this.state.selectedFile);
+      // formData.append("branchDTO", data);
 
       this._insertNewData(formData);
     }
   }
+
+  // On file select (from the pop up)
+  onFileChange = (event) => {
+    // Update the state
+    this.setState({ selectedFile: event.target.files[0] });
+    let reader = new FileReader();
+    let file = event.target.files[0];
+    console.log(file);
+    reader.onloadend = () => {
+      this.setState({
+        imagePreviewUrl: reader.result,
+      });
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
 
   render() {
     const { errors } = this.state;
@@ -261,7 +299,7 @@ class NewBranchPage extends Component {
                       <input
                         style={{ display: "none" }}
                         type="file"
-                        onChange={this.selectedHandler}
+                        onChange={this.onFileChange}
                         ref={(fileInput) => (this.fileInput = fileInput)}
                       />
                       <div className="thumbnail">

@@ -11,6 +11,7 @@
     "cors": "^2.8.5",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.9",
+    "install": "^0.13.0",
     "match-sorter": "6.3.0",
     "moment": "2.29.1",
     "multi-range-slider-react": "^1.0.7",
