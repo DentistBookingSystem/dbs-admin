@@ -7,15 +7,20 @@ const API_ADD_BRANCH = "http://localhost:8080/rade/admin/branch/add";
 const API_ADD_IMAGE = "http://localhost:8080/rade/admin/branch/add-image";
 
 const token = localStorage.getItem("user");
+
 class BranchApi {
-  getAll = () => {
-    return axios.get(API_GET_BRANCH_LIST, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  };
+
+
+  
+  // getAll = () => {
+  //   console.log("branch: ", token)
+  //   return axios.get(API_GET_BRANCH_LIST, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Authorization": `Bearer ${token}`,
+  //     },
+  //   });
+  // };
   getBranchById = (id) => {
     return axios.get(API_GET_BRANCH_BY_ID + id, {
       headers: {
@@ -30,7 +35,7 @@ class BranchApi {
       headers: {
         "Content-Type": "multipart/form-data",
         // "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        "Authorization": `Bearer ${token}`,
       },
     });
   };
@@ -45,10 +50,10 @@ class BranchApi {
   };
 
   // BASE_URL = "/branch";
-  // getAll = () => {
-  //   const url = "/branch" + "/list";
-  //   return axiosClient.get(url);
-  // };
+  getAll = () => {
+    const url = "/branch" + "/list";
+    return axiosClient.get(url);
+  };
   // getBranchById = (id) => {
   //   const url = "/branch/" + id;
   //   return axiosClient.get(url);

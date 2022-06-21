@@ -44,7 +44,7 @@ axiosClient.interceptors.response.use(
     if (response && response.data) {
       return response.data;
     }
-    return response;
+    return response.status;
   },
   (error) => {
     console.log("error here");

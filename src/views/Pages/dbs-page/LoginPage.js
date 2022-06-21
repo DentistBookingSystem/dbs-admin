@@ -31,7 +31,7 @@ import {
   InputGroupText,
   Button,
 } from "reactstrap";
-import { Link , Redirect} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 // core components
 import nowLogo from "assets/img/logo-rade2.png";
@@ -55,9 +55,15 @@ function LoginPage() {
 
   const login = async () => {
     try {
-      const res = await authApi.login(formValue);
-      console.log(res);
-     setStateLogin(true);
+      await authApi.login(formValue).then((result) => {
+        const user = localStorage.getItem("user");
+        console.log("user token: ", user);
+        if (user !== null) {
+          setStateLogin(true);
+        } else {
+          setStateLogin(false);
+        }
+      });
     } catch (error) {
       setStateLogin(false);
       console.log("Can not Login>>>>>", error);
@@ -146,8 +152,6 @@ function LoginPage() {
                     >
                       Login
                     </Button>
-            
-                  
                   </CardFooter>
                 </Card>
               </Form>

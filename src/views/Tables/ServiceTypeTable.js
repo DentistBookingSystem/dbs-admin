@@ -14,6 +14,7 @@ import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "assets/css/index.css";
 import React, { useEffect} from "react";
 import serviceTypeApi from "api/serviceTypeApi";
+import CustomPagination from "views/Widgets/Pagination";
 
 
 
@@ -21,6 +22,18 @@ import serviceTypeApi from "api/serviceTypeApi";
 function ServiceTypeTable() {
   const list = [];
   const [serviceTypeList, setServiceTypeList] = React.useState(list);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [serviceTypesPerPage] = React.useState(5);
+
+  const indexOfLastServiceType = currentPage * serviceTypesPerPage;
+  const indexOfFirstServiceType = indexOfLastServiceType - serviceTypesPerPage;
+  const currentServiceTypes = serviceTypeList.slice(
+    indexOfFirstServiceType,
+    indexOfLastServiceType
+  );
+
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
   const fetchServiceTypeList = async () => {
     try {
@@ -57,7 +70,7 @@ function ServiceTypeTable() {
                   </thead>
                   <tbody>
                     
-                    {serviceTypeList.map((serviceType) => {
+                    {currentServiceTypes.map((serviceType) => {
                       return <tr>
                         <td className="text-center">{serviceType.id}</td>
                         <td>{serviceType.name}</td>
@@ -118,6 +131,11 @@ function ServiceTypeTable() {
             </Card>
           </Col>
         </Row>
+        <CustomPagination
+          itemsPerPage={serviceTypesPerPage}
+          totalItems={serviceTypeList.length}
+          paginate={paginate}
+        />
       </div>
     </>
   );

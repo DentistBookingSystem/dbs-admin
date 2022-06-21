@@ -28,6 +28,7 @@ import { Nav, Collapse, Button } from "reactstrap";
 // core components
 import avatar from "assets/img/avatar.png";
 import logo from "assets/img/logo-rade.jpg";
+import authApi from "api/AuthApi";
 
 var ps;
 
@@ -35,6 +36,10 @@ function Sidebar(props) {
   const [openAvatar, setOpenAvatar] = React.useState(false);
   const [collapseStates, setCollapseStates] = React.useState({});
   const sidebar = React.useRef();
+
+
+
+
   React.useEffect(() => {
     // if you are using a Windows Machine, the scrollbars will have a Mac look
     if (navigator.platform.indexOf("Win") > -1) {
@@ -207,22 +212,12 @@ function Sidebar(props) {
                 </span>
               </a>
               <Collapse isOpen={openAvatar}>
-                <ul className="nav">
+                <ul className="nav">              
                   <li>
-                    <a href="#pablo" onClick={(e) => e.preventDefault}>
-                      <span className="sidebar-mini-icon">MP</span>
-                      <span className="sidebar-normal">My Profile </span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#pablo" onClick={(e) => e.preventDefault}>
-                      <span className="sidebar-mini-icon">EP</span>
-                      <span className="sidebar-normal">Edit Profile</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#pablo" onClick={(e) => e.preventDefault}>
-                      <span className="sidebar-mini-icon">S</span>
+                    <a href="#pablo" onClick={(e) => {
+                      e.preventDefault();
+                      authApi.logout();
+                    }}>
                       <span className="sidebar-normal">Log out</span>
                     </a>
                   </li>

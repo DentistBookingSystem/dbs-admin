@@ -11,38 +11,45 @@ import {
 } from "reactstrap";
 import React, { useEffect } from "react";
 import branchApi from "api/branchApi";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter as Link } from "react-router-dom";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "assets/css/index.css";
+import CustomPagination from "views/Widgets/Pagination";
 
 function BranchTable() {
   const [branchList, setBranchList] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [branchsPerPage] = React.useState(5);
+
+  const indexOfLastBranch = currentPage * branchsPerPage;
+  const indexOfFirstBranch = indexOfLastBranch - branchsPerPage;
+  const currentBranchs = branchList.slice(
+    indexOfFirstBranch,
+    indexOfLastBranch
+  );
+
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const fetchBranchList = async () => {
+    try {
+      await branchApi.getAll().then((res) => {
+        setBranchList(res);
+        setLoading(true);
+      });
+      console.log(branchList);
+    } catch (error) {
+      console.log("Failed to fetch API", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchBranchList = async () => {
-      try {
-        const response = await branchApi.getAll().then((res) => {
-          setBranchList(res.data);
-        });
-        // setBranchList(response);
-        // branchList.map((branch) =>{
-        //   console.log(branch.name)
-        // })
-        console.log(branchList);
-      } catch (error) {
-        console.log("Failed to fetch API", error);
-      }
-    };
     fetchBranchList();
   }, []);
 
-  return (
+  return loading ? (
     <>
       <PanelHeader size="sm" />
       <div className="content">
@@ -63,7 +70,7 @@ function BranchTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {branchList.map((branch, index) => {
+                    {currentBranchs.map((branch, index) => {
                       return (
                         <tr>
                           <td className="text-center">{index + 1}</td>
@@ -117,7 +124,19 @@ function BranchTable() {
             </Card>
           </Col>
         </Row>
+        <CustomPagination
+          itemsPerPage={branchsPerPage}
+          totalItems={branchList.length}
+          paginate={paginate}
+        />
       </div>
+    </>
+  ) : (
+    <>
+      <PanelHeader size="sm" />
+      <center>
+        <h2>Loading...</h2>
+      </center>
     </>
   );
 }

@@ -14,10 +14,23 @@ import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import doctorApi from "api/doctorApi";
+import CustomPagination from "views/Widgets/Pagination";
 
 function DoctorTable() {
   const [doctorList, setDoctorList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [doctorsPerPage] = useState(5);
+
+  const indexOfLastDoctor = currentPage * doctorsPerPage;
+  const indexOfFirstDoctor = indexOfLastDoctor - doctorsPerPage;
+  const currentDoctors = doctorList.slice(
+    indexOfFirstDoctor,
+    indexOfLastDoctor
+  );
+
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchDoctorList = async () => {
     try {
@@ -59,7 +72,7 @@ function DoctorTable() {
                       </tr>
                     </thead>
                     <tbody>
-                      {doctorList.map((doctor, index) => {
+                      {currentDoctors.map((doctor, index) => {
                         return (
                           <tr key={doctor.key}>
                             <td className="text-center">{index+1}</td>
@@ -120,6 +133,11 @@ function DoctorTable() {
             </Card>
           </Col>
         </Row>
+        <CustomPagination
+          itemsPerPage={doctorsPerPage}
+          totalItems={doctorList.length}
+          paginate={paginate}
+        />
       </div>
     </>
   );

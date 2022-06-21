@@ -13,10 +13,23 @@ import {
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import discountApi from "api/discountApi";
 import { useEffect, useState } from "react";
+import CustomPagination from "views/Widgets/Pagination";
 
 function DiscountTable() {
   const [discountList, setDiscountList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [discountsPerPage] = useState(5);
+
+  const indexOfLastDiscount = currentPage * discountsPerPage;
+  const indexOfFirstDiscount = indexOfLastDiscount - discountsPerPage;
+  const currentDiscounts = discountList.slice(
+    indexOfFirstDiscount,
+    indexOfLastDiscount
+  );
+
+   //Change page
+   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchDiscountList = async () => {
     try {
@@ -59,7 +72,7 @@ function DiscountTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {discountList.map((discount, index) => {
+                    {currentDiscounts.map((discount, index) => {
                       return (
                         <tr>
                           <td className="text-center" key={discount.id}>{index + 1}</td>
@@ -98,6 +111,11 @@ function DiscountTable() {
             </Card>
           </Col>
         </Row>
+        <CustomPagination
+                itemsPerPage={discountsPerPage}
+                totalItems={discountList.length}
+                paginate={paginate}
+              />
       </div>
     </>
   );

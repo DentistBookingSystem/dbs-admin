@@ -233,22 +233,10 @@ class NewBranchPage extends Component {
     });
     if (this.validator.isValid) {
       // Đưa data xuống ở đây
-      const data = {
-        name: this.state.name,
-        url: "",
-        address: this.state.address,
-        open_time: this.state.open_time,
-        close_time: this.state.close_time,
-        district_id: this.state.district.value,
-        status: 1,
-      };
-
-      console.log(data);
       const formData = new FormData();
       console.log(this.state.selectedFile);
       formData.append("url", this.state.selectedFile);
       // formData.append("branchDTO", data);
-
       this._insertNewData(formData);
     }
   }

@@ -15,7 +15,7 @@
 
 */
 /*eslint-disable*/
-import React, { Component, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 
 // reactstrap components
 import {
@@ -31,8 +31,8 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import ReactTable from "components/ReactTable/ReactTable.js";
 import appointmentApi from "api/AppointmentApi";
+import CustomPagination from "views/Widgets/Pagination";
 
 const verifiedStatus = (
   <div className="stock-status in-stock">
@@ -50,6 +50,18 @@ const notVerifiedStatus = (
 );
 function BookingTable() {
   const [bookingList, setBookingList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [bookingsPerPage] = useState(10);
+
+  const indexOfLastBooking = currentPage * bookingsPerPage;
+  const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+  const currentBookings = bookingList.slice(
+    indexOfFirstBooking,
+    indexOfLastBooking
+  );
+
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchAppoinmentList = async () => {
     try {
@@ -90,7 +102,7 @@ function BookingTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {bookingList.map((booking, index) => {
+                    {currentBookings.map((booking, index) => {
                       return (
                         <tr>
                           <td className="text-center">{index + 1}</td>
@@ -100,20 +112,25 @@ function BookingTable() {
                           <td>{booking.doctor.name}</td>
                           <td>
                             {booking.status === 0 ? (
-                             <div style={{color: 'green'}}><i class="fas fa-check-circle"> </i> Accepted</div> 
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i>{" "}
+                                Accepted
+                              </div>
                             ) : (
-                              <div style={{color: 'grey'}}><i class="fas fa-check-circle"> </i> Done</div>
+                              <div style={{ color: "grey" }}>
+                                <i className="fas fa-check-circle"> </i> Done
+                              </div>
                             )}
                           </td>
                           <td className="text-center btns-mr-5">
-                          <Button
-                                className="btn-icon"
-                                color="info"                               
-                                size="sm"
-                                type="button"
-                              >
-                                <i className="now-ui-icons users_single-02" />
-                              </Button>
+                            <Button
+                              className="btn-icon"
+                              color="info"
+                              size="sm"
+                              type="button"
+                            >
+                              <i className="now-ui-icons users_single-02" />
+                            </Button>
                             <Button
                               className="btn-icon"
                               color="success"
@@ -139,6 +156,11 @@ function BookingTable() {
                 </Table>
               </CardBody>
             </Card>
+              <CustomPagination
+                itemsPerPage={bookingsPerPage}
+                totalItems={bookingList.length}
+                paginate={paginate}
+              />
           </Col>
         </Row>
       </div>

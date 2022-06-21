@@ -1,6 +1,5 @@
 import {
   Table,
-  UncontrolledTooltip,
   Card,
   CardHeader,
   CardBody,
@@ -14,13 +13,28 @@ import React, { useEffect, useState } from "react";
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import serviceApi from "api/serviceApi.js";
 import "assets/css/index.css";
-import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
+import { Modal, Image } from "react-bootstrap";
+import CustomPagination from "views/Widgets/Pagination";
 
 function ServiceTable() {
   const [serviceList, setServiceList] = React.useState([]);
+  const [service, setService] = React.useState({});
+  const [serviceType, setServiceType] = React.useState("");
+  const [image, setImage] = React.useState();
   const [loading, setLoading] = React.useState(true);
   const [lgShow, setLgShow] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [servicesPerPage] = useState(5);
+
+  const indexOfLastService = currentPage * servicesPerPage;
+  const indexOfFirstService = indexOfLastService - servicesPerPage;
+  const currentServices = serviceList.slice(
+    indexOfFirstService,
+    indexOfLastService
+  );
+
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchServiceList = async () => {
     try {
@@ -38,11 +52,14 @@ function ServiceTable() {
     console.log(id);
     try {
       await serviceApi.getService(id).then((res) => {
-        console.log("Service: ", res);
+        console.log(res.serviceType.name);
+        setServiceType(res.serviceType.name);
+        setService(res);
       });
     } catch (error) {
       console.log("Can not load service info", error);
     }
+    return null;
   };
 
   useEffect(() => {
@@ -75,7 +92,7 @@ function ServiceTable() {
                         </tr>
                       </thead>
                       <tbody>
-                        {serviceList.map((service, index) => {
+                        {currentServices.map((service, index) => {
                           return (
                             <tr>
                               <td>{index + 1}</td>
@@ -139,67 +156,86 @@ function ServiceTable() {
                 show={lgShow}
                 onHide={() => setLgShow(false)}
                 aria-labelledby="example-modal-sizes-title-lg"
+                // scrollable={true}
               >
                 <div color="info" className="text-center mt-4 ml-2">
-                    <h2 className="text-info" style={{paddingBottom: 0}}>
-                      Service Detail
-                    </h2>
+                  <h2 className="text-info" style={{ paddingBottom: 0 }}>
+                    Service Detail
+                  </h2>
                 </div>
                 <div>
-                <Modal.Body>
-                  <Col  className="mt-0 ml-4">
-                    <Row>
-                      <Col className="md-12 mt-0">
-                        <span>
-                          <b>Service: </b>Nhổ răng khôn
-                        </span>
+                  <Modal.Body>
+                    {service != null ? (
+                      <Col className="mt-0 ml-4">
+                        <Row className="justify-content-md-center">
+                          <Col xs={20} sm={2} md={4}>
+                            <Image
+                              src={
+                                "https://drive.google.com/uc?id=" + service.url
+                              }
+                              rounded
+                            />
+                          </Col>
+                        </Row>
+
+                        <Row>
+                          <Col className="md-12 mt-0">
+                            <span>
+                              <b>Service: </b> {service.name}
+                            </span>
+                          </Col>
+                          <Col>
+                            <span>
+                              <b>Service type: </b> {serviceType}
+                            </span>
+                          </Col>
+                        </Row>
+                        <Row className="mt-2">
+                          <Col>
+                            <b>Price: </b> {service.min_price}đ -{" "}
+                            {service.max_price}đ
+                          </Col>
+                          <Col>
+                            <b>Duration: </b> {service.estimated_time} hour(s)
+                          </Col>
+                        </Row>
+                        <Row className="mt-2">
+                          <Col>
+                            <span>
+                              <b>Mô tả: </b>
+                            </span>
+                            <p>{service.description}</p>
+                          </Col>
+                        </Row>
                       </Col>
-                      <Col>
-                        <span>
-                          <b>Service type: </b> Nhổ răng
-                        </span>
-                      </Col>
-                    </Row>
-                    <Row className="mt-2">
-                      <Col>
-                        <b>Price: </b> 100000đ - 1000000đ
-                      </Col>
-                    </Row>
-                    <Row className="mt-2">
-                      <Col>
-                        <span>
-                          <b>Mô tả: </b>
-                        </span>
-                        <p>
-                          I will be the leader of a company that ends up being
-                          worth billions of dollars, because I got the answers.
-                          I understand culture. I am the nucleus. I think that’s
-                          a responsibility that I have, to push possibilities,
-                          to show people, this is the level that things could be
-                          at.
-                        </p>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Modal.Body>
+                    ) : (
+                      <h3>No details</h3>
+                    )}
+                  </Modal.Body>
                 </div>
                 <div className="text-center btns-mr-5">
-                 <Row>
-                  <Col>
-                  <Button color="info" onClick={() => setLgShow(false)}>
-                    Close
-                  </Button>
-                  </Col>
-                  <Col>
-                   <Button color="primary" onClick={() => setLgShow(false)}>
-                    Edit
-                  </Button></Col>
-                 </Row>
+                  <Row>
+                    <Col>
+                      <Button color="info" onClick={() => setLgShow(false)}>
+                        Close
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button color="primary" onClick={() => setLgShow(false)}>
+                        Edit
+                      </Button>
+                    </Col>
+                  </Row>
                 </div>
               </Modal>
             </Row>
           </>
         )}
+        <CustomPagination
+          itemsPerPage={servicesPerPage}
+          totalItems={serviceList.length}
+          paginate={paginate}
+        />
       </div>
     </>
   );
