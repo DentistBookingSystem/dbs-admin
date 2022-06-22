@@ -209,9 +209,9 @@ class NewBranchPage extends Component {
             name: this.state.name,
             url: res.data,
             address: this.state.address,
-            open_time: this.state.open_time,
-            close_time: this.state.close_time,
-            district_id: this.state.district.value,
+            openTime: this.state.open_time,
+            closeTime: this.state.close_time,
+            districtId: this.state.district.value,
             status: 1,
           };
         })
