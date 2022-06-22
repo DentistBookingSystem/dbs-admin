@@ -30,7 +30,7 @@ class NewDiscountPage extends Component {
     super(props);
     this.state = {
       name: "",
-      description: 222,
+      description: "Áp dụng toàn quốc",
       url: "",
       address: "",
       startDate: "",
@@ -129,7 +129,7 @@ class NewDiscountPage extends Component {
           (service) => service.value
         ),
       };
-      console.log("data: ",data);
+      console.log("data: ", data);
       const result = this._inserDiscount(data);
       if (result) {
         this.notify();
@@ -176,10 +176,41 @@ class NewDiscountPage extends Component {
                           <input
                             type="text"
                             className="form-control"
-                            placeholder="Branch name"
+                            placeholder="name"
                             name="name"
                             value={this.state.name}
                             onChange={this.onHandleChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="row mt-2">
+                        <div className="col-md-12">
+                          <label className="labels">
+                            Discount Percentage(%)*
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Branch name"
+                            name="percentage"
+                            value={this.state.percentage}
+                            onChange={this.onHandleChange}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="row mt-2">
+                        <div className="col-md-12">
+                          <label className="labels">Service*</label>
+                          <Select
+                            className="react-select primary"
+                            classNamePrefix="react-select"
+                            placeholder="Select province"
+                            name="province"
+                            isMulti
+                            value={this.state.currentService}
+                            options={this.state.serviceList}
+                            onChange={this.onHandleServiceSelect}
                           />
                         </div>
                       </div>
@@ -215,21 +246,6 @@ class NewDiscountPage extends Component {
                             minDate={moment().toDate()}
                             
                           /> */}
-                        </div>
-                      </div>
-                      <div className="row mt-4">
-                        <div className="col-md-12">
-                          <label className="labels">Service*</label>
-                          <Select
-                            className="react-select primary"
-                            classNamePrefix="react-select"
-                            placeholder="Select province"
-                            name="province"
-                            isMulti
-                            value={this.state.currentService}
-                            options={this.state.serviceList}
-                            onChange={this.onHandleServiceSelect}
-                          />
                         </div>
                       </div>
                       <div className="row mt-4">
