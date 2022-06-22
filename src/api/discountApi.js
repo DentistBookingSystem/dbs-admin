@@ -6,6 +6,12 @@ class DiscountApi{
         const url = this.BASE_URL +"/list";
          return axiosClient.get(url);
     }
+    insert = async (data) => {
+        const url = this.BASE_URL + "/add";
+        return await axiosClient.post(url, data).then((res) => {
+            return res;
+        })  
+    }
 }
 
 const discountApi = new DiscountApi();

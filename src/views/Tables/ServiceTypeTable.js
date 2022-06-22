@@ -12,12 +12,9 @@ import {
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "assets/css/index.css";
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import serviceTypeApi from "api/serviceTypeApi";
 import CustomPagination from "views/Widgets/Pagination";
-
-
-
 
 function ServiceTypeTable() {
   const list = [];
@@ -34,7 +31,7 @@ function ServiceTypeTable() {
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  
+
   const fetchServiceTypeList = async () => {
     try {
       const response = await serviceTypeApi.getAll();
@@ -45,8 +42,8 @@ function ServiceTypeTable() {
     }
   };
 
-  useEffect(() => {  
-    fetchServiceTypeList(); 
+  useEffect(() => {
+    fetchServiceTypeList();
   }, []);
   return (
     <>
@@ -69,61 +66,59 @@ function ServiceTypeTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    
                     {currentServiceTypes.map((serviceType) => {
-                      return <tr>
-                        <td className="text-center">{serviceType.id}</td>
-                        <td>{serviceType.name}</td>
-                        <td>
-                          <div className="stock-status in-stock">
-                            <button className="stock-button">
-                              <i className="fa fa-check circle-icon"></i>&nbsp;
-                              Active
-                            </button>
-                          </div>
-                        </td>
-                        <td className="text-center btns-mr-5">
-                          <Button
-                            className="btn-icon"
-                            color="info"
-                            id="tooltip590841497"
-                            size="sm"
-                            type="button"
-                          >
-                            <i className="now-ui-icons users_single-02" />
-                          </Button>
-                          <UncontrolledTooltip
-                            delay={0}
-                            target="tooltip590841497"
-                          />
-                          <Button
-                            className="btn-icon"
-                            color="success"
-                            id="tooltip26024663"
-                            size="sm"
-                            type="button"
-                          >
-                            <i className="now-ui-icons ui-2_settings-90" />
-                          </Button>
-                          <UncontrolledTooltip
-                            delay={0}
-                            target="tooltip26024663"
-                          />
-                          <Button
-                            className="btn-icon"
-                            color="danger"
-                            id="tooltip930083782"
-                            size="sm"
-                            type="button"
-                          >
-                            <i className="now-ui-icons ui-1_simple-remove" />
-                          </Button>
-                          <UncontrolledTooltip
-                            delay={0}
-                            target="tooltip930083782"
-                          />
-                        </td>
-                      </tr>;
+                      return (
+                        <tr>
+                          <td className="text-center">{serviceType.id}</td>
+                          <td>{serviceType.name}</td>
+                          <td>
+                            <div style={{ color: "green" }}>
+                              <i className="fas fa-check-circle"> </i> Active
+                            </div>
+                          </td>
+                          <td className="text-center btns-mr-5">
+                            <Button
+                              className="btn-icon"
+                              color="info"
+                              id="tooltip590841497"
+                              size="sm"
+                              type="button"
+                            >
+                              <i className="now-ui-icons users_single-02" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target="tooltip590841497"
+                            />
+                            <Button
+                              className="btn-icon"
+                              color="success"
+                              id="tooltip26024663"
+                              size="sm"
+                              type="button"
+                            >
+                              <i className="now-ui-icons ui-2_settings-90" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target="tooltip26024663"
+                            />
+                            <Button
+                              className="btn-icon"
+                              color="danger"
+                              id="tooltip930083782"
+                              size="sm"
+                              type="button"
+                            >
+                              <i className="now-ui-icons ui-1_simple-remove" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target="tooltip930083782"
+                            />
+                          </td>
+                        </tr>
+                      );
                     })}
                   </tbody>
                 </Table>

@@ -68,6 +68,7 @@ function DoctorTable() {
                         <th className="text-center">#</th>
                         <th>Name</th>
                         <th>Branch</th>
+                        <th>Status</th>
                         <th className="text-center">Actions</th>
                       </tr>
                     </thead>
@@ -75,13 +76,18 @@ function DoctorTable() {
                       {currentDoctors.map((doctor, index) => {
                         return (
                           <tr key={doctor.key}>
-                            <td className="text-center">{index+1}</td>
-                            <td>
+                            <td className="text-center">{index + 1}</td>
+                            <td className="col-md-6">
                               <Link to={`/doctor/${doctor.id}`}>
                                 {doctor.name}
                               </Link>
                             </td>
                             <td>{doctor.branch.name}</td>
+                            <td>
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Active
+                              </div>
+                            </td>
                             <td className="text-center btns-mr-5">
                               <Button
                                 className="btn-icon"

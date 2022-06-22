@@ -1,3 +1,4 @@
+import discountApi from "api/discountApi";
 import serviceApi from "api/serviceApi";
 import ImageUpload from "components/CustomUpload/ImageUpload";
 import AdminNavbar from "components/Navbars/AdminNavbar";
@@ -8,6 +9,7 @@ import ReactDatePicker from "react-datepicker";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Select from "react-select";
 import { Button, Col, Form, Row } from "reactstrap";
+import Validator from "utils/validation/validator";
 
 class NewDiscountPage extends Component {
   constructor(props) {
@@ -19,13 +21,19 @@ class NewDiscountPage extends Component {
       address: "",
       startDate: "",
       endDate: "",
+      percentage: 10.0,
       currentService: [],
       serviceList: [],
+      errors: [],
     };
+
+    const rules = [];
+
     this.onHandleChange = this.onHandleChange.bind(this);
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
     this.onHandleServiceSelect = this.onHandleServiceSelect.bind(this);
     this.CustomDate = this.CustomDate.bind(this);
+    this.validator = new Validator(rules);
   }
 
   componentDidMount() {
@@ -57,6 +65,12 @@ class NewDiscountPage extends Component {
     }
   };
 
+  _inserDiscount = async (data) => {
+    await discountApi.insert(data).then((res) => {
+      console.log("res discount: ",res);
+    });
+  };
+
   onHandleServiceSelect(event) {
     this.setState({
       currentService: event,
@@ -75,6 +89,20 @@ class NewDiscountPage extends Component {
   }
   onHandleSubmit(event) {
     event.preventDefault();
+    if (true) {
+      const data = {
+        discountDTO: {
+          name: this.state.name,
+          percentage: this.state.percentage,
+          description: this.state.description,
+          status: 1,
+          startDate: this.state.startDate,
+          endDate: this.state.endDate
+        },
+        serviceIDList: this.state.currentService.map((service) => (service.value))
+      }
+      this._inserDiscount(data);
+    }
     console.log(this.state.currentService);
   }
   render() {
@@ -89,7 +117,7 @@ class NewDiscountPage extends Component {
       <>
         {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
 
-        <AdminNavbar brandText="Dashboard" link="/admin/branchs" />
+        <AdminNavbar brandText="Dashboard" link="/admin/discounts" />
         <PanelHeader size="sm">
           <Col xs={0.5} md={0.5}>
             <Link to="/admin/services">

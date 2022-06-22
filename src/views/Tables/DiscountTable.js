@@ -28,8 +28,8 @@ function DiscountTable() {
     indexOfLastDiscount
   );
 
-   //Change page
-   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  //Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchDiscountList = async () => {
     try {
@@ -43,8 +43,8 @@ function DiscountTable() {
     }
   };
   const editDiscount = (id) => {
-     console.log("discount id: ", id)
-  }
+    console.log("discount id: ", id);
+  };
 
   useEffect(() => {
     fetchDiscountList();
@@ -75,11 +75,17 @@ function DiscountTable() {
                     {currentDiscounts.map((discount, index) => {
                       return (
                         <tr>
-                          <td className="text-center" key={discount.id}>{index + 1}</td>
+                          <td className="text-center" key={discount.id}>
+                            {index + 1}
+                          </td>
                           <td>{discount.name}</td>
-                          <td>{discount.start_date}</td>
-                          <td>{discount.end_date}</td>
-                          <td>{discount.status}</td>
+                          <td>{discount.startDate}</td>
+                          <td>{discount.endDate}</td>
+                          <td>
+                            <div style={{ color: "green" }}>
+                              <i className="fas fa-check-circle"> </i> Active
+                            </div>
+                          </td>
                           <td className="text-center btns-mr-5">
                             <Button
                               className="btn-icon"
@@ -90,17 +96,15 @@ function DiscountTable() {
                             >
                               <i className="now-ui-icons ui-2_settings-90" />
                             </Button>
-                            
+
                             <Button
                               className="btn-icon"
                               color="danger"
-                             
                               size="sm"
                               type="button"
                             >
                               <i className="now-ui-icons ui-1_simple-remove" />
                             </Button>
-                            
                           </td>
                         </tr>
                       );
@@ -112,10 +116,10 @@ function DiscountTable() {
           </Col>
         </Row>
         <CustomPagination
-                itemsPerPage={discountsPerPage}
-                totalItems={discountList.length}
-                paginate={paginate}
-              />
+          itemsPerPage={discountsPerPage}
+          totalItems={discountList.length}
+          paginate={paginate}
+        />
       </div>
     </>
   );
