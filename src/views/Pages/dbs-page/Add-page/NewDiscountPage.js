@@ -1,15 +1,29 @@
 import discountApi from "api/discountApi";
 import serviceApi from "api/serviceApi";
-import ImageUpload from "components/CustomUpload/ImageUpload";
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import moment from "moment";
 import { Component } from "react";
-import ReactDatePicker from "react-datepicker";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import Select from "react-select";
 import { Button, Col, Form, Row } from "reactstrap";
 import Validator from "utils/validation/validator";
+import NotificationAlert from "react-notification-alert";
+
+var options = {};
+options = {
+  place: "tr",
+  message: (
+    <div>
+      <div>
+        Successfully add new <b>Service Type</b>
+      </div>
+    </div>
+  ),
+  type: "success",
+  icon: "now-ui-icons ui-1_bell-53",
+  autoDismiss: 4,
+};
 
 class NewDiscountPage extends Component {
   constructor(props) {
@@ -34,6 +48,7 @@ class NewDiscountPage extends Component {
     this.onHandleServiceSelect = this.onHandleServiceSelect.bind(this);
     this.CustomDate = this.CustomDate.bind(this);
     this.validator = new Validator(rules);
+    this.notify = this.notify.bind(this);
   }
 
   componentDidMount() {
@@ -48,6 +63,9 @@ class NewDiscountPage extends Component {
     yyyy = today.getFullYear();
     return yyyy + "-" + mm + "-" + dd;
   };
+  notify() {
+    this.refs.notify.notificationAlert(options);
+  }
 
   getServiceList = async () => {
     try {
@@ -66,9 +84,17 @@ class NewDiscountPage extends Component {
   };
 
   _inserDiscount = async (data) => {
-    await discountApi.insert(data).then((res) => {
-      console.log("res discount: ",res);
-    });
+    var result = false;
+    try {
+      await discountApi.insert(data).then((res) => {
+        console.log("res discount: ", res);
+        result = true;
+      });
+    } catch (error) {
+      console.log("can not add errr", error);
+    } finally {
+      return result;
+    }
   };
 
   onHandleServiceSelect(event) {
@@ -97,11 +123,17 @@ class NewDiscountPage extends Component {
           description: this.state.description,
           status: 1,
           startDate: this.state.startDate,
-          endDate: this.state.endDate
+          endDate: this.state.endDate,
         },
-        serviceIDList: this.state.currentService.map((service) => (service.value))
+        serviceIDList: this.state.currentService.map(
+          (service) => service.value
+        ),
+      };
+      console.log("data: ",data);
+      const result = this._inserDiscount(data);
+      if (result) {
+        this.notify();
       }
-      this._inserDiscount(data);
     }
     console.log(this.state.currentService);
   }
@@ -227,6 +259,13 @@ class NewDiscountPage extends Component {
               </div>
             </Row>
           </Form>
+        </div>
+        <div>
+          <NotificationAlert
+            ref="notify"
+            zIndex={9999}
+            onClick={() => console.log("hey")}
+          />
         </div>
       </>
     );

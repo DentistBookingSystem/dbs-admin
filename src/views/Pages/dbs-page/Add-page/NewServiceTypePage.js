@@ -14,7 +14,7 @@ options = {
   message: (
     <div>
       <div>
-        Successfully add new <b>Service Type</b>
+        Successfully add new <b>Discount</b>
       </div>
     </div>
   ),
@@ -30,7 +30,6 @@ class NewServiceTypePage extends Component {
       name: "",
       description: "",
       errors: {},
-      isModalOpen: false,
     };
     const rules = [
       {
@@ -91,7 +90,7 @@ class NewServiceTypePage extends Component {
       description: this.state.description,
     };
     const res = this._insertServiceType(dataServiceType);
-    if(res !== null){
+    if (res !== null) {
       this.notify();
     }
     console.log(dataServiceType);
@@ -178,14 +177,14 @@ class NewServiceTypePage extends Component {
                 </div>
               </div>
             </Row>
-            <div>
-              {/* <NotificationAlert
-                ref="notify"
-                zIndex={9999}
-              />
-              <button type="button" onClick={this.notify}>Hey</button> */}
-            </div>
           </Form>
+        </div>
+        <div>
+          <NotificationAlert
+            ref="notify"
+            zIndex={9999}
+            onClick={() => console.log("hey")}
+          />
         </div>
       </>
     );

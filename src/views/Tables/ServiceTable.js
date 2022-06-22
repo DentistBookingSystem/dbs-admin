@@ -104,11 +104,9 @@ function ServiceTable() {
 
                               <td>{service.serviceType.name}</td>
                               <td>
-                                <div className="stock-status in-stock">
-                                  <button className="stock-button">
-                                    <i className="fa fa-check circle-icon"></i>
-                                    &nbsp; Active
-                                  </button>
+                                <div style={{ color: "green" }}>
+                                  <i className="fas fa-check-circle"> </i>{" "}
+                                  Active
                                 </div>
                               </td>
                               <td className="text-center btns-mr-5">
