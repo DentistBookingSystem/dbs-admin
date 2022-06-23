@@ -20,7 +20,6 @@ import { Route, Switch, Redirect } from "react-router-dom";
 // core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footer/Footer.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 import axiosClient from "../api/axiosClient";
 
 

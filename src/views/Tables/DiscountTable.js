@@ -1,6 +1,5 @@
 import {
   Table,
-  UncontrolledTooltip,
   Card,
   CardHeader,
   CardBody,

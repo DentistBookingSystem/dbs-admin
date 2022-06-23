@@ -11,7 +11,6 @@ import {
   Modal,
   ModalBody,
   ModalFooter,
-  ModalHeader,
 } from "reactstrap";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
@@ -25,7 +24,6 @@ function DoctorTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage] = useState(5);
   const [modalMini, setModalMini] = useState(false);
-  const [isDelete, setIsDelete] = useState(false);
   const [idDelete, setIdDelete] =  useState(-1);
 
   const indexOfLastDoctor = currentPage * doctorsPerPage;

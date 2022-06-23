@@ -7,6 +7,9 @@ import {
   Row,
   Col,
   Button,
+  Modal as DangerModal,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
@@ -25,6 +28,8 @@ function ServiceTable() {
   const [lgShow, setLgShow] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [servicesPerPage] = useState(5);
+  const [modalMini, setModalMini] = useState(false);
+  const [idDelete, setIdDelete] = useState(-1);
 
   const indexOfLastService = currentPage * servicesPerPage;
   const indexOfFirstService = indexOfLastService - servicesPerPage;
@@ -32,6 +37,11 @@ function ServiceTable() {
     indexOfFirstService,
     indexOfLastService
   );
+
+  //Pop up alert delete
+  const toggleModalMini = () => {
+    setModalMini(!modalMini);
+  };
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -60,6 +70,20 @@ function ServiceTable() {
       console.log("Can not load service info", error);
     }
     return null;
+  };
+
+  const disableService = async () => {
+    setModalMini(!modalMini);
+    if (idDelete !== -1) {
+      try {
+        await serviceApi.disableService(idDelete).then((res) => {
+          console.log("đã xóa");
+          window.location.reload(false);
+        });
+      } catch (error) {
+        console.log("Can not delete service: ", error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -104,10 +128,17 @@ function ServiceTable() {
 
                               <td>{service.serviceType.name}</td>
                               <td>
+                              {service.status !== 0 ? (
                                 <div style={{ color: "green" }}>
                                   <i className="fas fa-check-circle"> </i>{" "}
                                   Active
                                 </div>
+                              ) : (
+                                <div style={{ color: "grey" }}>
+                                  <i className="fas fa-check-circle"> </i>{" "}
+                                  Inactive
+                                </div>
+                              )}
                               </td>
                               <td className="text-center btns-mr-5">
                                 <Button
@@ -137,6 +168,11 @@ function ServiceTable() {
                                   color="danger"
                                   size="sm"
                                   type="button"
+                                  onClick={() => {
+                                    setModalMini(!modalMini);
+                                    setIdDelete(service.id);                                  
+                                  }}
+                                  disabled = {service.status !== 0 ? false : true}
                                 >
                                   <i className="now-ui-icons ui-1_simple-remove" />
                                 </Button>
@@ -234,6 +270,37 @@ function ServiceTable() {
           totalItems={serviceList.length}
           paginate={paginate}
         />
+        <DangerModal
+          isOpen={modalMini}
+          toggle={toggleModalMini}
+          size="mini"
+          modalClassName="modal-info"
+        >
+          <div className="modal-header justify-content-center">
+            <div className="modal-profile">
+              <i className="now-ui-icons business_badge" />
+            </div>
+          </div>
+          <ModalBody>
+            <p>{"Are sure to delete \n this Service ?"}</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={disableService}
+            >
+              Delete
+            </Button>{" "}
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={toggleModalMini}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </DangerModal>
       </div>
     </>
   );

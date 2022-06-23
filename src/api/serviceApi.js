@@ -29,6 +29,13 @@ class ServiceApi{
        
      }
 
+     disableService = async (id) => {
+        const url  = this.SERVICE_PATH + '/delete/' + id;
+        return await axiosClient.get(url).then((res) => {
+            console.log(res);
+        })
+     }
+
 }
 
 const serviceApi = new ServiceApi();

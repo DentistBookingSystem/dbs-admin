@@ -31,7 +31,7 @@ import {
   InputGroupText,
   Button,
 } from "reactstrap";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 // core components
 import nowLogo from "assets/img/logo-rade2.png";

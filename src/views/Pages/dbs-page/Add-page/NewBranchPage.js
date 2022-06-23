@@ -9,7 +9,6 @@ import branchApi from "api/branchApi";
 import provinceApi from "api/provinceApi";
 import Select from "react-select";
 import districtApi from "api/districtApi";
-import axios from "axios";
 
 class NewBranchPage extends Component {
   constructor(props) {
