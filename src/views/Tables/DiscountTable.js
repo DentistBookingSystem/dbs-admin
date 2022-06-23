@@ -7,6 +7,9 @@ import {
   Row,
   Col,
   Button,
+  Modal,
+  ModalBody,
+  ModalFooter
 } from "reactstrap";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
@@ -19,6 +22,8 @@ function DiscountTable() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [discountsPerPage] = useState(5);
+  const [modalMini, setModalMini] = useState(false);
+  const [idDelete, setIdDelete] = useState(-1);
 
   const indexOfLastDiscount = currentPage * discountsPerPage;
   const indexOfFirstDiscount = indexOfLastDiscount - discountsPerPage;
@@ -26,6 +31,11 @@ function DiscountTable() {
     indexOfFirstDiscount,
     indexOfLastDiscount
   );
+
+  //Pop up alert delete
+  const toggleModalMini = () => {
+    setModalMini(!modalMini);
+  };
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -44,6 +54,22 @@ function DiscountTable() {
   const editDiscount = (id) => {
     console.log("discount id: ", id);
   };
+
+  //Delete service
+  const disableService = async () => {
+    setModalMini(!modalMini);
+    if (idDelete !== -1) {
+      try {
+        await discountApi.disableDiscount(idDelete).then((res) => {
+          console.log("Dlt: ", res);
+          window.location.reload(false);
+        });
+      } catch (error) {
+        console.log("xóa hhk đc", error);
+      }
+
+    }
+  }
 
   useEffect(() => {
     fetchDiscountList();
@@ -81,9 +107,17 @@ function DiscountTable() {
                           <td>{discount.startDate}</td>
                           <td>{discount.endDate}</td>
                           <td>
-                            <div style={{ color: "green" }}>
-                              <i className="fas fa-check-circle"> </i> Active
-                            </div>
+                          {discount.status !== 0 ? (
+                                <div style={{ color: "green" }}>
+                                  <i className="fas fa-check-circle"> </i>{" "}
+                                  Active
+                                </div>
+                              ) : (
+                                <div style={{ color: "grey" }}>
+                                  <i className="fas fa-check-circle"> </i>{" "}
+                                  Inactive
+                                </div>
+                              )}
                           </td>
                           <td className="text-center btns-mr-5">
                             <Button
@@ -101,6 +135,10 @@ function DiscountTable() {
                               color="danger"
                               size="sm"
                               type="button"
+                              onClick={() => {
+                                setModalMini(!modalMini);
+                                setIdDelete(discount.id);                                  
+                              }}
                             >
                               <i className="now-ui-icons ui-1_simple-remove" />
                             </Button>
@@ -119,6 +157,38 @@ function DiscountTable() {
           totalItems={discountList.length}
           paginate={paginate}
         />
+        <Modal
+          isOpen={modalMini}
+          toggle={toggleModalMini}
+          size="mini"
+          modalClassName="modal-info"
+        >
+          <div className="modal-header justify-content-center">
+            <div className="modal-profile">
+              <i className="now-ui-icons business_badge" />
+            </div>
+          </div>
+          <ModalBody>
+            <p>{"Are sure to delete \n this doctor ?"}</p>
+ 
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={disableService}
+            >
+              Delete
+            </Button>{" "}
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={toggleModalMini}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
       </div>
     </>
   );

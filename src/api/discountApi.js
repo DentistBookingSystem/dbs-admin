@@ -12,6 +12,12 @@ class DiscountApi{
             return res;
         })  
     }
+    disableDiscount = async (id) => {
+        const url  = this.BASE_URL + '/delete/' + id;
+        return await axiosClient.get(url).then((res) => {
+            console.log(res);
+        })
+     }
 }
 
 const discountApi = new DiscountApi();
