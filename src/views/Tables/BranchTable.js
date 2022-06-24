@@ -81,10 +81,9 @@ function BranchTable() {
                           </td>
                           <td>
                             <div class="stock-status in-stock">
-                              <button class="stock-button">
-                                <i class="fa fa-check circle-icon"></i>&nbsp;
-                                Active
-                              </button>
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Active
+                              </div>
                             </div>
                           </td>
                           <td className="text-center btns-mr-5">

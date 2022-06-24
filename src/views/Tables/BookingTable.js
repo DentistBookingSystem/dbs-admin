@@ -15,7 +15,7 @@
 
 */
 /*eslint-disable*/
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // reactstrap components
 import {
@@ -33,6 +33,7 @@ import {
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import appointmentApi from "api/AppointmentApi";
 import CustomPagination from "views/Widgets/Pagination";
+import Appointment from "views/Pages/dbs-page/edit-form/Appointment";
 
 const verifiedStatus = (
   <div className="stock-status in-stock">
@@ -52,6 +53,8 @@ function BookingTable() {
   const [bookingList, setBookingList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [bookingsPerPage] = useState(10);
+  const [isEdit, setIsEdit] = useState(false);
+  const [updateBooking, setUpdateBooking] = useState({});
 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
@@ -81,89 +84,101 @@ function BookingTable() {
   return (
     <>
       <PanelHeader size="sm" />
-      <div className="content">
-        <Row>
-          <Col md="12">
-            <Card>
-              <CardHeader>
-                <CardTitle tag="h4">Appoinment</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <Table responsive>
-                  <thead className="text-primary">
-                    <tr>
-                      <th className="text-center">#</th>
-                      <th>Patient</th>
-                      <th>Date</th>
-                      <th>Shift</th>
-                      <th>Doctor</th>
-                      <th>Status</th>
-                      <th className="text-center">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentBookings.map((booking, index) => {
-                      return (
-                        <tr>
-                          <td className="text-center">{index + 1}</td>
-                          <td>{booking.account.phone}</td>
-                          <td>{booking.date}</td>
-                          <td>{booking.shift}</td>
-                          <td>{booking.doctor.name}</td>
-                          <td>
-                            {booking.status === 0 ? (
-                              <div style={{ color: "green" }}>
-                                <i className="fas fa-check-circle"> </i>{" "}
-                                Accepted
-                              </div>
-                            ) : (
-                              <div style={{ color: "grey" }}>
-                                <i className="fas fa-check-circle"> </i> Done
-                              </div>
-                            )}
-                          </td>
-                          <td className="text-center btns-mr-5">
-                            <Button
-                              className="btn-icon"
-                              color="info"
-                              size="sm"
-                              type="button"
-                            >
-                              <i className="now-ui-icons users_single-02" />
-                            </Button>
-                            <Button
-                              className="btn-icon"
-                              color="success"
-                              size="sm"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-2_settings-90" />
-                            </Button>
 
-                            <Button
-                              className="btn-icon"
-                              color="danger"
-                              size="sm"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
-                          </td>
+      {isEdit ? (
+        <Appointment {...updateBooking}/>
+      ) : (
+        <>
+          <div className="content">
+            <Row>
+              <Col md="12">
+                <Card>
+                  <CardHeader>
+                    <CardTitle tag="h4">Appoinment</CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <Table responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th className="text-center">#</th>
+                          <th>Patient</th>
+                          <th>Date</th>
+                          <th>Shift</th>
+                          <th>Doctor</th>
+                          <th>Status</th>
+                          <th className="text-center">Actions</th>
                         </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-              <CustomPagination
-                itemsPerPage={bookingsPerPage}
-                totalItems={bookingList.length}
-                paginate={paginate}
-              />
-          </Col>
-        </Row>
-      </div>
+                      </thead>
+                      <tbody>
+                        {currentBookings.map((booking, index) => {
+                          return (
+                            <tr>
+                              <td className="text-center">{index + 1}</td>
+                              <td>{booking.account.fullName}</td>
+                              <td>{booking.appointmentDate}</td>
+                              <td>{booking.appointmentTime}</td>
+                              <td>{booking.doctor.name}</td>
+                              <td>
+                                {booking.status === 0 ? (
+                                  <div style={{ color: "green" }}>
+                                    <i className="fas fa-check-circle"> </i>{" "}
+                                    Accepted
+                                  </div>
+                                ) : (
+                                  <div style={{ color: "grey" }}>
+                                    <i className="fas fa-check-circle"> </i>{" "}
+                                    Done
+                                  </div>
+                                )}
+                              </td>
+                              <td className="text-center btns-mr-5">
+                                <Button
+                                  className="btn-icon"
+                                  color="info"
+                                  size="sm"
+                                  type="button"
+                                >
+                                  <i className="now-ui-icons users_single-02" />
+                                </Button>
+                                <Button
+                                  className="btn-icon"
+                                  color="success"
+                                  size="sm"
+                                  type="button"
+                                  onClick={() => {
+                                    setIsEdit(!isEdit);
+                                    setUpdateBooking(booking);
+                                  }}
+                                >
+                                  <i className="now-ui-icons ui-2_settings-90" />
+                                </Button>
+
+                                <Button
+                                  className="btn-icon"
+                                  color="danger"
+                                  size="sm"
+                                  type="button"
+                                >
+                                  <i className="now-ui-icons ui-1_simple-remove" />
+                                </Button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </CardBody>
+                </Card>
+                <CustomPagination
+                  itemsPerPage={bookingsPerPage}
+                  totalItems={bookingList.length}
+                  paginate={paginate}
+                />
+              </Col>
+            </Row>
+          </div>
+        </>
+      )}
     </>
   );
 }

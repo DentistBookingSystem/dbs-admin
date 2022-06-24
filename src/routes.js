@@ -25,7 +25,7 @@ import Typography from "views/Components/Typography.js";
 import RegularForms from "views/Forms/RegularForms.js";
 import ExtendedForms from "views/Forms/ExtendedForms.js";
 import ValidationForms from "views/Forms/ValidationForms.js";
-import Wizard from "views/Forms/Wizard/Wizard.js";
+// import Wizard from "views/Forms/Wizard/Wizard.js";
 import RegularTables from "views/Tables/archive/RegularTables.js";
 import ExtendedTables from "views/Tables/archive/ExtendedTables.js";
 import ReactTable from "views/Tables/archive/ReactTable.js";
@@ -51,6 +51,7 @@ import AccountTable from "views/Tables/AccountTable.js";
 import DoctorTable from "views/Tables/DoctorTable.js";
 import BookingTable from "views/Tables/BookingTable.js";
 import FeedbackTable from "views/Tables/FeedbackTable.js";
+import Discount from "views/Pages/dbs-page/edit-form/Discount";
 
 let routes = [
   {
@@ -116,6 +117,28 @@ let routes = [
     component: FeedbackTable,
     layout: "/admin",
   },
+  {
+    path: "/login-page",
+    name: "Login Page",
+    short: "Login",
+    mini: "LP",
+    component: LoginPage,
+    layout: "/auth",
+    invisible: true
+
+  },
+  {
+    path: "/discount/edit",
+    name: "Edit Discount",
+    mini: "W",
+    component: Discount,
+    layout: "/admin",
+    invisible: true
+  },
+
+
+
+
   {
     collapse: true,
     path: "/pages",
@@ -264,13 +287,13 @@ let routes = [
         component: ValidationForms,
         layout: "/admin",
       },
-      {
-        path: "/wizard",
-        name: "Wizard",
-        mini: "W",
-        component: Wizard,
-        layout: "/admin",
-      },
+      // {
+      //   path: "/wizard",
+      //   name: "Wizard",
+      //   mini: "W",
+      //   component: Wizard,
+      //   layout: "/admin",
+      // },
     ],
   },
   {

@@ -65,6 +65,8 @@ function Wizard() {
             previousButtonClasses="btn-wd"
           />
         </Col>
+
+        
       </div>
     </>
   );
