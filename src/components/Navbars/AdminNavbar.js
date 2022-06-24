@@ -246,7 +246,7 @@ function AdminNavbar(props) {
 
 AdminNavbar.defaultProps = {
   brandText: "Default Brand Text",
-  link: "/",
+  link: "/admin/",
 };
 
 AdminNavbar.propTypes = {
