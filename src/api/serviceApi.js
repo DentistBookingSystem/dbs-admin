@@ -35,6 +35,12 @@ class ServiceApi{
             console.log(res);
         })
      }
+     editService = async (data) => {
+        const url = this.SERVICE_PATH + '/edit';
+        return await axiosClient.post(url, data).then((res) => {
+            console.log("edit: ", data)
+        })
+     }
 
 }
 

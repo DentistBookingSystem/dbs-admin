@@ -1,10 +1,9 @@
 import serviceTypeApi from "api/serviceTypeApi";
-import ImageUpload from "components/CustomUpload/ImageUpload";
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import { Component, useRef } from "react";
+import { Component} from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { Alert, Button, CardBody, Col, Form, FormGroup, Row } from "reactstrap";
+import { Button, Col, Form,  Row } from "reactstrap";
 import Validator from "utils/validation/validator";
 import NotificationAlert from "react-notification-alert";
 

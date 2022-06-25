@@ -22,8 +22,6 @@ import { Col } from "reactstrap";
 
 import Validator from "utils/validation/validator";
 
-// core components
-import PanelHeader from "components/PanelHeader/PanelHeader.js";
 
 function Discount(discount) {
   const [name, setName] = useState(discount.name);

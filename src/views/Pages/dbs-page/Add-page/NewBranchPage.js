@@ -9,6 +9,22 @@ import branchApi from "api/branchApi";
 import provinceApi from "api/provinceApi";
 import Select from "react-select";
 import districtApi from "api/districtApi";
+import NotificationAlert from "react-notification-alert";
+
+var options = {};
+options = {
+  place: "tr",
+  message: (
+    <div>
+      <div>
+        Successfully add new <b>Branch</b>
+      </div>
+    </div>
+  ),
+  type: "success",
+  icon: "now-ui-icons ui-1_bell-53",
+  autoDismiss: 4,
+};
 
 class NewBranchPage extends Component {
   constructor(props) {
@@ -84,6 +100,11 @@ class NewBranchPage extends Component {
     this.getProvinceList = this.getProvinceList.bind(this);
     this.onHandleSelect = this.onHandleSelect.bind(this);
     this.onHandleSelectDistrict = this.onHandleSelectDistrict.bind(this);
+    this.notify = this.notify.bind(this);
+  }
+
+  notify() {
+    this.refs.notify.notificationAlert(options);
   }
 
   componentDidMount() {
@@ -217,7 +238,7 @@ class NewBranchPage extends Component {
         .then(async () => {
           console.log(data);
           await branchApi.insertBranch(data).then((res) => {
-            console.log("add branch thành công");
+            this.notify();
           });
         });
     } catch (error) {
@@ -465,6 +486,13 @@ class NewBranchPage extends Component {
               </div>
             </Row>
           </Form>
+        </div>
+        <div>
+          <NotificationAlert
+            ref="notify"
+            zIndex={9999}
+            onClick={() => console.log("hey")}
+          />
         </div>
       </>
     );

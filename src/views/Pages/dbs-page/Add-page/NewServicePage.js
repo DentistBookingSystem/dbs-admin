@@ -2,7 +2,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import { Component } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { Button, CardBody, Col, Form, FormGroup, Row } from "reactstrap";
+import { Button, Col, Form, Row } from "reactstrap";
 import Select from "react-select";
 import serviceTypeApi from "api/serviceTypeApi";
 import serviceApi from "api/serviceApi";
