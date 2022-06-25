@@ -31,8 +31,7 @@ import {
   InputGroupText,
   Button,
 } from "reactstrap";
-import { Redirect } from "react-router-dom";
-
+import { Redirect, useHistory } from "react-router-dom";
 // core components
 import nowLogo from "assets/img/logo-rade2.png";
 
@@ -46,7 +45,8 @@ function LoginPage() {
   const initialValue = { phone: "", password: "" };
   const [formValue, setFormValue] = React.useState(initialValue);
   const [stateLogin, setStateLogin] = React.useState(false);
-
+  const history = useHistory();
+  const notificationAlert = React.useRef();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValue({ ...formValue, [name]: value });
@@ -56,12 +56,31 @@ function LoginPage() {
   const login = async () => {
     try {
       await authApi.login(formValue).then((result) => {
-        const user = localStorage.getItem("user");
+        const user = sessionStorage.getItem("user");
         console.log("user token: ", user);
+        // console.log("session account", sessionStorage.getItem("role"));
+        const role = sessionStorage.getItem("role");
         if (user !== null) {
           setStateLogin(true);
+          var options = {};
+          options = {
+            place: "tr",
+            message: "Login successfully",
+            type: "info",
+            icon: "now-ui-icons ui-1_bell-53",
+            autoDismiss: 7,
+          };
+          notificationAlert.current.notificationAlert(options);
         } else {
           setStateLogin(false);
+          var options = {};
+          options = {
+            place: "tr",
+            message: "Login failed",
+            type: "info",
+            icon: "now-ui-icons ui-1_bell-53",
+            autoDismiss: 7,
+          };
         }
       });
     } catch (error) {
@@ -82,7 +101,13 @@ function LoginPage() {
     };
   }, []);
   return stateLogin ? (
-    <Redirect to="/admin/dashboard" />
+    sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
+      <Redirect to="/admin/dashboard" />
+    ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
+      <Redirect to="/staff/home" />
+    ) : (
+      <Redirect to="/auth/login-page" />
+    )
   ) : (
     <>
       <div className="content">

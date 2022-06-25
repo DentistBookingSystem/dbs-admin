@@ -44,7 +44,7 @@ import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 
 import BranchTable from "views/Tables/BranchTable.js";
-import ServiceTypeTable from "views/Tables/ServiceTypeTable.js"
+import ServiceTypeTable from "views/Tables/ServiceTypeTable.js";
 import ServiceTable from "views/Tables/ServiceTable.js";
 import DiscountTable from "views/Tables/DiscountTable.js";
 import AccountTable from "views/Tables/AccountTable.js";
@@ -52,8 +52,11 @@ import DoctorTable from "views/Tables/DoctorTable.js";
 import BookingTable from "views/Tables/BookingTable.js";
 import FeedbackTable from "views/Tables/FeedbackTable.js";
 import Discount from "views/Pages/dbs-page/edit-form/Discount";
+import StaffHome from "views/Pages/staff-page/StaffHome";
+import StaffCancelAppointment from "views/Pages/staff-page/StaffCancelAppointment";
 
 let routes = [
+  //Admin
   {
     path: "/dashboard",
     name: "Dashboard",
@@ -124,8 +127,7 @@ let routes = [
     mini: "LP",
     component: LoginPage,
     layout: "/auth",
-    invisible: true
-
+    invisible: true,
   },
   {
     path: "/discount/edit",
@@ -133,11 +135,24 @@ let routes = [
     mini: "W",
     component: Discount,
     layout: "/admin",
-    invisible: true
+    invisible: true,
   },
 
-
-
+  // Staff
+  {
+    path: "/home",
+    name: "Home",
+    icon: "now-ui-icons ui-1_calendar-60",
+    component: StaffHome,
+    layout: "/staff",
+  },
+  {
+    path: "/appointment/cancel",
+    name: "Cancel",
+    icon: "now-ui-icons ui-1_simple-remove",
+    component: StaffCancelAppointment,
+    layout: "/staff",
+  },
 
   {
     collapse: true,
@@ -356,7 +371,7 @@ let routes = [
   //     },
   //   ],
   // },
-  
+
   // {
   //   path: "/charts",
   //   name: "Charts",

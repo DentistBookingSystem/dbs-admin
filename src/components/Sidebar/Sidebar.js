@@ -37,9 +37,6 @@ function Sidebar(props) {
   const [collapseStates, setCollapseStates] = React.useState({});
   const sidebar = React.useRef();
 
-
-
-
   React.useEffect(() => {
     // if you are using a Windows Machine, the scrollbars will have a Mac look
     if (navigator.platform.indexOf("Win") > -1) {
@@ -96,7 +93,8 @@ function Sidebar(props) {
   // this function creates the links and collapses that appear in the sidebar (left menu)
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
-      if(prop.invisible) return null;
+      if (prop.invisible) return null;
+      if (window.location.href.indexOf(prop.layout) <= -1) return null;
       if (prop.collapse) {
         var st = {};
         st[prop["state"]] = !collapseStates[prop.state];
@@ -213,12 +211,15 @@ function Sidebar(props) {
                 </span>
               </a>
               <Collapse isOpen={openAvatar}>
-                <ul className="nav">              
+                <ul className="nav">
                   <li>
-                    <a href="#pablo" onClick={(e) => {
-                      e.preventDefault();
-                      authApi.logout();
-                    }}>
+                    <a
+                      href="#pablo"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        authApi.logout();
+                      }}
+                    >
                       <span className="sidebar-normal">Log out</span>
                     </a>
                   </li>

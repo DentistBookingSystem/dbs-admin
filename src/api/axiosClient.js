@@ -8,6 +8,7 @@ import queryString from "query-string";
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
+
   headers: {
     "Content-Type": "application/json",
     Accept: "multipart/form-data",
@@ -20,7 +21,7 @@ const axiosClient = axios.create({
 });
 axiosClient.interceptors.request.use(
   async (config) => {
-    const currentUser = localStorage.getItem("user");
+    const currentUser = sessionStorage.getItem("user");
     if (currentUser) {
       config.headers = {
         ...axiosClient.headers,
@@ -47,7 +48,7 @@ axiosClient.interceptors.response.use(
     return response.status;
   },
   (error) => {
-    console.log("error here");
+    console.log("error here", error);
   }
 );
 export default axiosClient;

@@ -7,16 +7,17 @@ class AuthApi {
       await axios
         .post("http://localhost:8080/rade/auth/login", data)
         .then((result) => {
-          console.log(result);
+          console.log("authhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", result);
           if (result.data.accessToken.length !== 0) {
             console.log("Return token and phone: ", result);
-            localStorage.setItem("user", result.data.accessToken);
+            sessionStorage.setItem("role", result.data.roleName);
+            sessionStorage.setItem("user", result.data.accessToken);
             return result;
           }
         });
     } catch (error) {
       console.log("Login failed");
-    }finally{
+    } finally {
       return null;
     }
     // await axiosClient
@@ -35,14 +36,14 @@ class AuthApi {
   };
 
   logout() {
-    localStorage.removeItem("user");
+    sessionStorage.clear();
     window.location.href = "/auth/login-page";
     console.log("user now: ", localStorage.getItem("user"));
   }
 
   getCurrentUser() {
     console.log("Get user");
-    return localStorage.getItem("user");
+    return sessionStorage.getItem("user");
   }
 }
 

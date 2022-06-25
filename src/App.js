@@ -13,6 +13,8 @@ import NewServiceTypePage from "views/Pages/dbs-page/Add-page/NewServiceTypePage
 import NewServicePage from "views/Pages/dbs-page/Add-page/NewServicePage";
 import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
 import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
+import StaffHome from "views/Pages/staff-page/StaffHome";
+import Staff from "layouts/Staff";
 
 class App extends Component {
   constructor(props) {
@@ -43,7 +45,7 @@ class App extends Component {
 
   render() {
     const { currentUser, showAdminBoard, showLoginPage } = this.state;
-    return(
+    return (
       <BrowserRouter>
         <Switch>
           <Route
@@ -59,12 +61,20 @@ class App extends Component {
               return <AuthLayout {...props} />;
             }}
           />
+
+          <Route
+            path="/staff"
+            render={(props) => {
+              // return <AuthLayout {...props, user= currentUser} />;
+              return <Staff {...props} />;
+            }}
+          />
+
           <Route path="/branch/:id" children={<BranchDetail />} />
           <Route path="/service/:id" children={<ServiceDetail />} />
           {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
           {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
           <Route path="/doctor/:id" children={<DoctorDetail />} />
-
 
           <Route path="/branchs/add" children={<NewBranchPage />} />
           <Route path="/service-type/add" children={<NewServiceTypePage />} />
@@ -76,8 +86,7 @@ class App extends Component {
           {showLoginPage && <Redirect to="/auth/login-page" />}
         </Switch>
       </BrowserRouter>
-    )
-     
+    );
   }
 }
 
