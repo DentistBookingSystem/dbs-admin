@@ -302,13 +302,13 @@ let routes = [
   //       component: ValidationForms,
   //       layout: "/admin",
   //     },
-      // {
-      //   path: "/wizard",
-      //   name: "Wizard",
-      //   mini: "W",
-      //   component: Wizard,
-      //   layout: "/admin",
-      // },
+  // {
+  //   path: "/wizard",
+  //   name: "Wizard",
+  //   mini: "W",
+  //   component: Wizard,
+  //   layout: "/admin",
+  // },
   //   ],
   // },
   // {

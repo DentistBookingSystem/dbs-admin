@@ -37,6 +37,15 @@ function Staff(props) {
   const [backgroundColor, setBackgroundColor] = React.useState("blue");
   const notificationAlert = React.useRef();
   const mainPanel = React.useRef();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      sessionStorage.clear();
+      window.location.reload();
+    }, 1000 * 60 * 60);
+
+    return () => clearInterval(interval);
+  });
+
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       document.documentElement.className += " perfect-scrollbar-on";

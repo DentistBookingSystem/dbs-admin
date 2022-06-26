@@ -61,6 +61,9 @@ function ServiceTypeTable() {
                     <tr>
                       <th className="text-center">#</th>
                       <th>Name</th>
+
+                      <th>Description</th>
+
                       <th>Status</th>
                       <th className="text-center">Actions</th>
                     </tr>
@@ -71,25 +74,13 @@ function ServiceTypeTable() {
                         <tr>
                           <td className="text-center">{serviceType.id}</td>
                           <td>{serviceType.name}</td>
+                          <td>{serviceType.description}</td>
                           <td>
                             <div style={{ color: "green" }}>
                               <i className="fas fa-check-circle"> </i> Active
                             </div>
                           </td>
                           <td className="text-center btns-mr-5">
-                            <Button
-                              className="btn-icon"
-                              color="info"
-                              id="tooltip590841497"
-                              size="sm"
-                              type="button"
-                            >
-                              <i className="now-ui-icons users_single-02" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip590841497"
-                            />
                             <Button
                               className="btn-icon"
                               color="success"
@@ -102,7 +93,9 @@ function ServiceTypeTable() {
                             <UncontrolledTooltip
                               delay={0}
                               target="tooltip26024663"
-                            />
+                            >
+                              Edit
+                            </UncontrolledTooltip>
                             <Button
                               className="btn-icon"
                               color="danger"
@@ -115,7 +108,9 @@ function ServiceTypeTable() {
                             <UncontrolledTooltip
                               delay={0}
                               target="tooltip930083782"
-                            />
+                            >
+                              Delete
+                            </UncontrolledTooltip>
                           </td>
                         </tr>
                       );

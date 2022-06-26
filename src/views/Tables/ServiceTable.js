@@ -239,11 +239,11 @@ function ServiceTable() {
                           </Row>
                           <Row className="mt-2">
                             <Col>
-                              <b>Price: </b> {service.min_price}đ -{" "}
-                              {service.max_price}đ
+                              <b>Price: </b> {service.minPrice}đ -{" "}
+                              {service.maxPrice}đ
                             </Col>
                             <Col>
-                              <b>Duration: </b> {service.estimated_time} hour(s)
+                              <b>Duration: </b> {service.estimatedTime} hour(s)
                             </Col>
                           </Row>
                           <Row className="mt-2">

@@ -1,5 +1,7 @@
 import axios from "axios";
 import axiosClient from "./axiosClient";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 class AuthApi {
   login = async (data) => {
     const url = "/login";
@@ -7,6 +9,7 @@ class AuthApi {
       await axios
         .post("http://localhost:8080/rade/auth/login", data)
         .then((result) => {
+          toast.success("Login successfully");
           console.log("authhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", result);
           if (result.data.accessToken.length !== 0) {
             console.log("Return token and phone: ", result);
@@ -16,7 +19,8 @@ class AuthApi {
           }
         });
     } catch (error) {
-      console.log("Login failed");
+      console.log("Login failed trong authapi");
+      toast.warn("login failed trong authapi");
     } finally {
       return null;
     }

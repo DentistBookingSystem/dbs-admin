@@ -125,48 +125,52 @@ function AppointmentTable(props) {
                     </CardTitle>
                   </CardHeader>
                   <CardBody>
-                    <Table responsive>
-                      <thead className="text-primary">
-                        <tr>
-                          <th className="text-center">#</th>
-                          <th>Name</th>
-                          <th>Phone</th>
-                          <th>Time</th>
-                          <th className="text-center">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentBookings.map((booking, index) => {
-                          return (
-                            <tr key={booking.id}>
-                              <td className="text-center">{index + 1}</td>
+                    {bookingList.length !== 0 ? (
+                      <Table responsive>
+                        <thead className="text-primary">
+                          <tr>
+                            <th className="text-center">#</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Time</th>
+                            <th className="text-center">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {currentBookings.map((booking, index) => {
+                            return (
+                              <tr key={booking.id}>
+                                <td className="text-center">{index + 1}</td>
 
-                              <td>{booking.account.fullName}</td>
-                              <td>{booking.account.phone}</td>
+                                <td>{booking.account.fullName}</td>
+                                <td>{booking.account.phone}</td>
 
-                              <td>{booking.appointmentTime}</td>
-                              <td className="text-center btns-mr-5">
-                                <Button
-                                  className="btn-icon"
-                                  color="info"
-                                  size="lg"
-                                  type="button"
-                                  value={booking.id}
-                                  onClick={async (e) => {
-                                    // e.preventDefault();
+                                <td>{booking.appointmentTime}</td>
+                                <td className="text-center btns-mr-5">
+                                  <Button
+                                    className="btn-icon"
+                                    color="info"
+                                    size="lg"
+                                    type="button"
+                                    value={booking.id}
+                                    onClick={async (e) => {
+                                      // e.preventDefault();
 
-                                    await getAppointmentDatail(booking.id);
-                                    await setLgShow(true);
-                                  }}
-                                >
-                                  Detail
-                                </Button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
+                                      await getAppointmentDatail(booking.id);
+                                      await setLgShow(true);
+                                    }}
+                                  >
+                                    Detail
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </Table>
+                    ) : (
+                      <h3 className="ml-5">Don't have appointment</h3>
+                    )}
                   </CardBody>
                 </Card>
                 <CustomPagination

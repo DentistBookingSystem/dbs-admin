@@ -15,6 +15,7 @@ import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
 import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
 import StaffHome from "views/Pages/staff-page/StaffHome";
 import Staff from "layouts/Staff";
+import { ToastContainer } from "react-bootstrap";
 
 class App extends Component {
   constructor(props) {
@@ -46,46 +47,59 @@ class App extends Component {
   render() {
     const { currentUser, showAdminBoard, showLoginPage } = this.state;
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route
-            path="/admin"
-            render={(props) => {
-              return <AdminLayout {...props} />;
-            }}
-          />
-          <Route
-            path="/auth"
-            render={(props) => {
-              // return <AuthLayout {...props, user= currentUser} />;
-              return <AuthLayout {...props} />;
-            }}
-          />
+      <>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <BrowserRouter>
+          <Switch>
+            <Route
+              path="/admin"
+              render={(props) => {
+                return <AdminLayout {...props} />;
+              }}
+            />
+            <Route
+              path="/auth"
+              render={(props) => {
+                // return <AuthLayout {...props, user= currentUser} />;
+                return <AuthLayout {...props} />;
+              }}
+            />
 
-          <Route
-            path="/staff"
-            render={(props) => {
-              // return <AuthLayout {...props, user= currentUser} />;
-              return <Staff {...props} />;
-            }}
-          />
+            <Route
+              path="/staff"
+              render={(props) => {
+                // return <AuthLayout {...props, user= currentUser} />;
+                return <Staff {...props} />;
+              }}
+            />
 
-          <Route path="/branch/:id" children={<BranchDetail />} />
-          <Route path="/service/:id" children={<ServiceDetail />} />
-          {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
-          {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
-          <Route path="/doctor/:id" children={<DoctorDetail />} />
+            <Route path="/branch/:id" children={<BranchDetail />} />
+            <Route path="/service/:id" children={<ServiceDetail />} />
+            {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
+            {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
+            <Route path="/doctor/:id" children={<DoctorDetail />} />
 
-          <Route path="/branchs/add" children={<NewBranchPage />} />
-          <Route path="/service-type/add" children={<NewServiceTypePage />} />
-          <Route path="/services/add" children={<NewServicePage />} />
-          <Route path="/discounts/add" children={<NewDiscountPage />} />
-          <Route path="/doctors/add" children={<NewDoctorPage />} />
-          {/* <Redirect to="/auth/login-page" /> */}
-          {showAdminBoard && <Redirect to="/admin/dashboard" />}
-          {showLoginPage && <Redirect to="/auth/login-page" />}
-        </Switch>
-      </BrowserRouter>
+            <Route path="/branchs/add" children={<NewBranchPage />} />
+            <Route path="/service-type/add" children={<NewServiceTypePage />} />
+            <Route path="/services/add" children={<NewServicePage />} />
+            <Route path="/discounts/add" children={<NewDiscountPage />} />
+            <Route path="/doctors/add" children={<NewDoctorPage />} />
+            {/* <Redirect to="/auth/login-page" /> */}
+            {/* {showAdminBoard && <Redirect to="/admin/dashboard" />} */}
+            {showLoginPage && <Redirect to="/auth/login-page" />}
+          </Switch>
+        </BrowserRouter>
+      </>
     );
   }
 }

@@ -96,13 +96,13 @@ export default function StaffHome(props) {
 
   return (
     <div>
-      <div className="content" style={{ margin: `0 20px` }}>
+      <div style={{ margin: `0 20px` }}>
         <Container fluid>
           <form className="mt-3">
-            <div class="form-group d-flex flex-column text-center">
+            <div className="form-group d-flex flex-column text-center">
               <Row className="justify-content-center">
                 <label
-                  for="inputdefault"
+                  // for="inputdefault"
                   style={{ fontSize: `16px`, width: `10vw` }}
                   className="m-3"
                 >

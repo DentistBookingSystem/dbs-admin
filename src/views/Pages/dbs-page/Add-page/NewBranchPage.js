@@ -10,6 +10,7 @@ import provinceApi from "api/provinceApi";
 import Select from "react-select";
 import districtApi from "api/districtApi";
 import NotificationAlert from "react-notification-alert";
+import { toast } from "react-toastify";
 
 var options = {};
 options = {
@@ -32,7 +33,6 @@ class NewBranchPage extends Component {
     this.state = {
       name: "",
       url: "",
-      address: "",
       open_time: "",
       close_time: "",
       image: null,
@@ -55,13 +55,6 @@ class NewBranchPage extends Component {
         args: [{ min: 8 }],
         validWhen: true,
         message: "The name field is required 8 character.",
-      },
-      {
-        field: "address",
-        method: "isLength",
-        args: [{ min: 5 }],
-        validWhen: true,
-        message: "The address field is required",
       },
       {
         field: "open_time",
@@ -104,6 +97,23 @@ class NewBranchPage extends Component {
   }
 
   notify() {
+    this.refs.notify.notificationAlert(options);
+  }
+
+  notify(message) {
+    var options = {};
+    options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: "success",
+      icon: "now-ui-icons ui-1_bell-53",
+      autoDismiss: 4,
+    };
+
     this.refs.notify.notificationAlert(options);
   }
 
@@ -186,22 +196,6 @@ class NewBranchPage extends Component {
     });
   }
 
-  //handle selected image
-  // selectedHandler(event) {
-  //   let reader = new FileReader();
-  //   let file = event.target.files[0];
-  //   console.log(file);
-  //   reader.onloadend = () => {
-  //     this.setState({
-  //       imagePreviewUrl: reader.result,
-  //       image: file,
-  //     });
-  //   };
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
   validDropdownProvince(province) {
     if (province.value === -1) {
       return false;
@@ -228,7 +222,6 @@ class NewBranchPage extends Component {
           data = {
             name: this.state.name,
             url: res.data,
-            address: this.state.address,
             openTime: this.state.open_time,
             closeTime: this.state.close_time,
             districtId: this.state.district.value,
@@ -239,10 +232,12 @@ class NewBranchPage extends Component {
           console.log(data);
           await branchApi.insertBranch(data).then((res) => {
             this.notify();
+            window.location.replace("/admin/branchs");
           });
         });
     } catch (error) {
       console.log("Insert data failed", error);
+      this.notify(error.response.data.message);
     }
   };
 
@@ -344,29 +339,6 @@ class NewBranchPage extends Component {
                                 style={{ display: "block" }}
                               >
                                 {errors.name}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </FormGroup>
-                      <FormGroup>
-                        <div className="row mt-4">
-                          <div className="col-md-12">
-                            <label className="labels">Branch Address*</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Address"
-                              name="address"
-                              value={this.state.address}
-                              onChange={this.onHandleChange}
-                            />
-                            {errors.address && (
-                              <div
-                                className="invalid-feedback"
-                                style={{ display: "block" }}
-                              >
-                                {errors.address}
                               </div>
                             )}
                           </div>

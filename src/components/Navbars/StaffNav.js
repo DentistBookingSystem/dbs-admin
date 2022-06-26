@@ -115,6 +115,16 @@ function StaffNav(props) {
       setColor("transparent");
     }
   };
+
+  const getPathBack = (branchText) => {
+    for (let index = 0; index < routes.length; index++) {
+      const name = routes[index].name;
+      if (name === branchText) {
+        return routes[index].layout + routes[index].path;
+      }
+    }
+    return "/";
+  };
   React.useEffect(() => {
     window.addEventListener("resize", updateColor);
     // eslint-disable-next-line
@@ -130,20 +140,79 @@ function StaffNav(props) {
   }, [location]);
   return (
     // add or remove classes depending if we are on full-screen-maps page or not
-    <div>
-      <h2
-        className="text-center p-5"
-        style={{
-          backgroundColor: "#2ca8ff",
-          color: `white`,
-          fontWeight: `bold`,
-        }}
+    <>
+      <Navbar
+        color={
+          window.location.href.indexOf("full-screen-maps") !== -1
+            ? "white"
+            : color
+        }
+        expand="lg"
+        className={
+          window.location.href.indexOf("full-screen-maps") !== -1
+            ? "navbar-absolute "
+            : "navbar-absolute " +
+              (color === "transparent" ? "navbar-transparent " : "")
+        }
       >
-        {window.location.href.includes("/cancel")
-          ? "Cancel appointment"
-          : "Check-in appointment"}
-      </h2>
-    </div>
+        <Container fluid>
+          <div className="navbar-wrapper">
+            <div className="navbar-toggle">
+              <button
+                type="button"
+                ref={sidebarToggle}
+                className="navbar-toggler"
+                onClick={() => openSidebar()}
+              >
+                <span className="navbar-toggler-bar bar1" />
+                <span className="navbar-toggler-bar bar2" />
+                <span className="navbar-toggler-bar bar3" />
+              </button>
+            </div>
+            <NavbarBrand href={getPathBack(props.brandText)}>
+              {props.brandText}
+            </NavbarBrand>
+          </div>
+          <NavbarToggler onClick={toggle}>
+            <span className="navbar-toggler-bar navbar-kebab" />
+            <span className="navbar-toggler-bar navbar-kebab" />
+            <span className="navbar-toggler-bar navbar-kebab" />
+          </NavbarToggler>
+          <Collapse isOpen={isOpen} navbar className="justify-content-end">
+            <form>
+              <InputGroup className="no-border">
+                {/* <Input placeholder="Search..." /> */}
+                {getStatusPage(props.brandText) ? (
+                  <Button
+                    color="info"
+                    className="btn-round"
+                    onClick={() => navigateToPage()}
+                  >
+                    Add {props.brandText}
+                  </Button>
+                ) : (
+                  <></>
+                )}
+              </InputGroup>
+            </form>
+          </Collapse>
+        </Container>
+      </Navbar>
+      <div>
+        <h2
+          className="text-center p-5"
+          style={{
+            backgroundColor: "#2ca8ff",
+            color: `white`,
+            fontWeight: `bold`,
+          }}
+        >
+          {window.location.href.includes("/cancel")
+            ? "Cancel appointment"
+            : "Check-in appointment"}
+        </h2>
+      </div>
+    </>
   );
 }
 

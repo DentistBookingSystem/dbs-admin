@@ -49,7 +49,9 @@ class BranchApi {
   // BASE_URL = "/branch";
   getAll = () => {
     const url = "/branch" + "/list";
-    return axiosClient.get(url);
+    return axiosClient.get(url).catch((error) => {
+      window.location.replace("/auth/login-page");
+    });
   };
   // getBranchById = (id) => {
   //   const url = "/branch/" + id;

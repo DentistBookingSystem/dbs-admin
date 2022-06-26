@@ -7,7 +7,6 @@ import {
   Row,
   Col,
   Button,
-  Modal,
   ModalBody,
   ModalFooter,
 } from "reactstrap";
@@ -17,6 +16,8 @@ import discountApi from "api/discountApi";
 import { useEffect, useState } from "react";
 import CustomPagination from "views/Widgets/Pagination";
 import Discount from "views/Pages/dbs-page/edit-form/Discount";
+import { Modal } from "react-bootstrap";
+import e from "cors";
 
 function DiscountTable() {
   const [discountList, setDiscountList] = useState([]);
@@ -27,6 +28,7 @@ function DiscountTable() {
   const [idDelete, setIdDelete] = useState(-1);
   const [isEdit, setIsEdit] = useState(false);
   const [editDiscount, setEditDiscount] = useState({});
+  const [lgShow, setLgShow] = useState(false);
 
   const indexOfLastDiscount = currentPage * discountsPerPage;
   const indexOfFirstDiscount = indexOfLastDiscount - discountsPerPage;
@@ -37,7 +39,7 @@ function DiscountTable() {
 
   //Pop up alert delete
   const toggleModalMini = () => {
-    setModalMini(!modalMini);
+    setModalMini(false);
   };
 
   //Change page
@@ -60,7 +62,7 @@ function DiscountTable() {
 
   //Delete service
   const disableService = async () => {
-    setModalMini(!modalMini);
+    setModalMini(false);
     if (idDelete !== -1) {
       try {
         await discountApi.disableDiscount(idDelete).then((res) => {
@@ -78,133 +80,244 @@ function DiscountTable() {
   }, []);
   return (
     <>
-      {isEdit ? (
-        <>
-          <PanelHeader size="sm" />
-
-          <Discount {...editDiscount} />
-        </>
-      ) : (
-        <>
-          <PanelHeader size="sm" />
-          <div className="content">
-            <Row>
-              <Col md="12">
-                <Card>
-                  <CardHeader>
-                    <CardTitle tag="h4">Discount</CardTitle>
-                  </CardHeader>
-                  <CardBody>
-                    <Table responsive>
-                      <thead className="text-primary">
+      <PanelHeader size="sm" />
+      <div className="content">
+        <Row>
+          <Col md="12">
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h4">Discount</CardTitle>
+              </CardHeader>
+              <CardBody>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th className="text-center">#</th>
+                      <th>Name</th>
+                      <th>Start date</th>
+                      <th>End date</th>
+                      <th>Status</th>
+                      <th className="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentDiscounts.map((discount, index) => {
+                      return (
                         <tr>
-                          <th className="text-center">#</th>
-                          <th>Name</th>
-                          <th>Start date</th>
-                          <th>End date</th>
-                          <th>Status</th>
-                          <th className="text-center">Actions</th>
+                          <td className="text-center" key={discount.id}>
+                            {index + 1}
+                          </td>
+                          <td>{discount.name}</td>
+                          <td>{discount.startDate}</td>
+                          <td>{discount.endDate}</td>
+                          <td>
+                            {discount.status !== 0 ? (
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Active
+                              </div>
+                            ) : (
+                              <div style={{ color: "grey" }}>
+                                <i className="fas fa-check-circle"> </i>{" "}
+                                Inactive
+                              </div>
+                            )}
+                          </td>
+                          <td className="text-center btns-mr-5">
+                            <Button
+                              className="btn-icon"
+                              color="success"
+                              onClick={() => {
+                                setEditDiscount(discount);
+                                setLgShow(true);
+                              }}
+                              size="sm"
+                              type="button"
+                            >
+                              <i className="now-ui-icons ui-2_settings-90" />
+                            </Button>
+                            <Button
+                              className="btn-icon"
+                              color="danger"
+                              size="sm"
+                              type="button"
+                              onClick={() => {
+                                setModalMini(true);
+                                setIdDelete(discount.id);
+                              }}
+                            >
+                              <i className="now-ui-icons ui-1_simple-remove" />
+                            </Button>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {currentDiscounts.map((discount, index) => {
-                          return (
-                            <tr>
-                              <td className="text-center" key={discount.id}>
-                                {index + 1}
-                              </td>
-                              <td>{discount.name}</td>
-                              <td>{discount.startDate}</td>
-                              <td>{discount.endDate}</td>
-                              <td>
-                                {discount.status !== 0 ? (
-                                  <div style={{ color: "green" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Active
-                                  </div>
-                                ) : (
-                                  <div style={{ color: "grey" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Inactive
-                                  </div>
-                                )}
-                              </td>
-                              <td className="text-center btns-mr-5">
-                                <Button
-                                  className="btn-icon"
-                                  color="success"
-                                  onClick={() => {
-                                    setEditDiscount(discount);
-                                    setIsEdit(true);
-                                    // window.location.href = "/admin/discount/edit"
-                                  }}
-                                  size="sm"
-                                  type="button"
-                                >
-                                  <i className="now-ui-icons ui-2_settings-90" />
-                                </Button>
-                                <Button
-                                  className="btn-icon"
-                                  color="danger"
-                                  size="sm"
-                                  type="button"
-                                  onClick={() => {
-                                    setModalMini(!modalMini);
-                                    setIdDelete(discount.id);
-                                  }}
-                                >
-                                  <i className="now-ui-icons ui-1_simple-remove" />
-                                </Button>
-                              </td>
-                            </tr>
-                          );
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+        <CustomPagination
+          itemsPerPage={discountsPerPage}
+          totalItems={discountList.length}
+          paginate={paginate}
+        />
+        <Modal
+          size="lg"
+          show={lgShow}
+          onHide={() => setLgShow(false)}
+          aria-labelledby="example-modal-sizes-title-lg"
+          // scrollable={true}
+        >
+          <div color="info" className="text-center mt-4 ml-2">
+            <h2 className="text-info" style={{ paddingBottom: 0 }}>
+              Discount detail
+            </h2>
+          </div>
+          <div>
+            <Modal.Body>
+              {editDiscount != null ? (
+                <Col className="m-3">
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Name: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>{editDiscount.name}</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Percentage: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>{editDiscount.percentage}%</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Time apply: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>
+                        {editDiscount.startDate} - {editDiscount.endDate}
+                      </span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Description: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>{editDiscount.description}</span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Apply for: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>
+                        {editDiscount.discountServiceSet?.map((item, key) => {
+                          if (
+                            key ===
+                            editDiscount.discountServiceSet.length - 1
+                          ) {
+                            return item.service.name + ".";
+                          } else {
+                            return item.service.name + ", ";
+                          }
                         })}
-                      </tbody>
-                    </Table>
-                  </CardBody>
-                </Card>
+                      </span>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col lg={3} mg={3} xs={3}>
+                      <label>
+                        <b>Status: </b>
+                      </label>
+                    </Col>
+                    <Col className="mt-0">
+                      <span>
+                        {editDiscount.status !== 0 ? (
+                          <div style={{ color: "green" }}>
+                            <i className="fas fa-check-circle"> </i> Active
+                          </div>
+                        ) : (
+                          <div style={{ color: "grey" }}>
+                            <i className="fas fa-check-circle"> </i> Inactive
+                          </div>
+                        )}
+                      </span>
+                    </Col>
+                  </Row>
+                </Col>
+              ) : (
+                <h3>No details</h3>
+              )}
+            </Modal.Body>
+          </div>
+          <div className="text-center btns-mr-5">
+            <Row>
+              <Col>
+                <Button color="info" onClick={() => setLgShow(false)}>
+                  Close
+                </Button>
+              </Col>
+              <Col>
+                <Button color="primary" onClick={() => setLgShow(false)}>
+                  Edit
+                </Button>
               </Col>
             </Row>
-            <CustomPagination
-              itemsPerPage={discountsPerPage}
-              totalItems={discountList.length}
-              paginate={paginate}
-            />
-            <Modal
-              isOpen={modalMini}
-              toggle={toggleModalMini}
-              size="mini"
-              modalClassName="modal-info"
-            >
-              <div className="modal-header justify-content-center">
-                <div className="modal-profile">
-                  <i className="now-ui-icons business_badge" />
-                </div>
-              </div>
-              <ModalBody>
-                <p>{"Are sure to delete \n this doctor ?"}</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="link"
-                  className="btn-neutral"
-                  onClick={disableService}
-                >
-                  Delete
-                </Button>{" "}
-                <Button
-                  color="link"
-                  className="btn-neutral"
-                  onClick={toggleModalMini}
-                >
-                  Cancel
-                </Button>
-              </ModalFooter>
-            </Modal>
           </div>
-        </>
-      )}
+        </Modal>
+        {/* Delete discount  */}
+        <Modal
+          isOpen={modalMini}
+          toggle={toggleModalMini}
+          size="mini"
+          modalClassName="modal-info"
+        >
+          <div className="modal-header justify-content-center">
+            <div className="modal-profile">
+              <i className="now-ui-icons business_badge" />
+            </div>
+          </div>
+          <ModalBody>
+            <p>{"Are sure to delete \n this doctor ?"}</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={disableService}
+            >
+              Delete
+            </Button>{" "}
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={toggleModalMini}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </Modal>
+      </div>
     </>
+    //   )}
+    // </>
   );
 }
 

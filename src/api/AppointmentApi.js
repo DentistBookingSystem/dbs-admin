@@ -4,7 +4,6 @@ const token = sessionStorage.getItem("user");
 class AppointmentApi {
   getAppointList = () => {
     const url = "/appointment/1";
-    console.log("vào");
     return axiosClient.get(url);
   };
 

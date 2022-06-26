@@ -1,9 +1,9 @@
 import serviceTypeApi from "api/serviceTypeApi";
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
-import { Component} from "react";
+import { Component } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { Button, Col, Form,  Row } from "reactstrap";
+import { Button, Col, Form, Row } from "reactstrap";
 import Validator from "utils/validation/validator";
 import NotificationAlert from "react-notification-alert";
 

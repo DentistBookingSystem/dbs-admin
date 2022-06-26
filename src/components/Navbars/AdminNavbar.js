@@ -41,7 +41,6 @@ import {
 import routes from "routes.js";
 import { useHistory } from "react-router-dom";
 
-
 function AdminNavbar(props) {
   const location = useLocation();
   const [isOpen, setIsOpen] = React.useState(false);
@@ -86,8 +85,8 @@ function AdminNavbar(props) {
   const getStatusPage = (buttonName) => {
     for (let index = 0; index < notAddPage.length; index++) {
       const page = notAddPage[index].page;
-      if(page === buttonName){
-        console.log("buttonName")
+      if (page === buttonName) {
+        console.log("buttonName");
         return notAddPage[index].status;
       }
     }
@@ -96,17 +95,28 @@ function AdminNavbar(props) {
   const getPath = (branchText) => {
     for (let index = 0; index < routes.length; index++) {
       const name = routes[index].name;
-      if(name === branchText){
+      if (name === branchText) {
         return routes[index].path;
       }
     }
     return "/";
   };
+
+  const getPathBack = (branchText) => {
+    for (let index = 0; index < routes.length; index++) {
+      const name = routes[index].name;
+      if (name === branchText) {
+        return routes[index].layout + routes[index].path;
+      }
+    }
+    return "/";
+  };
+
   const path = getPath(props.brandText);
 
-  const navigate = useHistory()
-  function navigateToPage ()  {
-    navigate.push(path + "/add")
+  const navigate = useHistory();
+  function navigateToPage() {
+    navigate.push(path + "/add");
   }
 
   const toggle = () => {
@@ -175,7 +185,9 @@ function AdminNavbar(props) {
               <span className="navbar-toggler-bar bar3" />
             </button>
           </div>
-          <NavbarBrand href={props.link}>{props.brandText}</NavbarBrand>
+          <NavbarBrand href={getPathBack(props.brandText)}>
+            {props.brandText}
+          </NavbarBrand>
         </div>
         <NavbarToggler onClick={toggle}>
           <span className="navbar-toggler-bar navbar-kebab" />
@@ -186,10 +198,12 @@ function AdminNavbar(props) {
           <form>
             <InputGroup className="no-border">
               {/* <Input placeholder="Search..." /> */}
-              {
-              
-              getStatusPage(props.brandText) ? (
-                <Button color="info" className="btn-round" onClick={() => navigateToPage()}>
+              {getStatusPage(props.brandText) ? (
+                <Button
+                  color="info"
+                  className="btn-round"
+                  onClick={() => navigateToPage()}
+                >
                   Add {props.brandText}
                 </Button>
               ) : (
@@ -203,7 +217,7 @@ function AdminNavbar(props) {
               </InputGroupAddon> */}
             </InputGroup>
           </form>
-          <Nav navbar>
+          {/* <Nav navbar>
             <NavItem>
               <Link to="#pablo" className="nav-link">
                 <i className="now-ui-icons media-2_sound-wave" />
@@ -237,7 +251,7 @@ function AdminNavbar(props) {
                 </p>
               </Link>
             </NavItem>
-          </Nav>
+          </Nav> */}
         </Collapse>
       </Container>
     </Navbar>

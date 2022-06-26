@@ -1,19 +1,3 @@
-/*!
-
-=========================================================
-* Now UI Dashboard PRO React - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 
 // reactstrap components
@@ -30,6 +14,7 @@ import {
   InputGroupAddon,
   InputGroupText,
   Button,
+  Toast,
 } from "reactstrap";
 import { Redirect, useHistory } from "react-router-dom";
 // core components
@@ -37,7 +22,9 @@ import nowLogo from "assets/img/logo-rade2.png";
 
 import bgImage from "assets/img/dentist-office.jpg";
 import authApi from "api/AuthApi";
-
+import NotificationAlert from "react-notification-alert";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function LoginPage() {
   const [phoneFocus, setfirstnameFocus] = React.useState(false);
   const [passwordFocus, setlastnameFocus] = React.useState(false);
@@ -60,31 +47,17 @@ function LoginPage() {
         console.log("user token: ", user);
         // console.log("session account", sessionStorage.getItem("role"));
         const role = sessionStorage.getItem("role");
+        // toast.notify("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        window.location.reload();
         if (user !== null) {
           setStateLogin(true);
-          var options = {};
-          options = {
-            place: "tr",
-            message: "Login successfully",
-            type: "info",
-            icon: "now-ui-icons ui-1_bell-53",
-            autoDismiss: 7,
-          };
-          notificationAlert.current.notificationAlert(options);
         } else {
           setStateLogin(false);
-          var options = {};
-          options = {
-            place: "tr",
-            message: "Login failed",
-            type: "info",
-            icon: "now-ui-icons ui-1_bell-53",
-            autoDismiss: 7,
-          };
         }
       });
     } catch (error) {
       setStateLogin(false);
+      toast.warn("login failed trong login page");
       console.log("Can not Login>>>>>", error);
     }
   };
@@ -100,16 +73,28 @@ function LoginPage() {
       document.body.classList.remove("login-page");
     };
   }, []);
-  return stateLogin ? (
+  return sessionStorage.getItem("user") !== null ? (
     sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
       <Redirect to="/admin/dashboard" />
     ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
       <Redirect to="/staff/home" />
     ) : (
-      <Redirect to="/auth/login-page" />
+      <Redirect to="/admin/login-page" />
     )
   ) : (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <NotificationAlert ref={notificationAlert} />
       <div className="content">
         <div className="login-page">
           <Container>

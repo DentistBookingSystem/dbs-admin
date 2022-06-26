@@ -14,8 +14,14 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useEffect } from "react";
-import { Route, Switch, Redirect, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  Route,
+  Switch,
+  Redirect,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 // react plugin for creating notifications
@@ -27,7 +33,7 @@ import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
-
+import { ToastContainer, toast } from "react-toastify";
 
 var ps;
 
@@ -37,6 +43,22 @@ function Admin(props) {
   const [backgroundColor, setBackgroundColor] = React.useState("blue");
   const notificationAlert = React.useRef();
   const mainPanel = React.useRef();
+  // const [time, setTime] = useState(1);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      sessionStorage.clear();
+      window.location.replace("/auth/login");
+    }, 1000 * 60 * 50);
+    return () => clearInterval(interval);
+  });
+
+  useEffect(() => {
+    if (sessionStorage.getItem("user") !== null) {
+      toast("Login successfully");
+      console.log("admin ");
+    }
+  }, []);
+
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       document.documentElement.className += " perfect-scrollbar-on";
@@ -119,8 +141,6 @@ function Admin(props) {
     return activeRoute;
   };
 
-
-
   return (
     <div className="wrapper">
       <NotificationAlert ref={notificationAlert} />
@@ -131,10 +151,14 @@ function Admin(props) {
         backgroundColor={backgroundColor}
       />
       <div className="main-panel" ref={mainPanel}>
-        <AdminNavbar {...props} brandText={getActiveRoute(routes)}/>
+        <AdminNavbar {...props} brandText={getActiveRoute(routes)} />
         <Switch>
+          {sessionStorage.getItem("user") !== null ? (
+            ""
+          ) : (
+            <Redirect from="*" to="/auth/login-page" />
+          )}
           {getRoutes(routes)}
-          <Redirect from="/admin" to="/admin/dashboard" />
         </Switch>
         {
           // we don't want the Footer to be rendered on full screen maps page
