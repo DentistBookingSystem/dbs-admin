@@ -113,7 +113,7 @@ class NewDiscountPage extends Component {
       [name]: value,
     });
   }
-  onHandleSubmit(event) {
+  async onHandleSubmit(event) {
     event.preventDefault();
     if (true) {
       const data = {
@@ -130,9 +130,13 @@ class NewDiscountPage extends Component {
         ),
       };
       console.log("data: ", data);
-      const result = this._inserDiscount(data);
-      if (result) {
-        this.notify();
+      try {
+        const result = await this._inserDiscount(data);
+        if (result) {
+          this.notify();
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
     console.log(this.state.currentService);

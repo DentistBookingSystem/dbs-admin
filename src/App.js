@@ -16,7 +16,7 @@ import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
 import StaffHome from "views/Pages/staff-page/StaffHome";
 import Staff from "layouts/Staff";
 import { ToastContainer } from "react-bootstrap";
-
+import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);

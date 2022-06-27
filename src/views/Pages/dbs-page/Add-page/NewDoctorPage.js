@@ -1,48 +1,218 @@
-import ImageUpload from "components/CustomUpload/ImageUpload";
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import { Component } from "react";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { Button, CardBody, Col, Form, FormGroup, Row } from "reactstrap";
+import { Button, Col, Form, FormGroup, Row } from "reactstrap";
+import Validator from "utils/validation/validator";
+import defaultImage from "assets/img/image_placeholder.jpg";
+import branchApi from "api/branchApi";
+import provinceApi from "api/provinceApi";
+import Select from "react-select";
+import districtApi from "api/districtApi";
+import NotificationAlert from "react-notification-alert";
+import { toast } from "react-toastify";
+import doctorApi from "api/doctorApi";
+
+var options = {};
+options = {
+  place: "tr",
+  message: (
+    <div>
+      <div>
+        Successfully add new <b>Branch</b>
+      </div>
+    </div>
+  ),
+  type: "success",
+  icon: "now-ui-icons ui-1_bell-53",
+  autoDismiss: 4,
+};
 
 class NewDoctorPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: "",
-      description: 222,
       url: "",
-      branch: {
-        id: 2,
-        name: "Chi nhánh 2",
-        url: "1ohyMT9EB5LVIOJHYwX-baONpSfqkslnm",
-        open_time: "07:30:00",
-        close_time: "21:00:00",
-        status: 1,
-      },
+      image: null,
+      errors: {},
+      imagePreviewUrl: defaultImage,
+      selectedFile: null,
+      branchList: [],
+      description: "",
+      branchSelect: "",
     };
+
+    const rules = [
+      {
+        field: "name",
+        method: "isLength",
+        args: [{ min: 8 }],
+        validWhen: true,
+        message: "The name field is required 8 character.",
+      },
+    ];
+
     this.onHandleChange = this.onHandleChange.bind(this);
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
+    this.validator = new Validator(rules);
+    this.onFileChange = this.onFileChange.bind(this);
+    this.onHandleSelect = this.onHandleSelect.bind(this);
+    this.onHandleSelectDistrict = this.onHandleSelectDistrict.bind(this);
+    this.notify = this.notify.bind(this);
   }
+
+  notify() {
+    this.refs.notify.notificationAlert(options);
+  }
+
+  notify(message) {
+    var options = {};
+    options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: "success",
+      icon: "now-ui-icons ui-1_bell-53",
+      autoDismiss: 4,
+    };
+
+    this.refs.notify.notificationAlert(options);
+  }
+
+  componentDidMount() {
+    this.getAllBranch();
+  }
+
+  getAllBranch = async () => {
+    try {
+      const result = await branchApi.getAll();
+      console.log("data branch", result);
+      if (result) {
+        this.setState({
+          branchList: result,
+        });
+      }
+    } catch (error) {}
+  };
+
+  //handle selected province
+  onHandleSelect(event) {
+    this.setState({
+      province: event,
+      changProvince: true,
+      // selectProvince: false,
+    });
+    this.getDistrictList(event.value);
+  }
+
+  //handle selected district
+  onHandleSelectDistrict(event) {
+    this.setState({
+      district: event,
+      changeProvince: false,
+    });
+    console.log("district: ", event);
+  }
+
+  //handle change of input fields
   onHandleChange(event) {
     const target = event.target;
     const name = target.name;
-    const value = target.type === "select-one" ? JSON.parse(target.value) : target.value;
-    console.log(">Type: ", target.value)
+    const value = target.value;
     this.setState({
       [name]: value,
     });
   }
-  onHandleSubmit(event) {
+
+  // handle data sent back to server
+  _insertNewData = async (formData) => {
+    var data;
+    console.log("click add");
+    data = {
+      name: this.state.name,
+      // url: res.data,
+      branchId: this.state.branchSelect,
+      description: this.state.description,
+      status: 1,
+    };
+    console.log(data);
+    try {
+      await doctorApi.addImageDoctor(formData).then((res) => {
+        console.log("result add image:----", res);
+        data = {
+          name: this.state.name,
+          url: res.data,
+          branchId: this.state.branchSelect,
+          description: this.state.description,
+        };
+        console.log("Data", data);
+        doctorApi.insertDoctor(data).then((result) => {
+          console.log(result);
+          console.log("add thành công ");
+        });
+      });
+    } catch (error) {}
+    // try {
+    //   await branchApi
+    //     .insert(formData)
+    //     .then((res) => {
+    //       console.log("Insert ok", res);
+
+    //     })
+    //     .then(async () => {
+    //       console.log(data);
+    //       await branchApi.insertBranch(data).then((res) => {
+    //         this.notify();
+    //         window.location.replace("/admin/branchs");
+    //       });
+    //     });
+    // } catch (error) {
+    //   console.log("Insert data failed", error);
+    //   this.notify(error.response.data.message);
+    // }
+  };
+
+  async onHandleSubmit(event) {
     event.preventDefault();
-    console.log(this.state);
+    this.setState({
+      errors: this.validator.validate(this.state, event),
+    });
+    if (this.validator.isValid) {
+      // Đưa data xuống ở đây
+      const formData = new FormData();
+      console.log(this.state.selectedFile);
+      formData.append("url", this.state.selectedFile);
+      // formData.append("branchDTO", data);
+      this._insertNewData(formData);
+    }
   }
+
+  // On file select (from the pop up)
+  onFileChange = (event) => {
+    // Update the state
+    this.setState({ selectedFile: event.target.files[0] });
+    let reader = new FileReader();
+    let file = event.target.files[0];
+    console.log(file);
+    reader.onloadend = () => {
+      this.setState({
+        imagePreviewUrl: reader.result,
+      });
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
   render() {
+    const { errors } = this.state;
     return (
       <>
-        {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
-
-        <AdminNavbar brandText="Dashboard" link="/admin/doctors" />
+        <AdminNavbar brandText="Dashboard" link="/admin/branchs" />
         <PanelHeader size="sm">
           <Col xs={0.5} md={0.5}>
             <Link to="/admin/services">
@@ -56,11 +226,29 @@ class NewDoctorPage extends Component {
         <div className="content">
           <Form>
             <Row>
-              <div className="container rounded bg-white mt-20 mb-5 ml-20">
+              <div className="container rounded bg-white mt-30 mb-15 ml-15">
                 <div className="row">
-                  <div className="col-md-4">
+                  <div className="col-md-4 mt-20">
                     <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-                      <ImageUpload />
+                      {/* <ImageUpload /> */}
+                      <div className="d-flex justify-content-between align-items-center mt-20">
+                        <h4 className="text-left">Image</h4>
+                      </div>
+                      <input
+                        style={{ display: "none" }}
+                        type="file"
+                        onChange={this.onFileChange}
+                        ref={(fileInput) => (this.fileInput = fileInput)}
+                      />
+                      <div className="thumbnail">
+                        <img src={this.state.imagePreviewUrl} alt="..." />
+                      </div>
+                      <Button
+                        className="btn-round"
+                        onClick={() => this.fileInput.click()}
+                      >
+                        Select Image
+                      </Button>
                     </div>
                   </div>
                   <div className="col-md-8">
@@ -68,61 +256,108 @@ class NewDoctorPage extends Component {
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <h4 className="text-right">Doctor Information</h4>
                       </div>
-                      <div className="row mt-2">
-                        <div className="col-md-12">
-                          <label className="labels">Full Name*</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="FullName"
-                            name="name"
-                            value={this.state.name}
-                            onChange={this.onHandleChange}
-                          />
-                        </div>
-                      </div>
-                      <div className="row mt-4">
-                        <div className="col-md-12">
-                          {/* <label className="labels">Branch</label>
+                      <FormGroup>
+                        <div className="row mt-2">
+                          <div className="col-md-12">
+                            <label className="labels">Doctor Name*</label>
                             <input
+                              style={{ borderColor: `gray` }}
                               type="text"
                               className="form-control"
-                              placeholder="enter phone number"
-                              name="branch"
-                              value={this.state.branch.name}
+                              placeholder="Doctor name"
+                              name="name"
+                              value={this.state.name}
                               onChange={this.onHandleChange}
-                            /> */}
-                          <div class="form-group">
-                            <label className="labels">Branch*</label>
-                            <select class="form-control" name="branch" onChange={this.onHandleChange}>
-                              <option selected>Select branch</option>
-                              <option value={JSON.stringify(this.state.branch)}>Branch 1</option>
-                              <option value={JSON.stringify(this.state.branch)}>Branch 2</option>
-                              <option value={JSON.stringify(this.state.branch)}>Branch 3</option>                            
-                            </select>
+                            />
+                            {errors.name && (
+                              <div
+                                className="invalid-feedback"
+                                style={{ display: "block" }}
+                              >
+                                {errors.name}
+                              </div>
+                            )}
                           </div>
                         </div>
-                      </div>
-                      <div className="row mt-4">
-                        <div className="col-md-12">
-                          <label className="labels">Description*</label>
-                          <textarea
-                            className="form-control"
-                            name="description"
-                            value={this.state.description}
-                            onChange={this.onHandleChange}
-                            rows="5"
-                          ></textarea>
+                      </FormGroup>
+                      <FormGroup>
+                        <div className="row mt-2">
+                          <div className="col-md-12">
+                            <label className="labels">Description*</label>
+                            <textarea
+                              type="text"
+                              className="form-control"
+                              placeholder="Description"
+                              name="description"
+                              value={this.state.description}
+                              onChange={this.onHandleChange}
+                              style={{
+                                height: `150px`,
+                                border: `1px solid gray`,
+                                borderRadius: `30px`,
+                              }}
+                            />
+                            {errors.name && (
+                              <div
+                                className="invalid-feedback"
+                                style={{ display: "block" }}
+                              >
+                                {errors.name}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="row mt-4 ml-10">
-                        <button
-                          className="btn btn-info profile-button"
-                          type="button"
-                          onClick={this.onHandleSubmit}
-                        >
-                          Add
-                        </button>
+                      </FormGroup>
+                      <FormGroup>
+                        <div className="row mt-2">
+                          <div className="col-md-12 d-flex flex-column">
+                            <label className="labels">Choose branch*</label>
+                            <select
+                              style={{ borderRadius: `20px`, padding: `10px` }}
+                              onChange={(e) => {
+                                this.setState({
+                                  branchSelect: e.currentTarget.value,
+                                });
+                              }}
+                            >
+                              <option>----Select branch-----</option>
+                              {this.state.branchList.map((item, key) => {
+                                return (
+                                  <option value={item.id}>{item.name}</option>
+                                );
+                              })}
+                            </select>
+                            {errors.name && (
+                              <div
+                                className="invalid-feedback"
+                                style={{ display: "block" }}
+                              >
+                                {errors.name}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </FormGroup>
+
+                      <div className="row mt-4 ">
+                        <div className="col-md-2 ml-10">
+                          <button
+                            className="btn btn-info profile-button"
+                            type="button"
+                            onClick={this.onHandleSubmit}
+                          >
+                            Add
+                          </button>
+                        </div>
+                        <div className="col-md-2">
+                          <button
+                            className="btn btn-primary profile-button"
+                            type="reset"
+                          >
+                            Reset
+                          </button>
+                          {/* chưa reset được */}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -130,6 +365,13 @@ class NewDoctorPage extends Component {
               </div>
             </Row>
           </Form>
+        </div>
+        <div>
+          <NotificationAlert
+            ref="notify"
+            zIndex={9999}
+            onClick={() => console.log("hey")}
+          />
         </div>
       </>
     );

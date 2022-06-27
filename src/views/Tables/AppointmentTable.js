@@ -129,11 +129,21 @@ function AppointmentTable(props) {
                       <Table responsive>
                         <thead className="text-primary">
                           <tr>
-                            <th className="text-center">#</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>Time</th>
-                            <th className="text-center">Actions</th>
+                            <th
+                              style={{ fontWeight: `bold` }}
+                              className="text-center"
+                            >
+                              #
+                            </th>
+                            <th style={{ fontWeight: `bold` }}>Name</th>
+                            <th style={{ fontWeight: `bold` }}>Phone</th>
+                            <th style={{ fontWeight: `bold` }}>Time</th>
+                            <th
+                              style={{ fontWeight: `bold` }}
+                              className="text-center"
+                            >
+                              Actions
+                            </th>
                           </tr>
                         </thead>
                         <tbody>

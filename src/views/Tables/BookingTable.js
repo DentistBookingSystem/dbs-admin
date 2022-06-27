@@ -86,7 +86,7 @@ function BookingTable() {
       <PanelHeader size="sm" />
 
       {isEdit ? (
-        <Appointment {...updateBooking}/>
+        <Appointment {...updateBooking} />
       ) : (
         <>
           <div className="content">
@@ -101,11 +101,11 @@ function BookingTable() {
                       <thead className="text-primary">
                         <tr>
                           <th className="text-center">#</th>
-                          <th>Patient</th>
-                          <th>Date</th>
-                          <th>Shift</th>
-                          <th>Doctor</th>
-                          <th>Status</th>
+                          <th style={{ fontWeight: `bold` }}>Patient</th>
+                          <th style={{ fontWeight: `bold` }}>Date</th>
+                          <th style={{ fontWeight: `bold` }}>Shift</th>
+                          <th style={{ fontWeight: `bold` }}>Doctor</th>
+                          <th style={{ fontWeight: `bold` }}>Status</th>
                           <th className="text-center">Actions</th>
                         </tr>
                       </thead>

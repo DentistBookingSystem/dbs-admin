@@ -1,0 +1,15 @@
+.active-link-role > span {
+  color: blue;
+}
+
+.active-button-status {
+  background-color: #2ca8ff;
+  color: white;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

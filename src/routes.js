@@ -118,7 +118,7 @@ let routes = [
     name: "Feedback",
     icon: "now-ui-icons education_glasses",
     component: FeedbackTable,
-    layout: "/admin",
+    layout: "/staff",
   },
   {
     path: "/login-page",

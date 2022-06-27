@@ -114,11 +114,16 @@ function ServiceTable() {
                       <Table responsive>
                         <thead className="text-primary">
                           <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Service type</th>
-                            <th>Status</th>
-                            <th className="text-center">Actions</th>
+                            <th style={{ fontWeight: `bold` }}>#</th>
+                            <th style={{ fontWeight: `bold` }}>Name</th>
+                            <th style={{ fontWeight: `bold` }}>Service type</th>
+                            <th style={{ fontWeight: `bold` }}>Status</th>
+                            <th
+                              style={{ fontWeight: `bold` }}
+                              className="text-center"
+                            >
+                              Actions
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
