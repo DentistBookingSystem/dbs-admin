@@ -7,6 +7,11 @@ class AccountApi {
     console.log(url);
     return axiosClient.get(url);
   }
+
+  AddStaff(data) {
+    const url = "/account/register";
+    return axiosClient.post(url, data);
+  }
 }
 
 export default new AccountApi();

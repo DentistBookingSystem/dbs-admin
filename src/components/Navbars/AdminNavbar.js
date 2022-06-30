@@ -50,7 +50,7 @@ function AdminNavbar(props) {
   const notAddPage = [
     {
       page: "Account",
-      status: false,
+      status: true,
     },
     {
       page: "Booking",
@@ -209,49 +209,8 @@ function AdminNavbar(props) {
               ) : (
                 <></>
               )}
-
-              {/* <InputGroupAddon addonType="append">
-                <InputGroupText>
-                  <i className="now-ui-icons ui-1_zoom-bold" />
-                </InputGroupText>
-              </InputGroupAddon> */}
             </InputGroup>
           </form>
-          {/* <Nav navbar>
-            <NavItem>
-              <Link to="#pablo" className="nav-link">
-                <i className="now-ui-icons media-2_sound-wave" />
-                <p>
-                  <span className="d-lg-none d-md-block">Stats</span>
-                </p>
-              </Link>
-            </NavItem>
-            <Dropdown
-              nav
-              isOpen={dropdownOpen}
-              toggle={(e) => dropdownToggle(e)}
-            >
-              <DropdownToggle caret nav>
-                <i className="now-ui-icons location_world" />
-                <p>
-                  <span className="d-lg-none d-md-block">Some Actions</span>
-                </p>
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem tag="a">Action</DropdownItem>
-                <DropdownItem tag="a">Another Action</DropdownItem>
-                <DropdownItem tag="a">Something else here</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-            <NavItem>
-              <Link to="#pablo" className="nav-link">
-                <i className="now-ui-icons users_single-02" />
-                <p>
-                  <span className="d-lg-none d-md-block">Account</span>
-                </p>
-              </Link>
-            </NavItem>
-          </Nav> */}
         </Collapse>
       </Container>
     </Navbar>

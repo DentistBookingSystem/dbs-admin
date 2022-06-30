@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosClient from "./axiosClient";
 
 class ServiceApi {
@@ -34,6 +35,30 @@ class ServiceApi {
           console.log("response: ", res);
         });
       });
+  };
+
+  addImageService = (image) => {
+    const url = "http://localhost:8080/rade/admin/service/add-image";
+    // return axiosClient.post(url, image);
+    return axios.post(url, image, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        // "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+      },
+    });
+  };
+
+  insertService = (data) => {
+    // const url = "/doctor/add";
+    const url = "http://localhost:8080/rade/admin/service/add-service";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+      },
+    });
+    // return axiosClient.post(url, data);
   };
 
   disableService = async (id) => {

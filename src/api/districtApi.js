@@ -1,14 +1,14 @@
+import axios from "axios";
 import axiosClient from "./axiosClient";
 
 class DistrictApi {
-  getDistrictList = async (province_id) => {
-    if (province_id !== -1) {
-      const url = "district/" + province_id;
+  getDistrictList = async (provinceId) => {
+    if (provinceId !== -1) {
+      const url = "district/" + provinceId;
       const mainUrl = axiosClient.getUri().replace("admin", "") + url;
-      return await axiosClient.get(mainUrl).then((res) => {
-        console.log("district: ", res);
-        return res;
-      });
+      console.log("url", mainUrl);
+      // return await axiosClient.get(mainUrl);
+      return await axios.get(mainUrl);
     }
     return null;
   };

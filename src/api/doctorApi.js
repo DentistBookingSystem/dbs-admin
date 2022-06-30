@@ -36,8 +36,15 @@ class DoctorApi {
   };
 
   insertDoctor = (data) => {
-    const url = "/doctor/add";
-    return axiosClient.post(url, data);
+    // const url = "/doctor/add";
+    const url = "http://localhost:8080/rade/admin/doctor/add";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+      },
+    });
+    // return axiosClient.post(url, data);
   };
 }
 const doctorApi = new DoctorApi();

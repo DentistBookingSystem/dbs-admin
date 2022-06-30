@@ -34,7 +34,7 @@ function StaffNav(props) {
   const notAddPage = [
     {
       page: "Account",
-      status: false,
+      status: true,
     },
     {
       page: "Booking",

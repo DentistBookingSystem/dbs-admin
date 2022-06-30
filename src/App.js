@@ -15,8 +15,9 @@ import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
 import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
 import StaffHome from "views/Pages/staff-page/StaffHome";
 import Staff from "layouts/Staff";
-import { ToastContainer } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
+import NewAccountStaffPage from "views/Pages/dbs-page/Add-page/NewAccountStaffPage";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -83,17 +84,18 @@ class App extends Component {
               }}
             />
 
-            <Route path="/branch/:id" children={<BranchDetail />} />
-            <Route path="/service/:id" children={<ServiceDetail />} />
+            {/* <Route path="/branch/:id" children={<BranchDetail />} /> */}
+            {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
             {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
             {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
-            <Route path="/doctor/:id" children={<DoctorDetail />} />
+            {/* <Route path="/doctor/:id" children={<DoctorDetail />} /> */}
 
             <Route path="/branchs/add" children={<NewBranchPage />} />
             <Route path="/service-type/add" children={<NewServiceTypePage />} />
             <Route path="/services/add" children={<NewServicePage />} />
             <Route path="/discounts/add" children={<NewDiscountPage />} />
             <Route path="/doctors/add" children={<NewDoctorPage />} />
+            <Route path="/accounts/add" children={<NewAccountStaffPage />} />
             {/* <Redirect to="/auth/login-page" /> */}
             {/* {showAdminBoard && <Redirect to="/admin/dashboard" />} */}
             {showLoginPage && <Redirect to="/auth/login-page" />}

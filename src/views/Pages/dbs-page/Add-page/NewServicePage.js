@@ -194,10 +194,25 @@ class NewServicePage extends Component {
     });
   }
 
-  _inserNewService = async (data) => {
+  _inserNewService = async (Formdata) => {
     try {
-      await serviceApi.insertService(data).then((res) => {
+      await serviceApi.addImageService(Formdata).then(async (res) => {
         console.log("HERE");
+        console.log(res);
+        var data;
+        data = {
+          name: this.state.name,
+          serviceTypeId: this.state.service_type.value,
+          url: res.data,
+          description: this.state.description,
+          minPrice: this.state.min_price.value,
+          maxPrice: this.state.max_price.value,
+          status: 1,
+        };
+        console.log("data", data);
+        await serviceApi.insertService(data).then((res) => {
+          console.log(res);
+        });
       });
     } catch (error) {
       console.log("Can not insert new service", error);
@@ -212,20 +227,20 @@ class NewServicePage extends Component {
     if (this.validator.isValid) {
       const serviceDTO = {
         name: this.state.name,
-        service_type_id: this.state.service_type.value,
+        serviceTypeId: this.state.service_type.value,
         url: "",
         description: this.state.description,
-        min_price: this.state.min_price.value,
-        max_price: this.state.max_price.value,
+        minPrice: this.state.min_price.value,
+        maxPrice: this.state.max_price.value,
         status: 1,
       };
 
       const formData = new FormData();
 
-      formData.append("image", this.state.image);
+      formData.append("url", this.state.image);
 
       console.log("data: ", FormData);
-      this._inserNewService(serviceDTO, formData);
+      this._inserNewService(formData);
     }
   }
   render() {
@@ -234,7 +249,7 @@ class NewServicePage extends Component {
       <>
         {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
 
-        <AdminNavbar brandText="Dashboard" link="/admin/services" />
+        <AdminNavbar brandText="SERVICE" link="/admin/services" />
         <PanelHeader size="sm">
           <Col xs={0.5} md={0.5}>
             <Link to="/admin/services">

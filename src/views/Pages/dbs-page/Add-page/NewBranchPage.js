@@ -142,10 +142,10 @@ class NewBranchPage extends Component {
     try {
       await districtApi.getDistrictList(id).then((res) => {
         console.log("res: ", res);
-        if (res !== null) {
+        if (res.data !== null) {
           this.setState({
             district: { label: "Choose a district", value: -1 },
-            districts: res.map((district) => ({
+            districts: res.data.map((district) => ({
               label: district.name,
               value: district.id,
             })),

@@ -43,7 +43,6 @@ axiosClient.interceptors.response.use(
   (response) => {
     console.log("++++", response);
     if (response && response.data) {
-      console.log("sbdasbdiasbiivbsibi", response.data);
       return response.data;
     }
     return response.status;
