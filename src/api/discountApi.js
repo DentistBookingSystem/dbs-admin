@@ -18,6 +18,12 @@ class DiscountApi {
       console.log(res);
     });
   };
+
+  filterDiscount(data) {
+    const url = "/discount/filter";
+    console.log("data", data);
+    return axiosClient.post(url, data);
+  }
 }
 
 const discountApi = new DiscountApi();

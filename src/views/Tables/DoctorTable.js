@@ -11,6 +11,7 @@ import {
   // Modal,
   ModalBody,
   ModalFooter,
+  Input,
 } from "reactstrap";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
@@ -18,13 +19,23 @@ import { useEffect, useState } from "react";
 import doctorApi from "api/doctorApi";
 import CustomPagination from "views/Widgets/Pagination";
 import { Modal, Image } from "react-bootstrap";
-
+import { useHistory } from "react-router-dom";
+import Select from "react-select";
+import branchApi from "api/branchApi";
 function DoctorTable() {
+  const history = useHistory();
   const [doctorList, setDoctorList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [doctorsPerPage] = useState(5);
+  const [branchList, setBranchList] = useState([]);
+  const [branchSearch, setBranchSearch] = useState({
+    label: "Select all branch",
+    value: "0",
+  });
+  const [doctorSearch, setDoctorSearch] = useState("");
   const [modalMini, setModalMini] = useState(false);
+  const [statusSearch, setStatusSearch] = useState(0);
   const [idDelete, setIdDelete] = useState(-1);
   const [doctorDetail, setDoctorDetail] = useState(null);
   const [lgShow, setLgShow] = useState(false);
@@ -37,24 +48,43 @@ function DoctorTable() {
 
   //Pop up alert delete
   const toggleModalMini = () => {
-    setModalMini(!modalMini);
+    setModalMini(false);
   };
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const deleteDoctor = async () => {
-    setModalMini(!modalMini);
     if (idDelete !== -1) {
       try {
-        await doctorApi.disableDoctor(idDelete).then((res) => {
+        await doctorApi.deleteDoctor(idDelete).then((res) => {
           console.log("Dlt: ", res);
           window.location.reload(false);
+          setModalMini(false);
         });
       } catch (error) {
-        console.log("xóa hhk đc", error);
+        console.log("xóa hk đc", error);
       }
     }
+  };
+
+  const getAllBranch = async () => {
+    const reslut = await branchApi.getAll().then((res) => {
+      console.log(res);
+      let x = res.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+        };
+      });
+      setBranchList([
+        {
+          label: "Select all branch",
+          value: "0",
+        },
+        ...x,
+      ]);
+    });
   };
 
   const fetchDoctorList = async () => {
@@ -71,7 +101,36 @@ function DoctorTable() {
   };
   useEffect(() => {
     fetchDoctorList();
+    getAllBranch();
+    document.getElementById(`button${statusSearch}`).classList +=
+      " active-button-status";
   }, []);
+
+  const buttonStatusClick = (id) => {
+    for (let index = 0; index < 3; index++) {
+      document
+        .getElementById(`button${index}`)
+        .classList.remove("active-button-status");
+    }
+    document.getElementById(`button${id}`).classList += " active-button-status";
+    setStatusSearch(id);
+  };
+
+  const filterDoctor = () => {
+    var data;
+    data = {
+      branchId: branchSearch.value,
+      name: doctorSearch,
+      status: statusSearch,
+    };
+    const result = doctorApi.filterDoctor(data).then((res) => {
+      setDoctorList(res);
+    });
+  };
+
+  useEffect(() => {
+    filterDoctor();
+  }, [doctorSearch, branchSearch, statusSearch]);
 
   return (
     <>
@@ -82,6 +141,75 @@ function DoctorTable() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Doctor</CardTitle>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Branch </label>
+                  </Col>
+                  <Col md={5}>
+                    <Select
+                      className="react-select text-center"
+                      classNamePrefix="react-select"
+                      placeholder="Choose branch"
+                      options={branchList}
+                      value={branchSearch}
+                      onChange={(value) => {
+                        setBranchSearch(value);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Name</label>
+                  </Col>
+                  <Col md={5}>
+                    <Input
+                      className="react-select p-2"
+                      classNamePrefix="react-select"
+                      placeholder="Enter name doctor"
+                      value={doctorSearch}
+                      onChange={(e) => {
+                        setDoctorSearch(e.target.value);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Status</label>
+                  </Col>
+                  <Col md={5}>
+                    <button
+                      id="button0"
+                      className="mr-3"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(0);
+                      }}
+                    >
+                      All
+                    </button>
+                    <button
+                      id="button1"
+                      className="mr-3"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(1);
+                      }}
+                    >
+                      Active
+                    </button>
+                    <button
+                      id="button2"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(2);
+                      }}
+                    >
+                      Inactive
+                    </button>
+                  </Col>
+                </Row>
               </CardHeader>
               <CardBody>
                 {loading ? (
@@ -115,7 +243,7 @@ function DoctorTable() {
                             <td>{doctor.name}</td>
                             <td>{doctor.branch.name}</td>
                             <td>
-                              {doctor.status !== 0 ? (
+                              {doctor.status === 1 ? (
                                 <div style={{ color: "green" }}>
                                   <i className="fas fa-check-circle"> </i>{" "}
                                   Active
@@ -151,30 +279,43 @@ function DoctorTable() {
                               <Button
                                 className="btn-icon"
                                 color="success"
-                                id="tooltip26024663"
+                                id={`edit${doctor.id}`}
                                 size="sm"
                                 type="button"
+                                onClick={() => {
+                                  history.push(
+                                    "/admin/doctor/edit/" + doctor.id
+                                  );
+                                }}
                               >
                                 <i className="now-ui-icons ui-2_settings-90" />
                               </Button>
                               <UncontrolledTooltip
                                 delay={0}
-                                target="tooltip26024663"
-                              />
+                                target={`edit${doctor.id}`}
+                              >
+                                Edit
+                              </UncontrolledTooltip>
                               <Button
                                 className="btn-icon"
                                 color="danger"
                                 size="sm"
                                 type="button"
-                                disabled={doctor.status !== 0 ? false : true}
-                                // {doctor.status !== 0? disabled}
+                                id={`delete${doctor.id}`}
+                                disabled={doctor.status === 2}
                                 onClick={() => {
-                                  setModalMini(!modalMini);
+                                  setModalMini(true);
                                   setIdDelete(doctor.id);
                                 }}
                               >
                                 <i className="now-ui-icons ui-1_simple-remove" />
                               </Button>
+                              <UncontrolledTooltip
+                                delay={0}
+                                target={`delete${doctor.id}`}
+                              >
+                                Delete
+                              </UncontrolledTooltip>
                             </td>
                           </tr>
                         );
@@ -294,8 +435,8 @@ function DoctorTable() {
           </div>
         </Modal>
         <Modal
-          isOpen={modalMini}
-          toggle={toggleModalMini}
+          show={modalMini}
+          onHide={toggleModalMini}
           size="mini"
           modalClassName="modal-info"
         >
@@ -308,11 +449,11 @@ function DoctorTable() {
             <p>{"Are sure to delete \n this doctor ?"}</p>
           </ModalBody>
           <ModalFooter>
-            <Button color="link" className="btn-neutral" onClick={deleteDoctor}>
+            <Button color="red" className="btn-neutral" onClick={deleteDoctor}>
               Delete
-            </Button>{" "}
+            </Button>
             <Button
-              color="link"
+              color="info"
               className="btn-neutral"
               onClick={toggleModalMini}
             >

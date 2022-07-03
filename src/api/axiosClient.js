@@ -1,6 +1,7 @@
 // api/axiosClient.js
 import axios from "axios";
 import queryString from "query-string";
+import authApi from "./AuthApi";
 // Set up default config for http requests here
 
 // Please have a look at here `https://github.com/axios/axios#request-
@@ -49,6 +50,9 @@ axiosClient.interceptors.response.use(
   },
   (error) => {
     console.log("error here", error);
+    if (error.response.status == 401) {
+      authApi.logout();
+    }
     return error;
   }
 );

@@ -4,6 +4,7 @@ import axiosClient from "./axiosClient";
 const API_GET_BRANCH_LIST = "http://localhost:8080/rade/admin/branch/list";
 const API_GET_BRANCH_BY_ID = "http://localhost:8080/rade/admin/branch/";
 const API_ADD_BRANCH = "http://localhost:8080/rade/admin/branch/add";
+const API_UPDATE_BRANCH = "http://localhost:8080/rade/admin/branch/edit";
 const API_ADD_IMAGE = "http://localhost:8080/rade/admin/branch/add-image";
 
 const token = sessionStorage.getItem("user");
@@ -39,6 +40,15 @@ class BranchApi {
 
   insertBranch = (data) => {
     return axios.post(API_ADD_BRANCH, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  updateBranch = (data) => {
+    return axios.post(API_UPDATE_BRANCH, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

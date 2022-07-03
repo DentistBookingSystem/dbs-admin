@@ -70,9 +70,15 @@ class ServiceApi {
   editService = async (data) => {
     const url = this.SERVICE_PATH + "/edit";
     return await axiosClient.post(url, data).then((res) => {
-      console.log("edit: ", data);
+      console.log("edit: ", res);
+      console.log("service url", res.url);
     });
   };
+
+  filterService(data) {
+    const url = "/service/filter";
+    return axiosClient.post(url, data);
+  }
 }
 
 const serviceApi = new ServiceApi();

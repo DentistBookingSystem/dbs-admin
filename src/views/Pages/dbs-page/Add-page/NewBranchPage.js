@@ -11,7 +11,6 @@ import Select from "react-select";
 import districtApi from "api/districtApi";
 import NotificationAlert from "react-notification-alert";
 import { toast } from "react-toastify";
-
 var options = {};
 options = {
   place: "tr",
@@ -27,14 +26,42 @@ options = {
   autoDismiss: 4,
 };
 
+const hours = [
+  { value: "06", label: "06" },
+  { value: "07", label: "07" },
+  { value: "08", label: "08" },
+  { value: "09", label: "09" },
+  { value: "10", label: "10" },
+  { value: "11", label: "11" },
+  { value: "12", label: "12" },
+  { value: "13", label: "13" },
+  { value: "14", label: "14" },
+  { value: "15", label: "15" },
+  { value: "16", label: "16" },
+  { value: "17", label: "17" },
+  { value: "18", label: "18" },
+  { value: "19", label: "19" },
+  { value: "20", label: "20" },
+];
+const minute = [
+  { value: "00", label: "00" },
+  { value: "30", label: "30" },
+];
+
 class NewBranchPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: "",
       url: "",
-      open_time: "",
-      close_time: "",
+      openTime: {
+        hour: "60",
+        minute: "00",
+      },
+      closeTime: {
+        hour: "18",
+        minute: "00",
+      },
       image: null,
       province: { label: "Choose a province", value: -1 },
       initialDistrict: { label: "Choose a district", value: -1 },
@@ -56,20 +83,20 @@ class NewBranchPage extends Component {
         validWhen: true,
         message: "The name field is required 8 character.",
       },
-      {
-        field: "open_time",
-        method: "isLength",
-        args: [{ min: 1 }],
-        validWhen: true,
-        message: "The start time field is required",
-      },
-      {
-        field: "close_time",
-        method: "isLength",
-        args: [{ min: 1 }],
-        validWhen: true,
-        message: "The end time field is required",
-      },
+      // {
+      //   field: "openTime",
+      //   method: "isLength",
+      //   args: [{ min: 1 }],
+      //   validWhen: true,
+      //   message: "The start time field is required",
+      // },
+      // {
+      //   field: "closeTime",
+      //   method: "isLength",
+      //   args: [{ min: 1 }],
+      //   validWhen: true,
+      //   message: "The end time field is required",
+      // },
       {
         field: "province",
         method: this.validDropdownProvince,
@@ -222,8 +249,8 @@ class NewBranchPage extends Component {
           data = {
             name: this.state.name,
             url: res.data,
-            openTime: this.state.open_time,
-            closeTime: this.state.close_time,
+            openTime: `${this.state.openTime.hour.value}:${this.state.openTime.minute.value}`,
+            closeTime: `${this.state.closeTime.hour.value}:${this.state.closeTime.minute.value}`,
             districtId: this.state.district.value,
             status: 1,
           };
@@ -231,7 +258,8 @@ class NewBranchPage extends Component {
         .then(async () => {
           console.log(data);
           await branchApi.insertBranch(data).then((res) => {
-            this.notify();
+            // this.notify();
+            toast.success("Add branch successfully!!!");
             window.location.replace("/admin/branchs");
           });
         });
@@ -348,39 +376,101 @@ class NewBranchPage extends Component {
                         <div className="row mt-2">
                           <div className="col-md-6">
                             <label className="labels">Open time*</label>
-                            <input
-                              type="time"
-                              className="form-control"
-                              placeholder="Open time"
-                              name="open_time"
-                              value={this.state.open_time}
-                              onChange={this.onHandleChange}
-                            />
-                            {errors.open_time && (
+                            <Row>
+                              <Col>
+                                <Select
+                                  className="react-select text-center"
+                                  classNamePrefix="react-select"
+                                  placeholder="Hour"
+                                  options={hours}
+                                  value={this.state.openTime.hour}
+                                  onChange={(value) => {
+                                    let tmp = this.state.openTime;
+                                    this.setState({
+                                      openTime: {
+                                        hour: value,
+                                        minute: tmp.minute,
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Col>
+                              <p className="m-0 pt-2">:</p>
+                              <Col>
+                                <Select
+                                  className="react-select text-center"
+                                  classNamePrefix="react-select"
+                                  placeholder="Minute"
+                                  options={minute}
+                                  value={this.state.openTime.minute}
+                                  onChange={(value) => {
+                                    let tmp = this.state.openTime;
+                                    this.setState({
+                                      openTime: {
+                                        minute: value,
+                                        hour: tmp.hour,
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                            {errors.openTime && (
                               <div
                                 className="invalid-feedback"
                                 style={{ display: "block" }}
                               >
-                                {errors.open_time}
+                                {errors.openTime}
                               </div>
                             )}
                           </div>
                           <div className="col-md-6">
                             <label className="labels">Close time*</label>
-                            <input
-                              type="time"
-                              className="form-control"
-                              placeholder="Close time"
-                              name="close_time"
-                              value={this.state.close_time}
-                              onChange={this.onHandleChange}
-                            />
-                            {errors.close_time && (
+                            <Row>
+                              <Col>
+                                <Select
+                                  className="react-select text-center"
+                                  classNamePrefix="react-select"
+                                  placeholder="Hour"
+                                  options={hours}
+                                  value={this.state.closeTime.hour}
+                                  onChange={(value) => {
+                                    let tmp = this.state.closeTime;
+                                    this.setState({
+                                      closeTime: {
+                                        hour: value,
+                                        minute: tmp.minute,
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Col>
+                              <p className="m-0 pt-2">:</p>
+                              <Col>
+                                <Select
+                                  className="react-select text-center"
+                                  classNamePrefix="react-select"
+                                  placeholder="Minute"
+                                  options={minute}
+                                  value={this.state.closeTime.minute}
+                                  onChange={(value) => {
+                                    let tmp = this.state.closeTime;
+                                    this.setState({
+                                      closeTime: {
+                                        minute: value,
+                                        hour: tmp.hour,
+                                      },
+                                    });
+                                  }}
+                                />
+                              </Col>
+                            </Row>
+                            {errors.closeTime && (
                               <div
                                 className="invalid-feedback"
                                 style={{ display: "block" }}
                               >
-                                {errors.close_time}
+                                {errors.closeTime}
                               </div>
                             )}
                           </div>
@@ -397,6 +487,7 @@ class NewBranchPage extends Component {
                             value={this.state.province}
                             options={this.state.provinces}
                             onChange={this.onHandleSelect}
+                            style={{ color: `black` }}
                           />
                           {errors.province && (
                             <div

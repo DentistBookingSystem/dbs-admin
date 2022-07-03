@@ -10,6 +10,7 @@ import {
   Modal as DangerModal,
   ModalBody,
   ModalFooter,
+  Input,
 } from "reactstrap";
 import React, { useEffect, useState } from "react";
 
@@ -19,6 +20,11 @@ import "assets/css/index.css";
 import { Modal, Image } from "react-bootstrap";
 import CustomPagination from "views/Widgets/Pagination";
 import Service from "views/Pages/dbs-page/edit-form/Service";
+import serviceTypeApi from "../../api/serviceTypeApi";
+import Select from "react-select";
+import { max } from "moment";
+import CurrencyInput from "react-currency-input-field";
+import { toast } from "react-toastify";
 
 function ServiceTable() {
   const [serviceList, setServiceList] = React.useState([]);
@@ -33,6 +39,17 @@ function ServiceTable() {
   const [idDelete, setIdDelete] = useState(-1);
   const [editService, setEditService] = useState({});
   const [isEdit, setIsEdit] = useState(false);
+
+  const [serviceNameSearch, setServiceNameSearch] = useState("");
+  const [serviceTypeList, setServiceTypeList] = useState([]);
+  const [serviceTypeSearch, setServiceTypeSearch] = useState({
+    value: "0",
+    label: "Select all service type",
+  });
+  const [statusSearch, setStatusSearch] = useState("0");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [statusMaxPrice, setStatusMaxPrice] = useState(true);
 
   const indexOfLastService = currentPage * servicesPerPage;
   const indexOfFirstService = indexOfLastService - servicesPerPage;
@@ -91,7 +108,76 @@ function ServiceTable() {
 
   useEffect(() => {
     fetchServiceList();
+    getAllServivceType();
   }, []);
+
+  const getAllServivceType = async () => {
+    const result = await serviceTypeApi.getAll().then((res) => {
+      let x = res.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+        };
+      });
+      setServiceTypeList([
+        {
+          value: "0",
+          label: "Select all service type",
+        },
+        ...x,
+      ]);
+    });
+  };
+
+  const buttonStatusClick = (id) => {
+    for (let index = 0; index < 3; index++) {
+      document
+        .getElementById(`button${index}`)
+        .classList.remove("active-button-status");
+    }
+    document.getElementById(`button${id}`).classList += " active-button-status";
+    setStatusSearch(id);
+  };
+
+  useEffect(() => {
+    filterService();
+    setCurrentPage(1);
+  }, [serviceNameSearch, serviceTypeSearch, minPrice, maxPrice, statusSearch]);
+
+  const filterService = async () => {
+    if (
+      minPrice &&
+      maxPrice &&
+      formatNumber(minPrice) >= formatNumber(maxPrice)
+    ) {
+      setStatusMaxPrice("false");
+      return;
+    } else {
+      setStatusMaxPrice("");
+    }
+    let data;
+    data = {
+      name: serviceNameSearch,
+      serviceTypeId: serviceTypeSearch.value,
+      minPrice: minPrice ? formatNumber(minPrice) : 0,
+      maxPrice: maxPrice ? formatNumber(maxPrice) : 0,
+      status: statusSearch,
+    };
+    console.log(data);
+    const result = await serviceApi.filterService(data).then((res) => {
+      setServiceList(res);
+    });
+  };
+
+  const formatNumber = (num) => {
+    let x = "";
+    for (let index = 0; index < num.length; index++) {
+      if (num.charAt(index) !== " ") {
+        x += num.charAt(index);
+      }
+    }
+    return x;
+  };
 
   return (
     <>
@@ -109,6 +195,214 @@ function ServiceTable() {
                   <Card>
                     <CardHeader>
                       <CardTitle tag="h4">Service</CardTitle>
+                      <Row md={7} className="justify-content-center mb-3">
+                        <Col md={2}>
+                          <label
+                            style={{
+                              fontSize: `16px`,
+                              fontWeight: `bold`,
+                            }}
+                          >
+                            Name
+                          </label>
+                        </Col>
+                        <Col md={5}>
+                          <Input
+                            style={{ fontSize: `15px` }}
+                            className="react-select p-2"
+                            classNamePrefix="react-select"
+                            placeholder="Enter name service"
+                            value={serviceNameSearch}
+                            onChange={(e) => {
+                              setServiceNameSearch(e.target.value);
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                      <Row md={7} className="justify-content-center mb-3">
+                        <Col md={2}>
+                          <label
+                            style={{
+                              fontSize: `16px`,
+                              fontWeight: `bold`,
+                            }}
+                          >
+                            Service type
+                          </label>
+                        </Col>
+                        <Col md={5}>
+                          <Select
+                            className="react-select"
+                            classNamePrefix="react-select"
+                            placeholder="Enter name doctor"
+                            options={serviceTypeList}
+                            value={serviceTypeSearch}
+                            onChange={(value) => {
+                              setServiceTypeSearch(value);
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                      <Row md={7} className="justify-content-center mb-3">
+                        <Col md={2}>
+                          <label
+                            style={{
+                              fontSize: `16px`,
+                              fontWeight: `bold`,
+                            }}
+                          >
+                            Min price
+                          </label>
+                        </Col>
+                        <Col md={5}>
+                          <Input
+                            style={{ fontSize: `15px` }}
+                            type="text"
+                            className="react-select p-2"
+                            classNamePrefix="react-select"
+                            placeholder="Enter min price search "
+                            value={minPrice}
+                            onChange={(e) => {
+                              let x = "";
+
+                              if (e.nativeEvent.data) {
+                                if (
+                                  "0123456789".indexOf(e.nativeEvent.data) ===
+                                  -1
+                                ) {
+                                  return;
+                                }
+                                for (
+                                  let index = 0;
+                                  index < e.target.value.length;
+                                  index++
+                                ) {
+                                  if (e.target.value.charAt(index) === " ") {
+                                    x = x + e.target.value.charAt(index);
+                                  } else {
+                                    if (index % 4 === 0) {
+                                      x =
+                                        x + " " + e.target.value.charAt(index);
+                                    } else {
+                                      x = x + e.target.value.charAt(index);
+                                    }
+                                  }
+                                }
+                              } else {
+                                x = e.target.value;
+                              }
+                              setMinPrice(x);
+                            }}
+                          />
+                        </Col>
+                      </Row>
+                      <Row md={7} className="justify-content-center mb-3">
+                        <Col md={2}>
+                          <label
+                            style={{
+                              fontSize: `16px`,
+                              fontWeight: `bold`,
+                            }}
+                          >
+                            Max price
+                          </label>
+                        </Col>
+                        <Col md={5}>
+                          <Input
+                            style={{ fontSize: `15px` }}
+                            type="text"
+                            className="react-select p-2"
+                            classNamePrefix="react-select"
+                            placeholder="Enter max price search"
+                            value={maxPrice}
+                            onChange={(e) => {
+                              let x = "";
+
+                              if (e.nativeEvent.data) {
+                                if (
+                                  "0123456789".indexOf(e.nativeEvent.data) ===
+                                  -1
+                                ) {
+                                  return;
+                                }
+                                for (
+                                  let index = 0;
+                                  index < e.target.value.length;
+                                  index++
+                                ) {
+                                  if (e.target.value.charAt(index) === " ") {
+                                    x = x + e.target.value.charAt(index);
+                                  } else {
+                                    if (index % 4 === 0) {
+                                      x =
+                                        x + " " + e.target.value.charAt(index);
+                                    } else {
+                                      x = x + e.target.value.charAt(index);
+                                    }
+                                  }
+                                }
+                              } else {
+                                x = e.target.value;
+                              }
+                              setMaxPrice(x);
+                            }}
+                          />
+                          {statusMaxPrice === "false" ? (
+                            <span>
+                              <p style={{ color: `red` }}>
+                                Max price must greater than min price
+                              </p>
+                            </span>
+                          ) : null}
+                        </Col>
+                      </Row>
+                      <Row md={7} className="justify-content-center mb-3">
+                        <Col md={2}>
+                          <label
+                            style={{
+                              fontSize: `16px`,
+                              fontWeight: `bold`,
+                            }}
+                          >
+                            Status
+                          </label>
+                        </Col>
+                        <Col md={5}>
+                          <button
+                            id="button0"
+                            className={`mr-3 ${
+                              statusSearch == 0
+                                ? "  active-button-status"
+                                : null
+                            }`}
+                            style={{ width: `90px` }}
+                            onClick={() => {
+                              buttonStatusClick(0);
+                            }}
+                          >
+                            All
+                          </button>
+                          <button
+                            id="button1"
+                            className="mr-3"
+                            style={{ width: `90px` }}
+                            onClick={() => {
+                              buttonStatusClick(1);
+                            }}
+                          >
+                            Active
+                          </button>
+                          <button
+                            id="button2"
+                            style={{ width: `90px` }}
+                            onClick={() => {
+                              buttonStatusClick(2);
+                            }}
+                          >
+                            Inactive
+                          </button>
+                        </Col>
+                      </Row>
                     </CardHeader>
                     <CardBody>
                       <Table responsive>
@@ -139,7 +433,7 @@ function ServiceTable() {
 
                                 <td>{service.serviceType.name}</td>
                                 <td>
-                                  {service.status !== 0 ? (
+                                  {service.status === 1 ? (
                                     <div style={{ color: "green" }}>
                                       <i className="fas fa-check-circle"> </i>{" "}
                                       Active

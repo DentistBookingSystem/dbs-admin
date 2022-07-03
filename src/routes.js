@@ -38,6 +38,11 @@ import FeedbackTable from "views/Tables/FeedbackTable.js";
 import Discount from "views/Pages/dbs-page/edit-form/Discount";
 import StaffHome from "views/Pages/staff-page/StaffHome";
 import StaffCancelAppointment from "views/Pages/staff-page/StaffCancelAppointment";
+import BranchEdit from "views/Pages/dbs-page/edit-form/BranchEdit";
+import DoctorEdit from "views/Pages/dbs-page/edit-form/DoctorEdit";
+import ServiceTypeEdit from "views/Pages/dbs-page/edit-form/ServiceTypeEdit";
+import AccountEdit from "views/Pages/dbs-page/edit-form/AccountEdit";
+import FeedbackTableAdmin from "views/Tables/FeedbackTableAdmin";
 
 let routes = [
   //Admin
@@ -105,6 +110,13 @@ let routes = [
     layout: "/staff",
   },
   {
+    path: "/feedback",
+    name: "Feedback",
+    icon: "now-ui-icons education_glasses",
+    component: FeedbackTableAdmin,
+    layout: "/admin",
+  },
+  {
     path: "/login-page",
     name: "Login Page",
     short: "Login",
@@ -114,10 +126,43 @@ let routes = [
     invisible: true,
   },
   {
+    path: "/branch/edit/:id",
+    name: "Login Page",
+    short: "Login",
+    mini: "LP",
+    component: BranchEdit,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
     path: "/discount/edit",
     name: "Edit Discount",
     mini: "W",
     component: Discount,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
+    path: "/doctor/edit/:id",
+    name: "Edit Doctor",
+    mini: "W",
+    component: DoctorEdit,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
+    path: "/account/edit/:id",
+    name: "Edit Doctor",
+    mini: "W",
+    component: AccountEdit,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
+    path: "/service_type/edit/:id",
+    name: "Edit Service Type",
+    mini: "S",
+    component: ServiceTypeEdit,
     layout: "/admin",
     invisible: true,
   },

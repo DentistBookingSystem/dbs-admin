@@ -109,7 +109,7 @@ function ValidationForms() {
       return true;
     }
     return false;
-  };
+  };  
   // verifies if value is a valid URL
   const verifyUrl = (value) => {
     try {

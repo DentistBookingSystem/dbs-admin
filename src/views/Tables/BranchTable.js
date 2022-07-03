@@ -12,6 +12,7 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
+import { useHistory } from "react-router-dom";
 import { Modal, Image } from "react-bootstrap";
 import React, { useEffect, useState } from "react";
 import branchApi from "api/branchApi";
@@ -20,8 +21,9 @@ import { BrowserRouter as Link } from "react-router-dom";
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "assets/css/index.css";
 import CustomPagination from "views/Widgets/Pagination";
-
+import { toast } from "react-toastify";
 function BranchTable() {
+  let history = useHistory();
   const [branchList, setBranchList] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -66,6 +68,24 @@ function BranchTable() {
   useEffect(() => {
     fetchBranchList();
   }, []);
+
+  const onClickUpdateStatus = async (branch) => {
+    const data = {
+      id: branch.id,
+      name: branch.name,
+      url: branch.url,
+      openTime: branch.openTime,
+      closeTime: branch.closeTime,
+      districtId: branch.district.id,
+      status: 2,
+    };
+    console.log(data);
+    await branchApi.updateBranch(data).then((res) => {
+      // this.notify();
+      toast.success("Delete successfully!!!");
+      window.location.reload();
+    });
+  };
 
   return loading ? (
     <>
@@ -115,7 +135,7 @@ function BranchTable() {
                           </td>
                           <td>
                             <div class="stock-status in-stock">
-                              {branch.status !== 0 ? (
+                              {branch.status === 1 ? (
                                 <div style={{ color: "green" }}>
                                   <i className="fas fa-check-circle"> </i>{" "}
                                   Active
@@ -132,8 +152,8 @@ function BranchTable() {
                             <Button
                               value={branch.id}
                               className="btn-icon"
-                              color="success"
-                              id="tooltip26024663"
+                              color="info"
+                              id={`view${branch.id}`}
                               size="sm"
                               type="button"
                               onClick={async (e) => {
@@ -145,9 +165,47 @@ function BranchTable() {
                             </Button>
                             <UncontrolledTooltip
                               delay={0}
-                              target="tooltip26024663"
+                              target={`view${branch.id}`}
                             >
                               View
+                            </UncontrolledTooltip>
+
+                            <Button
+                              className="btn-icon"
+                              color="success"
+                              size="sm"
+                              type="button"
+                              id={`update${branch.id}`}
+                              onClick={() => {
+                                history.push("/admin/branch/edit/" + branch.id);
+                              }}
+                            >
+                              <i className="now-ui-icons ui-2_settings-90" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`update${branch.id}`}
+                            >
+                              Update
+                            </UncontrolledTooltip>
+                            <Button
+                              className="btn-icon"
+                              color="danger"
+                              size="sm"
+                              type="button"
+                              id={`delete${branch.id}`}
+                              onClick={() => {
+                                onClickUpdateStatus(branch);
+                              }}
+                              disabled={branch.status !== 2 ? false : true}
+                            >
+                              <i className="now-ui-icons ui-1_simple-remove" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`delete${branch.id}`}
+                            >
+                              Delete
                             </UncontrolledTooltip>
                           </td>
                         </tr>
@@ -231,7 +289,7 @@ function BranchTable() {
                       </Col>
                       <Col className="mt-0">
                         <span>
-                          {branchDetail.status !== 0 ? (
+                          {branchDetail.status === 1 ? (
                             <div style={{ color: "green" }}>
                               <i className="fas fa-check-circle"> </i> Active
                             </div>
@@ -257,7 +315,13 @@ function BranchTable() {
                   </Button>
                 </Col>
                 <Col>
-                  <Button color="primary" onClick={() => setLgShow(false)}>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      setLgShow(false);
+                      history.push("/admin/branch/edit/" + branchDetail.id);
+                    }}
+                  >
                     Edit
                   </Button>
                 </Col>

@@ -9,6 +9,15 @@ import serviceApi from "api/serviceApi";
 import Validator from "utils/validation/validator";
 import defaultImage from "assets/img/image_placeholder.jpg";
 
+const time = [
+  { value: "0.5", label: "0.5" },
+  { value: "1", label: "1" },
+  { value: "1.5", label: "1.5" },
+  { value: "2", label: "2" },
+  { value: "2.5", label: "2.5" },
+  { value: "3", label: "3" },
+];
+
 class NewServicePage extends Component {
   constructor(props) {
     super(props);
@@ -28,6 +37,7 @@ class NewServicePage extends Component {
       image: null,
       imagePreviewUrl: defaultImage,
       errors: {},
+      timeEstimated: { value: "0.5", label: "0.5" },
     };
 
     const rules = [
@@ -207,6 +217,7 @@ class NewServicePage extends Component {
           description: this.state.description,
           minPrice: this.state.min_price.value,
           maxPrice: this.state.max_price.value,
+          estimatedTime: this.state.timeEstimated.value,
           status: 1,
         };
         console.log("data", data);
@@ -232,6 +243,7 @@ class NewServicePage extends Component {
         description: this.state.description,
         minPrice: this.state.min_price.value,
         maxPrice: this.state.max_price.value,
+        estimatedTime: this.state.timeEstimated.value,
         status: 1,
       };
 
@@ -317,7 +329,7 @@ class NewServicePage extends Component {
                       <div className="row mt-2">
                         <div className="col-md-12">
                           <div className="row mt-2">
-                            <div className="col-md-12">
+                            <div className="col-md-6">
                               <label className="labels">Service Type*</label>
                               <Select
                                 className="react-select primary"
@@ -334,6 +346,32 @@ class NewServicePage extends Component {
                                   style={{ display: "block" }}
                                 >
                                   {errors.service_type}
+                                </div>
+                              )}
+                            </div>
+                            <div className="col-md-6">
+                              <label className="labels">
+                                Estimated time (hour)*
+                              </label>
+                              <Select
+                                className="react-select primary"
+                                classNamePrefix="react-select"
+                                placeholder="Select estimated time"
+                                name="timeEstimated"
+                                value={this.state.timeEstimated}
+                                options={time}
+                                onChange={(e) =>
+                                  this.setState({
+                                    timeEstimated: e,
+                                  })
+                                }
+                              />
+                              {errors.min_price && (
+                                <div
+                                  className="invalid-feedback"
+                                  style={{ display: "block" }}
+                                >
+                                  {errors.min_price}
                                 </div>
                               )}
                             </div>

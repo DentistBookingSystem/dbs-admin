@@ -34,6 +34,7 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 import { ToastContainer, toast } from "react-toastify";
+import LoginPage from "views/Pages/LoginPage";
 
 var ps;
 
@@ -153,6 +154,7 @@ function Admin(props) {
       <div className="main-panel" ref={mainPanel}>
         <AdminNavbar {...props} brandText={getActiveRoute(routes)} />
         <Switch>
+          {/* <Route path="/auth/login-page" component={LoginPage} /> */}
           {sessionStorage.getItem("user") !== null ? (
             ""
           ) : (

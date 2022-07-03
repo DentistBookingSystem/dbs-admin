@@ -10,6 +10,15 @@ import serviceApi from "api/serviceApi";
 import NotificationAlert from "react-notification-alert";
 import Validator from "utils/validation/validator";
 
+const time = [
+  { value: "0.5", label: "0.5" },
+  { value: "1", label: "1" },
+  { value: "1.5", label: "1.5" },
+  { value: "2", label: "2" },
+  { value: "2.5", label: "2.5" },
+  { value: "3", label: "3" },
+];
+
 function Service(service) {
   var options = {};
   options = {
@@ -51,6 +60,9 @@ function Service(service) {
   ]);
   const [listMaxPrice, setListMaxPrice] = useState([
     { label: "Choose max price", value: -1 },
+  ]);
+  const [estimateTime, setEstimateTime] = useState([
+    { label: service.estimatedTime, value: -1 },
   ]);
   const [serviceTypeList, setServiceTypeList] = useState([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(currentImage);
@@ -203,8 +215,11 @@ function Service(service) {
   //edit service
   const editService = async (data) => {
     try {
+      console.log("fsdfsa", data);
       await serviceApi.editService(data).then((res) => {
         console.log("edit done");
+        console.log(res);
+        window.location.href = "/admin/services";
       });
     } catch (error) {
       console.log("Cannot edit service", error);
@@ -212,8 +227,8 @@ function Service(service) {
   };
 
   //Handle submit form, no edit image
-  const onHandleSubmit = (event) => {
-    const data = {
+  const onHandleSubmit = async (event) => {
+    var data = {
       id: service.id,
       name: name,
       serviceTypeId: serviceType.value,
@@ -221,15 +236,47 @@ function Service(service) {
       maxPrice: parseFloat(maxPrice.value),
       description: description,
       url: service.url,
+      estimatedTime: parseFloat(estimateTime.value),
       status: status ? 1 : 0,
     };
+    const formData = new FormData();
+
+    formData.append("url", selectedFile);
     setErrors(validator.validate(data, event));
-    if (validator.isValid) {
-      editService(data);
-      notify();
-      setTimeout(() => {
-        window.location.href = "/admin/services";
-      }, 3000);
+
+    if (selectedFile) {
+      try {
+        await serviceApi.addImageService(formData).then(async (res) => {
+          var dataUpdate = {
+            id: service.id,
+            name: name,
+            serviceTypeId: serviceType.value,
+            minPrice: parseFloat(minPrice.value),
+            maxPrice: parseFloat(maxPrice.value),
+            description: description,
+            url: res.data,
+            estimatedTime: parseFloat(estimateTime.value),
+            status: status ? 1 : 0,
+          };
+          console.log("data", dataUpdate);
+          console.log("url ", res.data);
+          await serviceApi.editService(dataUpdate).then((res) => {
+            console.log("trả về", res);
+            notify();
+            window.location.href = "/admin/services";
+          });
+        });
+      } catch (error) {
+        console.log("Can not insert new service", error);
+      }
+    } else {
+      if (validator.isValid) {
+        editService(data);
+        notify();
+        setTimeout(() => {
+          window.location.href = "/admin/services";
+        }, 3000);
+      }
     }
   };
 
@@ -275,7 +322,7 @@ function Service(service) {
               <CardBody>
                 <Form>
                   <div className="row mt-2">
-                    <div className="col-md-6">
+                    <div className="col-md-12">
                       <label className="labels">Service Name*</label>
                       <input
                         type="text"
@@ -294,6 +341,8 @@ function Service(service) {
                         </div>
                       )}
                     </div>
+                  </div>
+                  <div className="row mt-2">
                     <div className="col-md-6">
                       <label className="labels">Service Type*</label>
                       <Select
@@ -304,6 +353,26 @@ function Service(service) {
                         value={serviceType}
                         options={serviceTypeList}
                         onChange={onHandleServiceTypeSelect}
+                      />
+                      {errors.serviceType && (
+                        <div
+                          className="invalid-feedback"
+                          style={{ display: "block" }}
+                        >
+                          {errors.serviceType}
+                        </div>
+                      )}
+                    </div>
+                    <div className="col-md-6">
+                      <label className="labels">Estimated time (hour)*</label>
+                      <Select
+                        className="react-select primary"
+                        classNamePrefix="react-select"
+                        placeholder="Choose estimated time"
+                        name="estimatedTime"
+                        value={estimateTime}
+                        options={time}
+                        onChange={(value) => setEstimateTime(value)}
                       />
                       {errors.serviceType && (
                         <div

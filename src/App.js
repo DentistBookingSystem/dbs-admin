@@ -18,6 +18,7 @@ import Staff from "layouts/Staff";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import NewAccountStaffPage from "views/Pages/dbs-page/Add-page/NewAccountStaffPage";
+import LoginPage from "views/Pages/LoginPage";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -88,7 +89,7 @@ class App extends Component {
             {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
             {/* <Route path="/service/:id" children={<ServiceDetail />} /> */}
             {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
-            {/* <Route path="/doctor/:id" children={<DoctorDetail />} /> */}
+            {/* <Ro ute path="/doctor/:id" children={<DoctorDetail />} /> */}
 
             <Route path="/branchs/add" children={<NewBranchPage />} />
             <Route path="/service-type/add" children={<NewServiceTypePage />} />

@@ -8,12 +8,21 @@ import {
   Row,
   Col,
   Button,
+  ModalHeader,
+  Label,
+  Input,
+  FormGroup,
+  Modal as DangerModal,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import { useEffect, useState } from "react";
 import AccountApi from "api/AccountApi";
 import CustomPagination from "views/Widgets/Pagination";
+import { useHistory } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 function AccountTable() {
   const [accountList, setAccountList] = useState([]);
@@ -22,14 +31,16 @@ function AccountTable() {
   const [phoneSearch, setPhoneSearch] = useState("");
   const [accountPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [accountDetail, setAccountDetail] = useState(null);
+  const history = useHistory();
   const indexOfLastAccount = currentPage * accountPerPage;
   const indexOfFirstAccount = indexOfLastAccount - accountPerPage;
   const currentAccount = accountList.slice(
     indexOfFirstAccount,
     indexOfLastAccount
   );
-
+  const [showUpdateStatus, setShowUpdateStatus] = useState(false);
+  const [modalMini, setMiniModal] = useState(false);
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const getAccountListByRoleIdAndStatus = async () => {
@@ -153,14 +164,15 @@ function AccountTable() {
                     fontSize: `20px`,
                   }}
                 >
-                  <Col lg={3}>
+                  <Col lg={4}>
                     <input
                       type="number"
-                      className="m-0"
+                      className="m-0 pl-3 pr-3 text-center"
                       style={{
                         width: `100%`,
                         margin: `0px 10px`,
                         padding: `5px`,
+                        borderRadius: `30px`,
                       }}
                       placeholder="Phone number"
                       onChange={(e) => {
@@ -187,7 +199,7 @@ function AccountTable() {
                         <th style={{ fontWeight: `bold` }}>Email</th>
                         <th style={{ fontWeight: `bold` }}>Birth</th>
                         <th style={{ fontWeight: `bold` }}>Address</th>
-                        {roleId === 3 ? (
+                        {roleId !== 1 ? (
                           <th
                             style={{ fontWeight: `bold` }}
                             className="text-center"
@@ -239,7 +251,7 @@ function AccountTable() {
                                 </Col>
                               </Row>
                             </td>
-                            {roleId === 3 ? (
+                            {roleId !== 1 ? (
                               <td className="text-center btns-mr-5">
                                 <Button
                                   className="btn-icon"
@@ -247,6 +259,14 @@ function AccountTable() {
                                   id="tooltip26024663"
                                   size="sm"
                                   type="button"
+                                  onClick={() => {
+                                    // history.push(
+                                    //   "/admin/account/edit/" + account.id
+                                    // );
+                                    setAccountDetail(account);
+                                    setShowUpdateStatus(true);
+                                    console.log(account);
+                                  }}
                                 >
                                   <i className="now-ui-icons ui-2_settings-90" />
                                 </Button>
@@ -256,7 +276,7 @@ function AccountTable() {
                                 >
                                   Edit
                                 </UncontrolledTooltip>
-                                <Button
+                                {/* <Button
                                   className="btn-icon"
                                   color="danger"
                                   id="tooltip930083782"
@@ -270,7 +290,7 @@ function AccountTable() {
                                   target="tooltip930083782"
                                 >
                                   Delete
-                                </UncontrolledTooltip>
+                                </UncontrolledTooltip> */}
                               </td>
                             ) : (
                               ""
@@ -292,6 +312,104 @@ function AccountTable() {
             />
           </Col>
         </Row>
+        <Modal
+          show={showUpdateStatus}
+          size="md"
+          onHide={() => {
+            setShowUpdateStatus(false);
+          }}
+        >
+          <ModalHeader>Update status</ModalHeader>
+          <ModalBody className="text-center d-flex flex-row justify-content-center">
+            <div>
+              <Row>
+                <Col>
+                  <label>Name</label>
+                </Col>
+                <Col>
+                  <p>{accountDetail?.fullName}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <label>Phone</label>
+                </Col>
+                <Col>
+                  <p>{accountDetail?.phone}</p>
+                </Col>
+              </Row>
+
+              <Row>
+                <Col>Status</Col>
+                <Col>{status === 1 ? "Active" : "Inactive"}</Col>
+              </Row>
+            </div>
+          </ModalBody>
+          <ModalFooter className="text-center d-flex justify-content-center">
+            <Row className="justify-content-center">
+              <Col lg={6}>
+                <Button color="success" onClick={() => setMiniModal(true)}>
+                  {status === 1 ? "InActive" : "Active"}
+                </Button>
+              </Col>
+              <Col lg={6}>
+                <Button
+                  color="warning"
+                  onClick={() => {
+                    setShowUpdateStatus(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
+          </ModalFooter>
+        </Modal>
+        <DangerModal
+          isOpen={modalMini}
+          toggle={() => setMiniModal(false)}
+          size="mini"
+          modalClassName="modal-info"
+        >
+          <div className="modal-header justify-content-center">
+            <div className="modal-profile">
+              <i className="now-ui-icons business_badge" />
+            </div>
+          </div>
+          <ModalBody>
+            <p>{"Are sure to delete \n this Service ?"}</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={() => {
+                const data = {
+                  phone: accountDetail.phone,
+                };
+                if (status === 1) {
+                  //đang unban
+                  AccountApi.banAccount(data).then((res) => {
+                    // window.location.reload();
+                  });
+                } else {
+                  AccountApi.unbanAccount(data).then((res) => {
+                    // window.location.reload();
+                  });
+                }
+              }}
+            >
+              Ok
+            </Button>{" "}
+            <Button
+              color="link"
+              className="btn-neutral"
+              onClick={() => setMiniModal(false)}
+            >
+              Cancel
+            </Button>
+          </ModalFooter>
+        </DangerModal>
       </div>
     </>
   );

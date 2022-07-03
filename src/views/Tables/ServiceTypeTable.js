@@ -15,8 +15,10 @@ import "assets/css/index.css";
 import React, { useEffect } from "react";
 import serviceTypeApi from "api/serviceTypeApi";
 import CustomPagination from "views/Widgets/Pagination";
+import { useHistory } from "react-router-dom";
 
 function ServiceTypeTable() {
+  const history = useHistory();
   const list = [];
   const [serviceTypeList, setServiceTypeList] = React.useState(list);
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -97,6 +99,11 @@ function ServiceTypeTable() {
                               id="tooltip26024663"
                               size="sm"
                               type="button"
+                              onClick={() => {
+                                history.push(
+                                  "/admin/service_type/edit/" + serviceType.id
+                                );
+                              }}
                             >
                               <i className="now-ui-icons ui-2_settings-90" />
                             </Button>

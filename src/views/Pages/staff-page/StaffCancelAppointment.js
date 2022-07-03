@@ -22,9 +22,9 @@ export default function StaffCancelAppointment(props) {
     let month = newDate.getMonth() + 1;
     let year = newDate.getFullYear();
 
-    return `${year}${separator}-${
-      month < 10 ? `0${month}` : `${month}`
-    }-${separator}${date}`;
+    return `${year}${separator}-${month < 10 ? `0${month}` : `${month}`}-${
+      date < 10 ? `0${date}` : `${date}`
+    }`;
   };
   const getAllBranch = async () => {
     const result = await branchApi.getAllBranchForStaff().catch((err) => {
@@ -274,7 +274,7 @@ export default function StaffCancelAppointment(props) {
                       let year = e.target.valueAsDate.getFullYear();
                       let tmp = `${year}${separator}-${
                         month < 10 ? `0${month}` : `${month}`
-                      }-${separator}${date}`;
+                      }-${date < 10 ? `0${date}` : `${date}`}`;
                       SetDateSearch(tmp);
                     }}
                   ></input>

@@ -46,6 +46,32 @@ class DoctorApi {
     });
     // return axiosClient.post(url, data);
   };
+
+  getDoctorById(id) {
+    const url = "/doctor/" + id;
+    return axiosClient.get(url);
+  }
+
+  editDoctor(data) {
+    const url = "http://localhost:8080/rade/admin/doctor/edit";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+      },
+    });
+  }
+
+  deleteDoctor(id) {
+    const url = "/doctor/delete/" + id;
+    return axiosClient.get(url);
+  }
+
+  filterDoctor(data) {
+    const url = "/doctor/filter";
+    console.log(data);
+    return axiosClient.post(url, data);
+  }
 }
 const doctorApi = new DoctorApi();
 export default doctorApi;

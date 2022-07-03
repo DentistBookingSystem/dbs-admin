@@ -1,26 +1,38 @@
 import appointmentApi from "api/AppointmentApi";
 import branchApi from "api/branchApi";
+import doctorApi from "api/doctorApi";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import AppointmentTable from "views/Tables/AppointmentTable";
 import "./style.css";
 
+const listStatus = [
+  { id: [0, 4], value: "Wating" },
+  { id: [1], value: "Done" },
+  { id: [2, 5], value: "Absent" },
+  { id: [3], value: "Cancel by customer" },
+  { id: [5], value: "Cancel by center" },
+];
+
 export default function StaffHome(props) {
   const [searchValue, setSearchValue] = useState("");
   const [bookingList, setBookingList] = useState([]);
   const [branchSearch, SetBranchSearch] = useState(0);
   const [dateSearch, SetDateSearch] = useState("");
+  const [doctorSearch, setDoctorSearch] = useState(0);
   const [branchList, setBranchList] = useState([]);
+  const [doctorList, setDoctorList] = useState([]);
+  const [statusSearch, setStatusSearch] = useState("0,4");
   const getToday = (separator = "") => {
     let newDate = new Date();
     let date = newDate.getDate();
     let month = newDate.getMonth() + 1;
     let year = newDate.getFullYear();
 
-    return `${year}${separator}-${
-      month < 10 ? `0${month}` : `${month}`
-    }-${separator}${date}`;
+    return `${year}${separator}-${month < 10 ? `0${month}` : `${month}`}-${
+      date < 10 ? `0${date}` : `${date}`
+    }`;
   };
   const getAllBranch = async () => {
     const result = await branchApi.getAllBranchForStaff().catch((err) => {
@@ -37,11 +49,11 @@ export default function StaffHome(props) {
 
     if (dateSearch.length === 0) {
       data = {
-        status: [0, 4],
+        status: statusSearch.split(","),
         date: getToday(),
         phone: searchValue,
         branchId: branchSearch,
-        doctorId: 0,
+        doctorId: doctorSearch,
         serviceId: 0,
       };
     } else {
@@ -56,11 +68,11 @@ export default function StaffHome(props) {
       }-${separator}${date}`;
 
       data = {
-        status: [0, 4],
+        status: statusSearch,
         date: datetmp,
         phone: searchValue,
         branchId: branchSearch,
-        doctorId: 0,
+        doctorId: doctorSearch,
         serviceId: 0,
       };
     }
@@ -74,7 +86,7 @@ export default function StaffHome(props) {
 
   const getAllAppointment = async () => {
     var data = (data = {
-      status: [0, 4],
+      status: statusSearch.split(","),
       date: getToday(),
       phone: searchValue,
       branchId: branchSearch,
@@ -87,6 +99,18 @@ export default function StaffHome(props) {
       console.log("data appointment", result?.data);
       setBookingList(result.data);
     }
+  };
+
+  useEffect(() => {
+    getDoctorList();
+  }, [branchSearch]);
+
+  const getDoctorList = async () => {
+    const result = await doctorApi
+      .getDoctorByBranchId(branchSearch)
+      .then((res) => {
+        setDoctorList(res);
+      });
   };
 
   useEffect(() => {
@@ -121,6 +145,8 @@ export default function StaffHome(props) {
                       fontSize: `16px`,
                       backgroundColor: `white`,
                       borderColor: `black`,
+                      textAlign: `center`,
+                      borderRadius: `6px`,
                     }}
                     type="text"
                     value={searchValue}
@@ -152,6 +178,7 @@ export default function StaffHome(props) {
                       fontSize: `16px`,
                       backgroundColor: `white`,
                       borderColor: `black`,
+                      borderRadius: `6px`,
                     }}
                     type="text"
                     value={branchSearch}
@@ -162,12 +189,107 @@ export default function StaffHome(props) {
                     // defaultValue="0"
                   >
                     <option className="text-center" value="0">
-                      ---Select branch---
+                      ---Select all branch---
                     </option>
                     {branchList.map((item) => {
                       return (
                         <option className="text-center" value={item.id}>
                           {item.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </Row>
+
+              <Row className="justify-content-center">
+                <label
+                  for="inputdefault"
+                  style={{ fontSize: `16px`, width: `10vw` }}
+                  className="m-3"
+                >
+                  Doctor in branch
+                </label>
+                <div
+                  class="form-group d-flex flex-row"
+                  style={{ width: `30vw` }}
+                >
+                  <select
+                    class="form-control"
+                    id="inputdefault"
+                    style={{
+                      width: `100%`,
+                      padding: `0px 15px`,
+                      fontSize: `16px`,
+                      backgroundColor: `white`,
+                      borderColor: `black`,
+                      borderRadius: `6px`,
+                    }}
+                    type="text"
+                    value={doctorSearch}
+                    placeholder="Enter the number phone"
+                    onChange={(e) => {
+                      setDoctorSearch(e.target.value);
+                    }}
+                    // defaultValue="0"
+                  >
+                    <option className="text-center" value="0">
+                      ---Select all doctor---
+                    </option>
+                    {doctorList.map((item, key) => {
+                      return (
+                        <option
+                          className="text-center"
+                          value={item.id}
+                          key={key}
+                        >
+                          {item.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </Row>
+              <Row className="justify-content-center">
+                <label
+                  for="inputdefault"
+                  style={{ fontSize: `16px`, width: `10vw` }}
+                  className="m-3"
+                >
+                  Status
+                </label>
+                <div
+                  class="form-group d-flex flex-row"
+                  style={{ width: `30vw` }}
+                >
+                  <select
+                    class="form-control"
+                    id="inputdefault"
+                    style={{
+                      width: `100%`,
+                      padding: `0px 15px`,
+                      fontSize: `16px`,
+                      backgroundColor: `white`,
+                      borderColor: `black`,
+                      borderRadius: `6px`,
+                    }}
+                    type="text"
+                    value={statusSearch}
+                    onChange={(e) => {
+                      setStatusSearch(e.target.value);
+                    }}
+                    // defaultValue="0"
+                  >
+                    <option
+                      className="text-center"
+                      value={[0, 1, 2, 3, 4, 5, 6]}
+                    >
+                      ---Select all status---
+                    </option>
+                    {listStatus.map((item) => {
+                      return (
+                        <option className="text-center" value={item.id}>
+                          {item.value}
                         </option>
                       );
                     })}

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { Component } from "react";
 import axiosClient from "./axiosClient";
 
@@ -11,6 +12,25 @@ class AccountApi {
   AddStaff(data) {
     const url = "/account/register";
     return axiosClient.post(url, data);
+  }
+
+  getAccountByPhone(phone) {
+    const url = "/" + phone;
+    return axiosClient.get(url);
+  }
+  getAccountByID(id) {
+    const url = "/account/" + id;
+    return axiosClient.get(url);
+  }
+
+  banAccount(phone) {
+    const url = "/account/ban";
+    return axiosClient.post(url, phone);
+  }
+
+  unbanAccount(phone) {
+    const url = "/account/unban";
+    return axiosClient.post(url, phone);
   }
 }
 

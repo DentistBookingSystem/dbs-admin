@@ -12,6 +12,7 @@ import districtApi from "api/districtApi";
 import NotificationAlert from "react-notification-alert";
 import { toast } from "react-toastify";
 import doctorApi from "api/doctorApi";
+import reactSelect from "react-select";
 
 var options = {};
 options = {
@@ -19,7 +20,7 @@ options = {
   message: (
     <div>
       <div>
-        Successfully add new <b>Branch</b>
+        Successfully update <b>Doctor</b>
       </div>
     </div>
   ),
@@ -28,7 +29,7 @@ options = {
   autoDismiss: 4,
 };
 
-class NewDoctorPage extends Component {
+class DoctorEdit extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,6 +42,7 @@ class NewDoctorPage extends Component {
       branchList: [],
       description: "",
       branchSelect: "",
+      doctorinfo: {},
     };
 
     const rules = [
@@ -82,9 +84,24 @@ class NewDoctorPage extends Component {
 
     this.refs.notify.notificationAlert(options);
   }
+  async getInfoDoctor() {
+    const url = window.location.href;
+    const id = url.split("/edit/")[1];
+    const result = await doctorApi.getDoctorById(id).then((res) => {
+      console.log("doctor ", res);
+      this.setState({
+        doctorinfo: res,
+        name: res.name,
+        description: res.description,
+        branchSelect: res.branch.id,
+        imagePreviewUrl: "https://drive.google.com/uc?id=" + res.url,
+      });
+    });
+  }
 
   componentDidMount() {
     this.getAllBranch();
+    this.getInfoDoctor();
   }
 
   getAllBranch = async () => {
@@ -139,11 +156,14 @@ class NewDoctorPage extends Component {
       description: this.state.description,
       status: 1,
     };
+    const url = window.location.href;
+    const id = url.split("/edit/")[1];
     console.log(data);
     try {
       await doctorApi.addImageDoctor(formData).then((res) => {
         console.log("result add image:----", res);
         data = {
+          id: id,
           name: this.state.name,
           url: res.data,
           branchId: this.state.branchSelect,
@@ -151,30 +171,13 @@ class NewDoctorPage extends Component {
           status: 1,
         };
         console.log("Data", data);
-        doctorApi.insertDoctor(data).then((result) => {
+        doctorApi.editDoctor(data).then((result) => {
           console.log(result);
           console.log("add thành công ");
+          window.location.replace("/admin/doctors");
         });
       });
     } catch (error) {}
-    // try {
-    //   await branchApi
-    //     .insert(formData)
-    //     .then((res) => {
-    //       console.log("Insert ok", res);
-
-    //     })
-    //     .then(async () => {
-    //       console.log(data);
-    //       await branchApi.insertBranch(data).then((res) => {
-    //         this.notify();
-    //         window.location.replace("/admin/branchs");
-    //       });
-    //     });
-    // } catch (error) {
-    //   console.log("Insert data failed", error);
-    //   this.notify(error.response.data.message);
-    // }
   };
 
   async onHandleSubmit(event) {
@@ -188,7 +191,28 @@ class NewDoctorPage extends Component {
       console.log(this.state.selectedFile);
       formData.append("url", this.state.selectedFile);
       // formData.append("branchDTO", data);
-      this._insertNewData(formData);
+      if (this.state.selectedFile) {
+        this._insertNewData(formData);
+      } else {
+        var data;
+        console.log("click update");
+        const url = window.location.href;
+        const id = url.split("/edit/")[1];
+        data = {
+          id: id,
+          name: this.state.name,
+          url: this.state.doctorinfo.url,
+          branchId: this.state.branchSelect,
+          description: this.state.description,
+          status: 1,
+        };
+        console.log("data", data);
+        doctorApi.editDoctor(data).then((result) => {
+          console.log(result);
+          console.log("add thành công ");
+          window.location.replace("/admin/doctors");
+        });
+      }
     }
   }
 
@@ -213,7 +237,6 @@ class NewDoctorPage extends Component {
     const { errors } = this.state;
     return (
       <>
-        <AdminNavbar brandText="Dashboard" link="/admin/branchs" />
         <PanelHeader size="sm">
           <Col xs={0.5} md={0.5}>
             <Link to="/admin/services">
@@ -323,6 +346,13 @@ class NewDoctorPage extends Component {
                             >
                               <option>----Select branch-----</option>
                               {this.state.branchList.map((item, key) => {
+                                if (item.id === this.state.branchSelect) {
+                                  return (
+                                    <option value={item.id} selected={true}>
+                                      {item.name}
+                                    </option>
+                                  );
+                                }
                                 return (
                                   <option value={item.id}>{item.name}</option>
                                 );
@@ -347,15 +377,18 @@ class NewDoctorPage extends Component {
                             type="button"
                             onClick={this.onHandleSubmit}
                           >
-                            Add
+                            Edit
                           </button>
                         </div>
                         <div className="col-md-2">
                           <button
                             className="btn btn-primary profile-button"
                             type="reset"
+                            onClick={() => {
+                              window.location.replace("/admin/doctors");
+                            }}
                           >
-                            Reset
+                            Cancel
                           </button>
                           {/* chưa reset được */}
                         </div>
@@ -379,4 +412,4 @@ class NewDoctorPage extends Component {
   }
 }
 
-export default NewDoctorPage;
+export default DoctorEdit;

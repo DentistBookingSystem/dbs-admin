@@ -9,6 +9,7 @@ import {
   Button,
   ModalBody,
   ModalFooter,
+  Input,
 } from "reactstrap";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
@@ -17,7 +18,8 @@ import { useEffect, useState } from "react";
 import CustomPagination from "views/Widgets/Pagination";
 import Discount from "views/Pages/dbs-page/edit-form/Discount";
 import { Modal } from "react-bootstrap";
-import e from "cors";
+import Select from "react-select";
+import serviceApi from "api/serviceApi";
 
 function DiscountTable() {
   const [discountList, setDiscountList] = useState([]);
@@ -29,6 +31,15 @@ function DiscountTable() {
   const [isEdit, setIsEdit] = useState(false);
   const [editDiscount, setEditDiscount] = useState({});
   const [lgShow, setLgShow] = useState(false);
+
+  const [statusSearch, setStatusSearch] = useState(0);
+  const [serviceList, setServicList] = useState([]);
+  const [serviceSearch, setServiceSearch] = useState({
+    value: "0",
+    label: "Select All Service",
+  });
+  const [discountNameSearch, setDiscountNameSearch] = useState("");
+  const [dateSearch, setDateSearch] = useState(null);
 
   const indexOfLastDiscount = currentPage * discountsPerPage;
   const indexOfFirstDiscount = indexOfLastDiscount - discountsPerPage;
@@ -77,7 +88,50 @@ function DiscountTable() {
 
   useEffect(() => {
     fetchDiscountList();
+    document.getElementById(`button${statusSearch}`).classList +=
+      " active-button-status";
+    getAllService();
   }, []);
+
+  const getAllService = async () => {
+    const result = await serviceApi.getServiceList().then((res) => {
+      console.log("service list", res);
+      let x = res.map((item) => {
+        return {
+          value: item.id,
+          label: item.name,
+        };
+      });
+      setServicList([{ value: "0", label: "Select all service" }, ...x]);
+    });
+  };
+
+  const buttonStatusClick = (id) => {
+    for (let index = 0; index < 3; index++) {
+      document
+        .getElementById(`button${index}`)
+        .classList.remove("active-button-status");
+    }
+    document.getElementById(`button${id}`).classList += " active-button-status";
+    setStatusSearch(id);
+  };
+
+  useEffect(() => {
+    filterDiscount();
+  }, [statusSearch, discountNameSearch, dateSearch, serviceSearch]);
+
+  const filterDiscount = async () => {
+    var data;
+    data = {
+      status: statusSearch,
+      name: discountNameSearch,
+      endDate: dateSearch,
+      serviceId: serviceSearch.value,
+    };
+    const result = await discountApi.filterDiscount(data).then((res) => {
+      setDiscountList(res);
+    });
+  };
   return (
     <>
       <PanelHeader size="sm" />
@@ -87,6 +141,96 @@ function DiscountTable() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Discount</CardTitle>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Service</label>
+                  </Col>
+                  <Col md={5}>
+                    <Select
+                      className="react-select text-center"
+                      classNamePrefix="react-select"
+                      placeholder="Choose branch"
+                      options={serviceList}
+                      value={serviceSearch}
+                      onChange={(value) => {
+                        setServiceSearch(value);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Name</label>
+                  </Col>
+                  <Col md={5}>
+                    <Input
+                      type="text"
+                      className="react-select p-2"
+                      classNamePrefix="react-select"
+                      placeholder="Enter name discount  "
+                      onChange={(e) => {
+                        setDiscountNameSearch(e.target.value);
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>End Date</label>
+                  </Col>
+                  <Col md={5}>
+                    <Input
+                      style={{}}
+                      type="date"
+                      className="react-select p-2"
+                      classNamePrefix="react-select"
+                      placeholder="Select end date"
+                      onChange={(e) => {
+                        if (e.target.valueAsDate) {
+                          setDateSearch(e.target.value);
+                        } else {
+                          setDateSearch(null);
+                        }
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row md={7} className="justify-content-center mb-3">
+                  <Col md={2}>
+                    <label>Status</label>
+                  </Col>
+                  <Col md={5}>
+                    <button
+                      id="button0"
+                      className="mr-3"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(0);
+                      }}
+                    >
+                      All
+                    </button>
+                    <button
+                      id="button1"
+                      className="mr-3"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(1);
+                      }}
+                    >
+                      Active
+                    </button>
+                    <button
+                      id="button2"
+                      style={{ width: `90px` }}
+                      onClick={() => {
+                        buttonStatusClick(2);
+                      }}
+                    >
+                      Inactive
+                    </button>
+                  </Col>
+                </Row>
               </CardHeader>
               <CardBody>
                 <Table responsive>
