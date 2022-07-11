@@ -1,5 +1,6 @@
+import axios from "axios";
 import axiosClient from "./axiosClient";
-
+const token = sessionStorage.getItem("user");
 class DiscountApi {
   BASE_URL = "/discount";
   getDiscountList = () => {
@@ -23,6 +24,26 @@ class DiscountApi {
     const url = "/discount/filter";
     console.log("data", data);
     return axiosClient.post(url, data);
+  }
+
+  getDiscountById(id) {
+    const url = "http://localhost:8080/rade/admin/discount/" + id;
+    return axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  updateDiscount(data) {
+    const url = "http://localhost:8080/rade/admin/discount/edit";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 }
 

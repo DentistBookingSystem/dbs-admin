@@ -3,6 +3,7 @@ import authApi from "api/AuthApi";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import AdminLayout from "layouts/Admin.js";
 import AuthLayout from "layouts/Auth.js";
+import NotificationAlert from "react-notification-alert";
 
 import BranchDetail from "views/branch/BranchDetail";
 import ServiceDetail from "views/service/ServiceDetail";
@@ -15,10 +16,12 @@ import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
 import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
 import StaffHome from "views/Pages/staff-page/StaffHome";
 import Staff from "layouts/Staff";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import NewAccountStaffPage from "views/Pages/dbs-page/Add-page/NewAccountStaffPage";
 import LoginPage from "views/Pages/LoginPage";
+import UserPage from "views/Pages/dbs-page/UserPage";
 class App extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +35,6 @@ class App extends Component {
 
   componentDidMount() {
     const user = authApi.getCurrentUser();
-
     if (user) {
       this.setState({
         currentUser: user,
@@ -50,17 +52,6 @@ class App extends Component {
     const { currentUser, showAdminBoard, showLoginPage } = this.state;
     return (
       <>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
         <BrowserRouter>
           <Switch>
             <Route

@@ -130,7 +130,6 @@ function FeedbackTable() {
   };
   return (
     <>
-      <PanelHeader size="sm" />
       <div className="content">
         <Row>
           <Col md="12">
@@ -307,46 +306,50 @@ function FeedbackTable() {
                               >
                                 Detail
                               </UncontrolledTooltip>
-                              <Button
-                                className="btn-icon"
-                                color="success"
-                                id="tooltip26024663"
-                                size="sm"
-                                type="button"
-                                onClick={() => {
-                                  setModalMini(true);
-                                  setApprove(true);
-                                  setFeedbackDetail(item);
-                                }}
-                              >
-                                <i className="now-ui-icons ui-1_check" />
-                              </Button>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip26024663"
-                              >
-                                Approve
-                              </UncontrolledTooltip>
-                              <Button
-                                className="btn-icon"
-                                color="danger"
-                                id="tooltip930083782"
-                                size="sm"
-                                type="button"
-                                onClick={() => {
-                                  setModalMini(true);
-                                  setApprove(false);
-                                  setFeedbackDetail(item);
-                                }}
-                              >
-                                <i className="now-ui-icons ui-1_simple-remove" />
-                              </Button>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip930083782"
-                              >
-                                Disapprove
-                              </UncontrolledTooltip>
+                              {item.status === 0 ? (
+                                <>
+                                  <Button
+                                    className="btn-icon"
+                                    color="success"
+                                    id="tooltip26024663"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => {
+                                      setModalMini(true);
+                                      setApprove(true);
+                                      setFeedbackDetail(item);
+                                    }}
+                                  >
+                                    <i className="now-ui-icons ui-1_check" />
+                                  </Button>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip26024663"
+                                  >
+                                    Approve
+                                  </UncontrolledTooltip>
+                                  <Button
+                                    className="btn-icon"
+                                    color="danger"
+                                    id="tooltip930083782"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => {
+                                      setModalMini(true);
+                                      setApprove(false);
+                                      setFeedbackDetail(item);
+                                    }}
+                                  >
+                                    <i className="now-ui-icons ui-1_simple-remove" />
+                                  </Button>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip930083782"
+                                  >
+                                    Disapprove
+                                  </UncontrolledTooltip>
+                                </>
+                              ) : null}
                             </td>
                           </tr>
                         );
@@ -446,30 +449,34 @@ function FeedbackTable() {
                   Close
                 </Button>
               </Col>
-              <Col>
-                <Button
-                  color="success"
-                  onClick={() => {
-                    setLgShow(false);
-                    setModalMini(true);
-                    setApprove(true);
-                  }}
-                >
-                  Approve
-                </Button>
-              </Col>
-              <Col>
-                <Button
-                  color="warning"
-                  onClick={() => {
-                    setLgShow(false);
-                    setModalMini(true);
-                    setApprove(false);
-                  }}
-                >
-                  Disapprove
-                </Button>
-              </Col>
+              {feedbackDetail?.status === 0 ? (
+                <>
+                  <Col>
+                    <Button
+                      color="success"
+                      onClick={() => {
+                        setLgShow(false);
+                        setModalMini(true);
+                        setApprove(true);
+                      }}
+                    >
+                      Approve
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      color="warning"
+                      onClick={() => {
+                        setLgShow(false);
+                        setModalMini(true);
+                        setApprove(false);
+                      }}
+                    >
+                      Disapprove
+                    </Button>
+                  </Col>
+                </>
+              ) : null}
             </Row>
           </div>
         </Modal>

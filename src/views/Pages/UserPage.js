@@ -38,7 +38,7 @@ function User() {
       <PanelHeader size="sm" />
       <div className="content">
         <Row>
-        <Col md="4">
+          <Col md="4">
             <Card className="card-user">
               <div className="image">
                 <img alt="..." src={require("assets/img/bg5.jpg").default} />
@@ -212,7 +212,6 @@ function User() {
               </CardBody>
             </Card>
           </Col>
-          
         </Row>
       </div>
     </>

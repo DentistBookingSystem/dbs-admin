@@ -16,7 +16,7 @@ options = {
   message: (
     <div>
       <div>
-        Successfully add new <b>Service Type</b>
+        Successfully add new <b>Discount</b>
       </div>
     </div>
   ),
@@ -39,6 +39,8 @@ class NewDiscountPage extends Component {
       currentService: [],
       serviceList: [],
       errors: [],
+
+      nameError: false,
     };
 
     const rules = [];
@@ -89,6 +91,7 @@ class NewDiscountPage extends Component {
       await discountApi.insert(data).then((res) => {
         console.log("res discount: ", res);
         result = true;
+        window.location.replace("/admin/discounts");
       });
     } catch (error) {
       console.log("can not add errr", error);
@@ -114,6 +117,9 @@ class NewDiscountPage extends Component {
     });
   }
   async onHandleSubmit(event) {
+    if (!this.ValidateAll()) {
+      return;
+    }
     event.preventDefault();
     if (true) {
       const data = {
@@ -141,6 +147,22 @@ class NewDiscountPage extends Component {
     }
     console.log(this.state.currentService);
   }
+
+  ValidateAll() {
+    let flag = true;
+    if (this.state.name.length < 8 || this.state.name > 30) {
+      this.setState({
+        nameError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        nameError: false,
+      });
+    }
+    return flag;
+  }
+
   render() {
     const yesterday = moment().subtract(1, "day");
     const today = new Date().getDate();
@@ -153,18 +175,7 @@ class NewDiscountPage extends Component {
       <>
         {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
 
-        <AdminNavbar brandText="Dashboard" link="/admin/discounts" />
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
-        <div className="content">
+        <div className="container">
           <Form>
             <Row>
               <div className="container rounded bg-white mt-20 mb-5 ml-20">
@@ -187,13 +198,24 @@ class NewDiscountPage extends Component {
                           />
                         </div>
                       </div>
+                      {this.state.nameError ? (
+                        <>
+                          <span>
+                            <p style={{ color: `red` }}>
+                              Name must be between 8 - 30 characters
+                            </p>
+                          </span>
+                        </>
+                      ) : null}
                       <div className="row mt-2">
                         <div className="col-md-12">
                           <label className="labels">
-                            Discount Percentage(%)*
+                            Discount Percentage: {this.state.percentage}(%)
                           </label>
                           <input
-                            type="text"
+                            type="range"
+                            min="0"
+                            max="100"
                             className="form-control"
                             placeholder="Branch name"
                             name="percentage"

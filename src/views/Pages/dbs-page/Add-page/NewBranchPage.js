@@ -55,12 +55,12 @@ class NewBranchPage extends Component {
       name: "",
       url: "",
       openTime: {
-        hour: "60",
-        minute: "00",
+        hour: { value: "06", label: "06" },
+        minute: { value: "00", label: "00" },
       },
       closeTime: {
-        hour: "18",
-        minute: "00",
+        hour: { value: "18", label: "18" },
+        minute: { value: "00", label: "00" },
       },
       image: null,
       province: { label: "Choose a province", value: -1 },
@@ -73,6 +73,9 @@ class NewBranchPage extends Component {
       changeProvince: true,
       imagePreviewUrl: defaultImage,
       selectedFile: null,
+
+      TimeError: false,
+      FileError: false,
     };
 
     const rules = [
@@ -237,6 +240,32 @@ class NewBranchPage extends Component {
     return true;
   }
 
+  ValidateAll() {
+    let flag = true;
+    if (
+      Number(this.state.openTime.hour.value) >
+        Number(this.state.closeTime.hour.value) - 5 ||
+      Number(this.state.openTime.hour.value) >
+        Number(this.state.closeTime.hour.value)
+    ) {
+      this.setState({
+        TimeError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        TimeError: false,
+      });
+    }
+
+    if (!this.state.selectedFile) {
+      this.setState({ FileError: true });
+    } else {
+      this.setState({ FileError: false });
+    }
+    return flag;
+  }
+
   // handle data sent back to server
   _insertNewData = async (formData) => {
     var data;
@@ -259,7 +288,7 @@ class NewBranchPage extends Component {
           console.log(data);
           await branchApi.insertBranch(data).then((res) => {
             // this.notify();
-            toast.success("Add branch successfully!!!");
+            sessionStorage.setItem("add", true);
             window.location.replace("/admin/branchs");
           });
         });
@@ -270,6 +299,9 @@ class NewBranchPage extends Component {
   };
 
   async onHandleSubmit(event) {
+    if (!this.ValidateAll()) {
+      return;
+    }
     event.preventDefault();
     this.setState({
       errors: this.validator.validate(this.state, event),
@@ -305,17 +337,6 @@ class NewBranchPage extends Component {
     const { errors } = this.state;
     return (
       <>
-        <AdminNavbar brandText="Dashboard" link="/admin/branchs" />
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
         <div className="content">
           <Form>
             <Row>
@@ -336,6 +357,11 @@ class NewBranchPage extends Component {
                       <div className="thumbnail">
                         <img src={this.state.imagePreviewUrl} alt="..." />
                       </div>
+                      {this.state.FileError ? (
+                        <span>
+                          <p style={{ color: `red` }}>Please select a image</p>
+                        </span>
+                      ) : null}
                       <Button
                         className="btn-round"
                         onClick={() => this.fileInput.click()}
@@ -373,8 +399,8 @@ class NewBranchPage extends Component {
                         </div>
                       </FormGroup>
                       <FormGroup>
-                        <div className="row mt-2">
-                          <div className="col-md-6">
+                        <Row className="mt-2">
+                          <Col lg={6} md={12} className="col-md-6">
                             <label className="labels">Open time*</label>
                             <Row>
                               <Col>
@@ -423,8 +449,8 @@ class NewBranchPage extends Component {
                                 {errors.openTime}
                               </div>
                             )}
-                          </div>
-                          <div className="col-md-6">
+                          </Col>
+                          <Col lg={6} md={12} className="col-md-6">
                             <label className="labels">Close time*</label>
                             <Row>
                               <Col>
@@ -473,9 +499,16 @@ class NewBranchPage extends Component {
                                 {errors.closeTime}
                               </div>
                             )}
-                          </div>
-                        </div>
+                          </Col>
+                        </Row>
                       </FormGroup>
+                      {this.state.TimeError === true ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Time close must after 5 hour time open
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-2">
                         <div className="col-md-6">
                           <label className="labels">Province*</label>

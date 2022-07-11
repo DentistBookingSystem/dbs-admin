@@ -10,6 +10,12 @@ import serviceApi from "api/serviceApi";
 import NotificationAlert from "react-notification-alert";
 import Validator from "utils/validation/validator";
 
+import {
+  ModalHeader,
+  Modal as DangerModal,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
 const time = [
   { value: "0.5", label: "0.5" },
   { value: "1", label: "1" },
@@ -71,6 +77,7 @@ function Service(service) {
   const fileInput = useRef(null);
   const notifyAlert = useRef();
   const [errors, setErrors] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
 
   //Validation
   const validDropdownServiceType = (service_type) => {
@@ -262,7 +269,7 @@ function Service(service) {
           console.log("url ", res.data);
           await serviceApi.editService(dataUpdate).then((res) => {
             console.log("trả về", res);
-            notify();
+            sessionStorage.setItem("editService", true);
             window.location.href = "/admin/services";
           });
         });
@@ -272,7 +279,7 @@ function Service(service) {
     } else {
       if (validator.isValid) {
         editService(data);
-        notify();
+        sessionStorage.setItem("editService", true);
         setTimeout(() => {
           window.location.href = "/admin/services";
         }, 3000);
@@ -287,6 +294,36 @@ function Service(service) {
 
   return (
     <>
+      <DangerModal isOpen={modalOpen} toggle={() => setModalOpen(false)}>
+        <ModalHeader
+          className="text-center"
+          tag={"h3"}
+          style={{ fontWeight: "bolder" }}
+        >
+          Confirm
+        </ModalHeader>
+        <ModalBody>
+          <p>Do you want to save this informatiton</p>
+        </ModalBody>
+        <ModalFooter>
+          <Col className="text-center">
+            <Button
+              style={{ backgroundColor: `green` }}
+              onClick={() => onHandleSubmit()}
+            >
+              Yes
+            </Button>
+          </Col>
+          <Col className="text-center">
+            <Button
+              style={{ backgroundColor: `red` }}
+              onClick={() => setModalOpen(false)}
+            >
+              No
+            </Button>
+          </Col>
+        </ModalFooter>
+      </DangerModal>
       <div className="content">
         <Row>
           <Col md="4">
@@ -470,7 +507,7 @@ function Service(service) {
                       <button
                         className="btn btn-info btns-mr-10"
                         type="button"
-                        onClick={onHandleSubmit}
+                        onClick={() => setModalOpen(true)}
                       >
                         Save
                       </button>

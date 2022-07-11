@@ -1,6 +1,8 @@
+import axios from "axios";
 import { idText } from "typescript";
 import axiosClient from "./axiosClient";
 
+const token = sessionStorage.getItem("user");
 class ServiceTypeApi {
   BASE_URL = "/service_type";
   getAll = () => {
@@ -8,19 +10,34 @@ class ServiceTypeApi {
     return axiosClient.get(url);
   };
   insert = (data) => {
-    const url = this.BASE_URL + "/add";
-    return axiosClient.post(url, data).then((res) => {
-      return res;
+    const url = "http://localhost:8080/rade/admin/service_type/add";
+
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
   };
 
   getServiceTypeById(id) {
-    const url = "";
+    const url = "http://localhost:8080/rade/admin/service_type/" + id;
+    return axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
-  editServiceType(id, data) {
-    const url = "rade/admin/service_type/edit/" + id;
-    return axiosClient.post(url, data);
+  editServiceType(data) {
+    const url = "http://localhost:8080/rade/admin/service_type/edit";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 }
 const serviceTypeApi = new ServiceTypeApi();

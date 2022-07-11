@@ -40,6 +40,7 @@ import {
 } from "reactstrap";
 import routes from "routes.js";
 import { useHistory } from "react-router-dom";
+import PanelHeader from "components/PanelHeader/PanelHeader";
 
 function AdminNavbar(props) {
   const location = useLocation();
@@ -96,7 +97,7 @@ function AdminNavbar(props) {
     for (let index = 0; index < routes.length; index++) {
       const name = routes[index].name;
       if (name === branchText) {
-        return routes[index].path;
+        return routes[index].layout + routes[index].path;
       }
     }
     return "/";
@@ -157,63 +158,68 @@ function AdminNavbar(props) {
   }, [location]);
   return (
     // add or remove classes depending if we are on full-screen-maps page or not
-    <Navbar
-      color={
-        window.location.href.indexOf("full-screen-maps") !== -1
-          ? "white"
-          : color
-      }
-      expand="lg"
-      className={
-        window.location.href.indexOf("full-screen-maps") !== -1
-          ? "navbar-absolute "
-          : "navbar-absolute " +
-            (color === "transparent" ? "navbar-transparent " : "")
-      }
-    >
-      <Container fluid>
-        <div className="navbar-wrapper">
-          <div className="navbar-toggle">
-            <button
-              type="button"
-              ref={sidebarToggle}
-              className="navbar-toggler"
-              onClick={() => openSidebar()}
-            >
-              <span className="navbar-toggler-bar bar1" />
-              <span className="navbar-toggler-bar bar2" />
-              <span className="navbar-toggler-bar bar3" />
-            </button>
+    <>
+      <Navbar
+        color={
+          window.location.href.indexOf("full-screen-maps") !== -1
+            ? "white"
+            : color
+        }
+        expand="lg"
+        className={
+          window.location.href.indexOf("full-screen-maps") !== -1
+            ? "navbar-absolute "
+            : "navbar-absolute " +
+              (color === "transparent" ? "navbar-transparent " : "")
+        }
+      >
+        <Container fluid>
+          <div className="navbar-wrapper">
+            <div className="navbar-toggle">
+              <button
+                type="button"
+                ref={sidebarToggle}
+                className="navbar-toggler"
+                onClick={() => openSidebar()}
+              >
+                <span className="navbar-toggler-bar bar1" />
+                <span className="navbar-toggler-bar bar2" />
+                <span className="navbar-toggler-bar bar3" />
+              </button>
+            </div>
+            <NavbarBrand href={getPathBack(props.brandText)}>
+              {props.brandText}
+            </NavbarBrand>
           </div>
-          <NavbarBrand href={getPathBack(props.brandText)}>
-            {props.brandText}
-          </NavbarBrand>
-        </div>
-        <NavbarToggler onClick={toggle}>
-          <span className="navbar-toggler-bar navbar-kebab" />
-          <span className="navbar-toggler-bar navbar-kebab" />
-          <span className="navbar-toggler-bar navbar-kebab" />
-        </NavbarToggler>
-        <Collapse isOpen={isOpen} navbar className="justify-content-end">
-          <form>
-            <InputGroup className="no-border">
-              {/* <Input placeholder="Search..." /> */}
-              {getStatusPage(props.brandText) ? (
-                <Button
-                  color="info"
-                  className="btn-round"
-                  onClick={() => navigateToPage()}
-                >
-                  Add {props.brandText}
-                </Button>
-              ) : (
-                <></>
-              )}
-            </InputGroup>
-          </form>
-        </Collapse>
-      </Container>
-    </Navbar>
+          <NavbarToggler onClick={toggle}>
+            <span className="navbar-toggler-bar navbar-kebab" />
+            <span className="navbar-toggler-bar navbar-kebab" />
+            <span className="navbar-toggler-bar navbar-kebab" />
+          </NavbarToggler>
+          <Collapse isOpen={isOpen} navbar className="justify-content-end">
+            <form>
+              <InputGroup className="no-border">
+                {/* <Input placeholder="Search..." /> */}
+                {getStatusPage(props.brandText) ? (
+                  <Button
+                    color="info"
+                    className="btn-round"
+                    onClick={() => navigateToPage()}
+                  >
+                    Add {props.brandText}
+                  </Button>
+                ) : (
+                  <></>
+                )}
+              </InputGroup>
+            </form>
+          </Collapse>
+        </Container>
+      </Navbar>
+      {!window.location.href.includes("dashboard") ? (
+        <PanelHeader size="sm" />
+      ) : null}
+    </>
   );
 }
 

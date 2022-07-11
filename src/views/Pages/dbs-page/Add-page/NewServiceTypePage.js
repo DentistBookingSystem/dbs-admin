@@ -13,7 +13,7 @@ options = {
   message: (
     <div>
       <div>
-        Successfully add new <b>Discount</b>
+        Successfully add new <b>Service type</b>
       </div>
     </div>
   ),
@@ -51,6 +51,7 @@ class NewServiceTypePage extends Component {
     this.onHandleSubmit = this.onHandleSubmit.bind(this);
     this.validator = new Validator(rules);
     this.notify = this.notify.bind(this);
+    this.notifyMessage = this.notifyMessage.bind(this);
   }
 
   notify() {
@@ -66,17 +67,15 @@ class NewServiceTypePage extends Component {
       [name]: value,
     });
   }
-  _insertServiceType = async (dataServiceType) => {
-    try {
-      await serviceTypeApi.insert(dataServiceType).then((res) => {
-        console.log("Insert");
-        return res;
-      });
-    } catch (error) {
-      console.log("Insert service type failed");
+  async onHandleSubmit(event) {
+    if (this.state.name.length < 8) {
+      this.notifyMessage(
+        "Length must be graeter than 8 characters.",
+        "danger",
+        "now-ui-icons travel_info"
+      );
+      return;
     }
-  };
-  onHandleSubmit(event) {
     event.preventDefault();
     this.setState({
       errors: this.validator.validate(this.state, event),
@@ -88,29 +87,50 @@ class NewServiceTypePage extends Component {
       name: this.state.name,
       description: this.state.description,
     };
-    const res = this._insertServiceType(dataServiceType);
-    if (res !== null) {
-      this.notify();
+
+    try {
+      await serviceTypeApi
+        .insert(dataServiceType)
+        .then((res) => {
+          console.log("Insert", res);
+          console.log("asdoasd");
+          sessionStorage.setItem("addServiceType", "fbnjfbfdh");
+          window.location.replace("/admin/service-type");
+        })
+        .catch((error) => {
+          console.log("dvnindivn", error);
+          if (error.response?.data) {
+            this.notifyMessage(
+              error.response?.data?.message,
+              "danger",
+              "now-ui-icons travel_info"
+            );
+          }
+        });
+    } catch (error) {
+      console.log("Insert service type failed");
     }
-    console.log(dataServiceType);
+  }
+
+  notifyMessage(message, type, icon) {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    this.refs.notify.notificationAlert(options1);
   }
   render() {
     const { errors } = this.state;
     return (
       <>
-        {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
-
-        <AdminNavbar brandText="Dashboard" link="/admin/service-type" />
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
         <div className="content">
           <Form>
             <Row>
@@ -179,11 +199,7 @@ class NewServiceTypePage extends Component {
           </Form>
         </div>
         <div>
-          <NotificationAlert
-            ref="notify"
-            zIndex={9999}
-            onClick={() => console.log("hey")}
-          />
+          <NotificationAlert ref="notify" zIndex={9999} />
         </div>
       </>
     );

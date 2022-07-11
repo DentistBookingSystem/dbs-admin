@@ -295,17 +295,19 @@ function AppointmentTable(props) {
                         Close
                       </Button>
                     </Col>
-                    <Col>
-                      <Button
-                        color="success"
-                        onClick={() => {
-                          setLgShow(false);
-                          checkDoneAppointment(bookingDetail.id);
-                        }}
-                      >
-                        Check-in
-                      </Button>
-                    </Col>
+                    {bookingDetail?.status === 0 ? (
+                      <Col>
+                        <Button
+                          color="success"
+                          onClick={() => {
+                            setLgShow(false);
+                            checkDoneAppointment(bookingDetail.id);
+                          }}
+                        >
+                          Check-in
+                        </Button>
+                      </Col>
+                    ) : null}
                   </Row>
                 </div>
               </Modal>

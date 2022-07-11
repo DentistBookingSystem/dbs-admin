@@ -387,14 +387,17 @@ function AccountTable() {
                 const data = {
                   phone: accountDetail.phone,
                 };
+                console.log("phone gửi xuống", data);
                 if (status === 1) {
                   //đang unban
                   AccountApi.banAccount(data).then((res) => {
                     // window.location.reload();
+                    console.log("Kết quả trả về", res);
                   });
                 } else {
                   AccountApi.unbanAccount(data).then((res) => {
                     // window.location.reload();
+                    console.log("Kết quả trả về", res);
                   });
                 }
               }}

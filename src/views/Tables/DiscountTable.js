@@ -20,6 +20,7 @@ import Discount from "views/Pages/dbs-page/edit-form/Discount";
 import { Modal } from "react-bootstrap";
 import Select from "react-select";
 import serviceApi from "api/serviceApi";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function DiscountTable() {
   const [discountList, setDiscountList] = useState([]);
@@ -47,6 +48,7 @@ function DiscountTable() {
     indexOfFirstDiscount,
     indexOfLastDiscount
   );
+  const history = useHistory();
 
   //Pop up alert delete
   const toggleModalMini = () => {
@@ -72,7 +74,7 @@ function DiscountTable() {
   // };
 
   //Delete service
-  const disableService = async () => {
+  const disableDiscount = async () => {
     setModalMini(false);
     if (idDelete !== -1) {
       try {
@@ -176,7 +178,7 @@ function DiscountTable() {
                 </Row>
                 <Row md={7} className="justify-content-center mb-3">
                   <Col md={2}>
-                    <label>End Date</label>
+                    <label>Date</label>
                   </Col>
                   <Col md={5}>
                     <Input
@@ -289,7 +291,7 @@ function DiscountTable() {
                             >
                               <i className="now-ui-icons ui-2_settings-90" />
                             </Button>
-                            <Button
+                            {/* <Button
                               className="btn-icon"
                               color="danger"
                               size="sm"
@@ -300,7 +302,7 @@ function DiscountTable() {
                               }}
                             >
                               <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
+                            </Button> */}
                           </td>
                         </tr>
                       );
@@ -429,7 +431,13 @@ function DiscountTable() {
                 </Button>
               </Col>
               <Col>
-                <Button color="primary" onClick={() => setLgShow(false)}>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    setLgShow(false);
+                    history.push("/admin/discount/edit/" + editDiscount.id);
+                  }}
+                >
                   Edit
                 </Button>
               </Col>
@@ -441,7 +449,7 @@ function DiscountTable() {
           isOpen={modalMini}
           toggle={toggleModalMini}
           size="mini"
-          modalClassName="modal-info"
+          // modalClassName="modal-info"
         >
           <div className="modal-header justify-content-center">
             <div className="modal-profile">
@@ -455,7 +463,7 @@ function DiscountTable() {
             <Button
               color="link"
               className="btn-neutral"
-              onClick={disableService}
+              onClick={() => disableDiscount()}
             >
               Delete
             </Button>{" "}

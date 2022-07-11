@@ -154,6 +154,7 @@ class NewDoctorPage extends Component {
         doctorApi.insertDoctor(data).then((result) => {
           console.log(result);
           console.log("add thành công ");
+          window.location.replace("/admin/doctors");
         });
       });
     } catch (error) {}

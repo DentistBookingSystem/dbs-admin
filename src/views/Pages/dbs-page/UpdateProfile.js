@@ -1,10 +1,10 @@
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import provinceApi from "api/provinceApi";
-import React, { Component, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Component, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import Datetime from "react-datetime";
+import NotificationAlert from "react-notification-alert";
 import {
   Card,
   CardHeader,
@@ -26,38 +26,71 @@ import {
 import districtApi from "api/districtApi";
 import AccountApi from "api/AccountApi";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 var selectOptions = [
   { value: "1", label: "Male" },
   { value: "2", label: "Female" },
 ];
 
-export default function NewAccountStaffPage() {
+export default function UpdateProfile() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [name, setName] = useState("");
   const [gender, setGender] = useState();
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [provinceId, setprovinceId] = useState();
-  const [districtId, setDistrictId] = useState();
+  const [provinceId, setprovinceId] = useState(null);
+  const [districtId, setDistrictId] = useState(null);
+
+  const [passwordError, setPasswordError] = useState("false");
+  const [oldPasswordError, setOldPasswordError] = useState("false");
+  const [confirmError, setConfirmError] = useState("false");
+  const [nameError, setNameError] = useState("false");
+  const [genderError, setGenderError] = useState();
+  const [emailError, setEmailError] = useState("false");
+  const [dateOfBirthError, setDateOfBirthError] = useState("false");
+  const [provinceIdError, setprovinceIdError] = useState("false");
+  const [districtIdError, setDistrictIdError] = useState("false");
 
   const [listProvince, setListProvicne] = useState([]);
   const [listDistrict, setListDistrict] = useState(null);
+  const [account, setAccount] = useState(null);
+  const history = useHistory();
 
   const [firstnameFocus, setfirstnameFocus] = React.useState(false);
   const [lastnameFocus, setlastnameFocus] = React.useState(false);
   const [emailFocus, setemailFocus] = React.useState(false);
+  const notify = useRef(null);
 
-  const [singleSelect, setSingleSelect] = React.useState(null);
   useEffect(async () => {
-    // document.body.classList.add("register-page");
     getListProvince();
-    // return function cleanup() {
-    //   document.body.classList.remove("register-page");
-    // };
+    getProfile();
   }, []);
+  const getProfile = () => {
+    AccountApi.getAccount(sessionStorage.getItem("phone")).then((res) => {
+      console.log("res data", res.data);
+      setAccount(res.data);
+      setPhone(res.data.phone);
+      setDateOfBirth(res.data.dateOfBirth);
+      setDistrictId({
+        value: res.data.district.id,
+        label: res.data.district.name,
+      });
+      setprovinceId({
+        value: res.data.district.province.id,
+        label: res.data.district.province.name,
+      });
+      setGender({
+        value: res.data.gender,
+        label: res.data.gender === 1 ? "Male" : "Female",
+      });
+      setEmail(res.data.email);
+      setName(res.data.fullName);
+    });
+  };
 
   const getListProvince = async () => {
     const result = await provinceApi.getProvinceList();
@@ -76,9 +109,7 @@ export default function NewAccountStaffPage() {
   }, [provinceId]);
 
   const getDistrictList = async () => {
-    console.log(provinceId);
     const result = await districtApi.getDistrictList(provinceId?.value);
-    console.log("district", result);
     if (result) {
       var list = [];
       result.data?.map((item) => {
@@ -123,119 +154,218 @@ export default function NewAccountStaffPage() {
 
   const handleAddNew = () => {
     var flag = true;
-    if (!districtId) {
-      setDistrictId("Not");
+    if (districtId.value < 0) {
+      setDistrictIdError("true");
       flag = false;
+    } else {
+      setDistrictIdError("false");
     }
-    if (!provinceId) {
-      setDistrictId("Not");
+    if (provinceId.value < 0 || !provinceId) {
+      setprovinceIdError("true");
       flag = false;
+    } else {
+      setprovinceIdError("false");
     }
-    if (!dateOfBirth) {
-      setDateOfBirth("Not");
+    var now = new Date();
+    var dob = new Date(dateOfBirth);
+    if (!dateOfBirth || dob.getFullYear() < now.getFullYear() - 90) {
+      setDateOfBirthError("true");
       flag = false;
+    } else {
+      setDateOfBirthError("false");
     }
     if (!gender) {
-      setGender("Not");
-    }
-    console.log(confirm);
-    if (
-      verifyLength(name, 5) &&
-      verifyNumber(phone) &&
-      verifyEmail(email) &&
-      verifyLength(password, 8) &&
-      verifyLength(confirm, 8) &&
-      compare(password, confirm)
-    ) {
-    } else {
+      setGenderError("true");
       flag = false;
+    } else {
+      setGenderError("false");
+    }
+    if (!verifyLength(name, 8)) {
+      setNameError("true");
+      flag = false;
+    } else {
+      setNameError("false");
+    }
+    if (!verifyEmail(email)) {
+      setEmailError("true");
+      flag = false;
+    } else {
+      setEmailError("false");
+    }
+    if (!verifyLength(password, 8)) {
+      setPasswordError("true");
+      flag = false;
+    } else {
+      setPasswordError("false");
+    }
+    if (!verifyLength(confirm, 8)) {
+      setConfirmError("true");
+      flag = false;
+    } else {
+      setConfirmError("false");
+    }
+    if (!verifyLength(oldPassword, 8)) {
+      setOldPasswordError("true");
+      flag = false;
+    } else {
+      setOldPasswordError("false");
     }
     if (phone.length < 10 || phone.length > 11) {
       flag = false;
-      setPhone("Not");
+      setPhone("true");
     }
     if (flag) {
-      const data = {
-        phone: phone,
-        fullName: name,
-        email: email,
-        password: password,
-        dateOfBirth: dateOfBirth,
-        districtId: districtId.value,
-        gender: gender.value,
-      };
-      console.log(data);
-      const result = AccountApi.AddStaff(data).then((res) => {
-        console.log(res);
-        if (res === "Register successfully") {
-          toast.success(res);
-          window.location.replace("/admin/accounts");
-        }
-      });
+      console.log("true ");
+      checkAccount();
+    } else {
+      console.log("faf");
     }
   };
 
+  const checkAccount = () => {
+    var data = {
+      phone: account.phone,
+      password: password,
+    };
+    console.log("data check account", data);
+    var dataUpdate = {
+      fullName: name,
+      password: password,
+      dateOfBirth: dateOfBirth,
+      gender: gender.value,
+      districtId: districtId.value,
+      phone: account.phone,
+      email: email,
+      confirmPassword: oldPassword,
+    };
+    AccountApi.updateAccount(dataUpdate)
+      .then((res) => {
+        console.log(res);
+        sessionStorage.setItem("update", "true");
+        window.location.replace("/staff/account/profile");
+      })
+      .catch((error) => {
+        if (error.response.status === 406) {
+          notifyMessage("Wrong old password");
+          setOldPasswordError("wrong");
+          setOldPassword("");
+          setPassword("");
+          setConfirm("");
+        }
+      });
+  };
+
+  const notifyMessage = (message) => {
+    var options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: "success",
+      icon: "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    notify.current.notificationAlert(options);
+  };
+  useEffect(() => {
+    if (sessionStorage.getItem("login")) {
+      notifyMessage("bdavsu");
+      sessionStorage.removeItem("login");
+    }
+  }, []);
   return (
     <div>
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
       <div className="container">
         <div className="content">
           <div className="register-page">
             <Container>
               <Row className="justify-content-center">
-                <Col lg={7} md={8} xs={12}>
+                <Col lg={8} md={8} xs={12} className="p-3">
                   <Card className="card-signup">
                     <CardHeader className="text-center">
-                      <CardTitle tag="h4">Add New Staff</CardTitle>
+                      <CardTitle tag="h4">Update profile</CardTitle>
                     </CardHeader>
                     <CardBody>
                       <Form>
+                        <label className="ml-3">Phone</label>
                         <InputGroup
                           className={firstnameFocus ? "input-group-focus" : ""}
                         >
                           <Input
-                            style={{ width: `100%` }}
+                            style={{
+                              width: `100%`,
+                              color: `black`,
+                              cursor: `context-menu`,
+                            }}
                             type="number"
                             placeholder="Phone..."
+                            readOnly
                             onFocus={(e) => setfirstnameFocus(true)}
                             onBlur={(e) => setfirstnameFocus(false)}
+                            value={phone}
+                          />
+                        </InputGroup>
+                        {/* Old password  */}
+                        <label className="ml-3">Old Password</label>
+                        <InputGroup
+                          className={lastnameFocus ? "input-group-focus" : ""}
+                        >
+                          <Input
+                            style={{ width: `100%`, color: `black` }}
+                            type="password"
+                            placeholder="Old Password..."
+                            value={oldPassword}
+                            onFocus={(e) => setlastnameFocus(true)}
+                            onBlur={(e) => setlastnameFocus(false)}
                             onChange={(e) => {
-                              if (verifyNumber(e.target.value)) {
-                                setPhone(e.target.value);
-                              } else {
-                                setPhone("Not");
-                              }
+                              setOldPassword(e.target.value);
                             }}
                           />
-                          {phone === "Not" ? (
+                          {oldPasswordError === "true" ? (
                             <Row>
                               <label
                                 className="error pl-4"
                                 style={{ color: `red` }}
                               >
-                                Please enter a valid number.
+                                This feild is required 8 characters.
+                              </label>
+                            </Row>
+                          ) : null}
+                          {oldPasswordError === "wrong" ? (
+                            <Row>
+                              <label
+                                className="error pl-4"
+                                style={{ color: `red` }}
+                              >
+                                This password is wrong.
                               </label>
                             </Row>
                           ) : null}
                         </InputGroup>
                         {/* Password  */}
+                        <label className="ml-3">New Password</label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
                           <Input
-                            style={{ width: `100%` }}
+                            style={{ width: `100%`, color: `black` }}
                             type="password"
-                            placeholder="Password..."
+                            placeholder="New Password..."
+                            value={password}
                             onFocus={(e) => setlastnameFocus(true)}
                             onBlur={(e) => setlastnameFocus(false)}
                             onChange={(e) => {
-                              if (verifyLength(e.target.value, 8)) {
-                                setPassword(e.target.value);
-                              } else {
-                                setPassword("Not");
-                              }
+                              setPassword(e.target.value);
                             }}
                           />
-                          {password === "Not" ? (
+                          {passwordError == "true" ? (
                             <Row>
                               <label
                                 className="error pl-4"
@@ -247,27 +377,22 @@ export default function NewAccountStaffPage() {
                           ) : null}
                         </InputGroup>
                         {/* Confirm  */}
+                        <label className="ml-3">Confirm password</label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
                           <Input
                             style={{ width: `100%` }}
                             type="password"
+                            value={confirm}
                             placeholder="Confirm password..."
                             onFocus={(e) => setlastnameFocus(true)}
                             onBlur={(e) => setlastnameFocus(false)}
                             onChange={(e) => {
-                              if (verifyLength(e.target.value, 8)) {
-                                setConfirm(e.target.value);
-                                if (!compare(password, e.target.value)) {
-                                  setConfirm("NotE");
-                                }
-                              } else {
-                                setConfirm("Not");
-                              }
+                              setConfirm(e.target.value);
                             }}
                           />
-                          {confirm === "Not" ? (
+                          {confirmError === "true" ? (
                             <Row>
                               <label
                                 className="error pl-4"
@@ -277,7 +402,7 @@ export default function NewAccountStaffPage() {
                               </label>
                             </Row>
                           ) : null}
-                          {confirm === "NotE" ? (
+                          {confirmError === "NotEqual" ? (
                             <Row>
                               <label
                                 className="error pl-4"
@@ -289,6 +414,7 @@ export default function NewAccountStaffPage() {
                           ) : null}
                         </InputGroup>
                         {/* Name  */}
+                        <label className="ml-3">Name</label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
@@ -296,17 +422,14 @@ export default function NewAccountStaffPage() {
                             style={{ width: `100%` }}
                             type="text"
                             placeholder="Full Name..."
+                            value={name}
                             onFocus={(e) => setlastnameFocus(true)}
                             onBlur={(e) => setlastnameFocus(false)}
                             onChange={(e) => {
-                              if (verifyLength(e.target.value, 10)) {
-                                setName(e.target.value);
-                              } else {
-                                setName("Not");
-                              }
+                              setName(e.target.value);
                             }}
                           />
-                          {name === "Not" ? (
+                          {nameError === "true" ? (
                             <Row>
                               <label
                                 className="error pl-4"
@@ -319,6 +442,7 @@ export default function NewAccountStaffPage() {
                         </InputGroup>
 
                         {/* Email  */}
+                        <label className="ml-3">Email</label>
                         <InputGroup
                           className={emailFocus ? "input-group-focus" : ""}
                           style={{ display: `flex`, flexDirection: `column` }}
@@ -327,20 +451,14 @@ export default function NewAccountStaffPage() {
                             style={{ width: `100%` }}
                             type="email"
                             placeholder="Email..."
+                            value={email}
                             onFocus={(e) => setemailFocus(true)}
                             onBlur={(e) => setemailFocus(false)}
                             onChange={(e) => {
-                              if (!verifyEmail(e.target.value)) {
-                                setEmail("has-danger");
-                              } else {
-                                setEmail("has-success");
-                                setEmail(e.target.value);
-                              }
-
-                              console.log(email);
+                              setEmail(e.target.value);
                             }}
                           />
-                          {email === "has-danger" ? (
+                          {emailError === "true" ? (
                             <Row>
                               <label
                                 className="error pl-4"
@@ -352,6 +470,7 @@ export default function NewAccountStaffPage() {
                           ) : null}
                         </InputGroup>
                         {/* DAte of birth  */}
+                        <label className="ml-3">Date of birth</label>
                         <FormGroup>
                           <Datetime
                             timeFormat={false}
@@ -359,13 +478,13 @@ export default function NewAccountStaffPage() {
                             inputProps={{
                               placeholder: "Date Of Birth...",
                             }}
+                            value={dateOfBirth}
                             onChange={(e) => {
-                              console.log(e._d);
                               setDateOfBirth(e._d);
                             }}
                           />
                         </FormGroup>
-                        {!dateOfBirth && dateOfBirth === "Not" ? (
+                        {dateOfBirthError === "true" ? (
                           <Row>
                             <label
                               className="error pl-4"
@@ -377,9 +496,10 @@ export default function NewAccountStaffPage() {
                         ) : null}
 
                         {/* Gender  */}
+                        <label className="ml-3">Gender</label>
                         <Col className="p-0 pb-2">
                           <Select
-                            className="react-select primary"
+                            className="react-select "
                             classNamePrefix="react-select"
                             placeholder="Gender"
                             name="singleSelect"
@@ -388,7 +508,7 @@ export default function NewAccountStaffPage() {
                             onChange={(value) => setGender(value)}
                           />
                         </Col>
-                        {gender === "Not" ? (
+                        {genderError === "true" ? (
                           <Row>
                             <label
                               className="error pl-4"
@@ -399,18 +519,26 @@ export default function NewAccountStaffPage() {
                           </Row>
                         ) : null}
                         {/* Provinvce  */}
+                        <label className="ml-3">Province</label>
                         <Col className="p-0 pb-2">
                           <Select
-                            className="react-select primary"
+                            style={{ color: `black` }}
+                            className="react-select "
                             classNamePrefix="react-select"
                             placeholder="Province"
                             name="Select Province"
                             value={provinceId}
                             options={listProvince}
-                            onChange={(value) => setprovinceId(value)}
+                            onChange={(value) => {
+                              setprovinceId(value);
+                              setDistrictId({
+                                value: -1,
+                                label: "Select district ",
+                              });
+                            }}
                           />
                         </Col>
-                        {provinceId === "Not" ? (
+                        {provinceIdError === "true" ? (
                           <Row>
                             <label
                               className="error pl-4"
@@ -421,9 +549,11 @@ export default function NewAccountStaffPage() {
                           </Row>
                         ) : null}
                         {/* District  */}
+                        <label className="ml-3">District</label>
                         <Col className="p-0">
                           <Select
-                            className="react-select primary"
+                            style={{ color: `black` }}
+                            className="react-select "
                             classNamePrefix="react-select"
                             placeholder="District"
                             name="singleSelect"
@@ -432,7 +562,7 @@ export default function NewAccountStaffPage() {
                             onChange={(value) => setDistrictId(value)}
                           />
                         </Col>
-                        {districtId === "Not" ? (
+                        {districtIdError === "true" ? (
                           <Row>
                             <label
                               className="error pl-4"
@@ -454,7 +584,7 @@ export default function NewAccountStaffPage() {
                           handleAddNew();
                         }}
                       >
-                        Add New
+                        Update
                       </Button>
                     </CardFooter>
                   </Card>

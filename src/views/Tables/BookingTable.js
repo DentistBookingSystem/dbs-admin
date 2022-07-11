@@ -195,8 +195,6 @@ function BookingTable() {
 
   return (
     <>
-      <PanelHeader size="sm" />
-
       {isEdit ? (
         <Appointment {...updateBooking} />
       ) : (
@@ -339,11 +337,11 @@ function BookingTable() {
                           <th style={{ fontWeight: `bold` }}>Shift</th>
                           <th style={{ fontWeight: `bold` }}>Doctor</th>
                           <th style={{ fontWeight: `bold` }}>Status</th>
-                          <th
+                          {/* <th
                             style={{ fontWeight: `bold`, textAlign: `center` }}
                           >
                             Actions
-                          </th>
+                          </th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -389,7 +387,7 @@ function BookingTable() {
                                   </div>
                                 ) : null}
                               </td>
-                              <td className="text-center btns-mr-5">
+                              {/* <td className="text-center btns-mr-5">
                                 <Button
                                   className="btn-icon"
                                   color="info"
@@ -419,7 +417,7 @@ function BookingTable() {
                                 >
                                   <i className="now-ui-icons ui-1_simple-remove" />
                                 </Button>
-                              </td>
+                              </td> */}
                             </tr>
                           );
                         })}

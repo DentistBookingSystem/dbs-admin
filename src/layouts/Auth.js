@@ -22,12 +22,11 @@ import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import axiosClient from "../api/axiosClient";
 
-
-
 import routes from "routes.js";
+import { ToastContainer } from "react-toastify";
 
 function Auth(props) {
-  console.log('...Auth...')
+  console.log("...Auth...");
   console.log(axiosClient);
   const [filterColor, setFilterColor] = React.useState("yellow");
   const getRoutes = (routes) => {
@@ -54,6 +53,17 @@ function Auth(props) {
   return (
     <>
       <AuthNavbar {...props} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="wrapper wrapper-full-page">
         <div className="full-page section-image" filter-color={filterColor}>
           <Switch>

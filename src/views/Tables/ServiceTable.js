@@ -11,8 +11,10 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  UncontrolledTooltip,
 } from "reactstrap";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import NotificationAlert from "react-notification-alert";
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import serviceApi from "api/serviceApi.js";
@@ -22,9 +24,6 @@ import CustomPagination from "views/Widgets/Pagination";
 import Service from "views/Pages/dbs-page/edit-form/Service";
 import serviceTypeApi from "../../api/serviceTypeApi";
 import Select from "react-select";
-import { max } from "moment";
-import CurrencyInput from "react-currency-input-field";
-import { toast } from "react-toastify";
 
 function ServiceTable() {
   const [serviceList, setServiceList] = React.useState([]);
@@ -50,6 +49,7 @@ function ServiceTable() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [statusMaxPrice, setStatusMaxPrice] = useState(true);
+  const notify = useRef();
 
   const indexOfLastService = currentPage * servicesPerPage;
   const indexOfFirstService = indexOfLastService - servicesPerPage;
@@ -109,6 +109,14 @@ function ServiceTable() {
   useEffect(() => {
     fetchServiceList();
     getAllServivceType();
+    if (sessionStorage.getItem("addNewService")) {
+      notifyMessage("Add new service successfully!!!");
+      sessionStorage.removeItem("addNewService");
+    }
+    if (sessionStorage.getItem("editService")) {
+      notifyMessage("Edit service successfully!!!");
+      sessionStorage.removeItem("editService");
+    }
   }, []);
 
   const getAllServivceType = async () => {
@@ -179,9 +187,29 @@ function ServiceTable() {
     return x;
   };
 
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
+  };
+
   return (
     <>
-      <PanelHeader size="sm" />
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
       {isEdit ? (
         <Service {...editService} />
       ) : (
@@ -448,6 +476,7 @@ function ServiceTable() {
                                 <td className="text-center btns-mr-5">
                                   <Button
                                     className="btn-icon"
+                                    id={`detail${service.id}`}
                                     color="info"
                                     size="sm"
                                     type="button"
@@ -458,10 +487,16 @@ function ServiceTable() {
                                   >
                                     <i className="now-ui-icons users_single-02" />
                                   </Button>
-
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target={`detail${service.id}`}
+                                  >
+                                    Detail
+                                  </UncontrolledTooltip>
                                   <Button
                                     className="btn-icon"
                                     color="success"
+                                    id={`update${service.id}`}
                                     size="sm"
                                     type="button"
                                     onClick={() => {
@@ -471,10 +506,16 @@ function ServiceTable() {
                                   >
                                     <i className="now-ui-icons ui-2_settings-90" />
                                   </Button>
-
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target={`update${service.id}`}
+                                  >
+                                    Update
+                                  </UncontrolledTooltip>
                                   <Button
                                     className="btn-icon"
                                     color="danger"
+                                    id={`Inactive${service.id}`}
                                     size="sm"
                                     type="button"
                                     onClick={() => {
@@ -487,6 +528,12 @@ function ServiceTable() {
                                   >
                                     <i className="now-ui-icons ui-1_simple-remove" />
                                   </Button>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target={`Inactive${service.id}`}
+                                  >
+                                    Inactive
+                                  </UncontrolledTooltip>
                                 </td>
                               </tr>
                             );
@@ -569,9 +616,13 @@ function ServiceTable() {
                       <Col>
                         <Button
                           color="primary"
-                          onClick={() => setLgShow(false)}
+                          onClick={() => {
+                            setLgShow(false);
+                            setEditService(service);
+                            setIsEdit(!isEdit);
+                          }}
                         >
-                          Edit
+                          Update
                         </Button>
                       </Col>
                     </Row>

@@ -10,15 +10,6 @@ const API_ADD_IMAGE = "http://localhost:8080/rade/admin/branch/add-image";
 const token = sessionStorage.getItem("user");
 
 class BranchApi {
-  // getAll = () => {
-  //   console.log("branch: ", token)
-  //   return axios.get(API_GET_BRANCH_LIST, {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       "Authorization": `Bearer ${token}`,
-  //     },
-  //   });
-  // };
   getBranchById = (id) => {
     return axios.get(API_GET_BRANCH_BY_ID + id, {
       headers: {
@@ -63,22 +54,6 @@ class BranchApi {
       window.location.replace("/auth/login-page");
     });
   };
-  // getBranchById = (id) => {
-  //   const url = "/branch/" + id;
-  //   return axiosClient.get(url);
-  // };
-  // insert = (formData) => {
-  //   const url = "/branch" + "/add";
-  //   return axiosClient
-  //     .post(url, formData, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     })
-  //     .then((res) => {
-  //       return res;
-  //     });
-  // };
 
   getAllBranchForStaff = async () => {
     const url = "http://localhost:8080/rade/home";

@@ -24,6 +24,7 @@ import {
 } from "reactstrap";
 import routes from "routes.js";
 import { useHistory } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 
 function StaffNav(props) {
   const location = useLocation();
@@ -127,8 +128,10 @@ function StaffNav(props) {
   };
   React.useEffect(() => {
     window.addEventListener("resize", updateColor);
+
     // eslint-disable-next-line
   }, []);
+
   React.useEffect(() => {
     if (
       window.innerWidth < 993 &&
@@ -209,7 +212,11 @@ function StaffNav(props) {
         >
           {window.location.href.includes("/cancel")
             ? "Cancel appointment"
-            : "Check-in appointment"}
+            : window.location.href.includes("/feedback")
+            ? "Check feedback"
+            : window.location.href.includes("/home")
+            ? "Check-in appointment"
+            : "Profile"}
         </h2>
       </div>
     </>

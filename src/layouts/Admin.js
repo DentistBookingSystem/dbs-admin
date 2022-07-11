@@ -35,6 +35,12 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 import routes from "routes.js";
 import { ToastContainer, toast } from "react-toastify";
 import LoginPage from "views/Pages/LoginPage";
+import NewBranchPage from "views/Pages/dbs-page/Add-page/NewBranchPage";
+import NewServicePage from "views/Pages/dbs-page/Add-page/NewServicePage";
+import NewServiceTypePage from "views/Pages/dbs-page/Add-page/NewServiceTypePage";
+import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
+import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
+import NewAccountStaffPage from "views/Pages/dbs-page/Add-page/NewAccountStaffPage";
 
 var ps;
 
@@ -154,7 +160,15 @@ function Admin(props) {
       <div className="main-panel" ref={mainPanel}>
         <AdminNavbar {...props} brandText={getActiveRoute(routes)} />
         <Switch>
-          {/* <Route path="/auth/login-page" component={LoginPage} /> */}
+          <Route path="/admin/branchs/add" component={NewBranchPage} />
+          <Route path="/admin/services/add" component={NewServicePage} />
+          <Route path="/admin/discounts/add" component={NewDiscountPage} />
+          <Route path="/admin/doctors/add" component={NewDoctorPage} />
+          <Route path="/admin/accounts/add" component={NewAccountStaffPage} />
+          <Route
+            path="/admin/service-type/add"
+            component={NewServiceTypePage}
+          />
           {sessionStorage.getItem("user") !== null ? (
             ""
           ) : (
@@ -169,12 +183,6 @@ function Admin(props) {
           )
         }
       </div>
-      {/* <FixedPlugin
-        handleMiniClick={minimizeSidebar}
-        sidebarMini={sidebarMini}
-        bgColor={backgroundColor}
-        handleColorClick={handleColorClick}
-      /> */}
     </div>
   );
 }

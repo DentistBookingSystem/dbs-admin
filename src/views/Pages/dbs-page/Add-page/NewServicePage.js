@@ -38,6 +38,7 @@ class NewServicePage extends Component {
       imagePreviewUrl: defaultImage,
       errors: {},
       timeEstimated: { value: "0.5", label: "0.5" },
+      FileError: false,
     };
 
     const rules = [
@@ -53,21 +54,21 @@ class NewServicePage extends Component {
         method: this.validDropdownServiceType,
         validWhen: true,
         fieldValue: this.state.service_type,
-        message: "Please choose a province",
+        message: "Please choose a service type",
       },
       {
         field: "min_price",
         method: this.validDropdownMinPrice,
         validWhen: true,
         fieldValue: this.state.min_price,
-        message: "Please choose a province",
+        message: "Please choose min price",
       },
       {
         field: "max_price",
         method: this.validDropdownMaxPrice,
         validWhen: true,
         fieldValue: this.state.listMaxPrice,
-        message: "Please choose a district",
+        message: "Please choose a max privce",
       },
       {
         field: "description",
@@ -223,6 +224,8 @@ class NewServicePage extends Component {
         console.log("data", data);
         await serviceApi.insertService(data).then((res) => {
           console.log(res);
+          sessionStorage.setItem("addNewService", "true");
+          window.location.replace("/admin/services");
         });
       });
     } catch (error) {
@@ -235,6 +238,12 @@ class NewServicePage extends Component {
     this.setState({
       errors: this.validator.validate(this.state, event),
     });
+    if (!this.state.image) {
+      this.setState({ FileError: true });
+      return;
+    } else {
+      this.setState({ FileError: false });
+    }
     if (this.validator.isValid) {
       const serviceDTO = {
         name: this.state.name,
@@ -259,19 +268,6 @@ class NewServicePage extends Component {
     const { errors } = this.state;
     return (
       <>
-        {/* <AdminNavbar brandText="Service Detail" link="/admin/services" /> */}
-
-        <AdminNavbar brandText="SERVICE" link="/admin/services" />
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
         <div className="content">
           <Form>
             <Row>
@@ -292,6 +288,13 @@ class NewServicePage extends Component {
                       <div className="thumbnail">
                         <img src={this.state.imagePreviewUrl} alt="..." />
                       </div>
+                      {this.state.FileError ? (
+                        <span>
+                          <p style={{ color: `#dc3545`, fontSize: `80%` }}>
+                            Please choose a image
+                          </p>
+                        </span>
+                      ) : null}
                       <Button
                         className="btn-round"
                         onClick={() => this.fileInput.click()}
@@ -332,7 +335,7 @@ class NewServicePage extends Component {
                             <div className="col-md-6">
                               <label className="labels">Service Type*</label>
                               <Select
-                                className="react-select primary"
+                                className="react-select"
                                 classNamePrefix="react-select"
                                 placeholder="Select province"
                                 name="province"
@@ -354,7 +357,7 @@ class NewServicePage extends Component {
                                 Estimated time (hour)*
                               </label>
                               <Select
-                                className="react-select primary"
+                                className="react-select"
                                 classNamePrefix="react-select"
                                 placeholder="Select estimated time"
                                 name="timeEstimated"
@@ -380,7 +383,7 @@ class NewServicePage extends Component {
                             <div className="col-md-6">
                               <label className="labels">Min price*</label>
                               <Select
-                                className="react-select primary"
+                                className="react-select"
                                 classNamePrefix="react-select"
                                 placeholder="Select min price"
                                 name="province"
@@ -400,7 +403,7 @@ class NewServicePage extends Component {
                             <div className="col-md-6">
                               <label className="labels">Max price*</label>
                               <Select
-                                className="react-select primary"
+                                className="react-select"
                                 classNamePrefix="react-select"
                                 placeholder="Select max price"
                                 name="province"

@@ -15,7 +15,7 @@
 
 */
 /*eslint-disable*/
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 // used for making the prop types of this component
 import PropTypes from "prop-types";
@@ -23,12 +23,15 @@ import PropTypes from "prop-types";
 import PerfectScrollbar from "perfect-scrollbar";
 
 // reactstrap components
-import { Nav, Collapse, Button } from "reactstrap";
+import { Nav, Collapse, Button, Toast } from "reactstrap";
 
 // core components
 import avatar from "assets/img/avatar.png";
 import logo from "assets/img/logo-rade.jpg";
 import authApi from "api/AuthApi";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+import AccountApi from "api/AccountApi";
 
 var ps;
 
@@ -36,10 +39,22 @@ function Sidebar(props) {
   const [openAvatar, setOpenAvatar] = React.useState(false);
   const [collapseStates, setCollapseStates] = React.useState({});
   const sidebar = React.useRef();
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getProfile = () => {
+    AccountApi.getAccount(sessionStorage.getItem("phone")).then((res) => {
+      setAccount(res.data);
+      console.log(res);
+    });
+  };
 
   React.useEffect(() => {
-    // if you are using a Windows Machine, the scrollbars will have a Mac look
     if (navigator.platform.indexOf("Win") > -1) {
+      // if you are using a Windows Machine, the scrollbars will have a Mac look
       ps = new PerfectScrollbar(sidebar.current, {
         suppressScrollX: true,
         suppressScrollY: false,
@@ -201,17 +216,31 @@ function Sidebar(props) {
             <div className="info">
               <a
                 href="#pablo"
+                // href="/staff/account/profile"
                 data-toggle="collapse"
                 aria-expanded={openAvatar}
                 onClick={() => setOpenAvatar(!openAvatar)}
               >
                 <span>
-                  Quỳnh Anh
+                  {account?.fullName}
                   <b className="caret" />
                 </span>
               </a>
               <Collapse isOpen={openAvatar}>
                 <ul className="nav">
+                  <li>
+                    <a
+                      href={
+                        sessionStorage.getItem("role") === "ROLE_ADMIN"
+                          ? "/admin/account/profile"
+                          : sessionStorage.getItem("role") === "ROLE_STAFF"
+                          ? "/staff/account/profile"
+                          : null
+                      }
+                    >
+                      <span className="sidebar-normal">Profile</span>
+                    </a>
+                  </li>
                   <li>
                     <a
                       href="#pablo"

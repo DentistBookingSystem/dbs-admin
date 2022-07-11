@@ -29,6 +29,7 @@ class ServiceTypeEdit extends Component {
       name: "",
       description: "",
       errors: {},
+      serviceType: {},
     };
     const rules = [
       {
@@ -66,16 +67,22 @@ class ServiceTypeEdit extends Component {
       [name]: value,
     });
   }
-  _insertServiceType = async (dataServiceType) => {
-    try {
-      await serviceTypeApi.insert(dataServiceType).then((res) => {
-        console.log("Insert");
-        return res;
-      });
-    } catch (error) {
-      console.log("Insert service type failed");
-    }
-  };
+  notifyMessage(message, type, icon) {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    this.refs.notify.notificationAlert(options1);
+  }
+
   onHandleSubmit(event) {
     event.preventDefault();
     this.setState({
@@ -85,30 +92,46 @@ class ServiceTypeEdit extends Component {
       console.log("No error");
     }
     const dataServiceType = {
+      id: Number(this.state.serviceType.id),
       name: this.state.name,
       description: this.state.description,
     };
-    const res = this._insertServiceType(dataServiceType);
-    if (res !== null) {
-      this.notify();
-    }
-    console.log(dataServiceType);
+    console.log("data", dataServiceType);
+    serviceTypeApi
+      .editServiceType(dataServiceType)
+      .then((res) => {
+        console.log(res);
+        sessionStorage.setItem("editService", " true");
+        window.location.replace("/admin/service-type");
+      })
+      .catch((error) => {
+        console.log("error", error);
+        this.notifyMessage(
+          error.response?.data?.message,
+          "danger",
+          "now-ui-icons travel_info"
+        );
+      });
   }
+
+  componentDidMount() {
+    const index = window.location.href.lastIndexOf("/");
+    const id = window.location.href.slice(index + 1);
+    serviceTypeApi.getServiceTypeById(id).then((res) => {
+      this.setState({
+        serviceType: res.data,
+        name: res.data.name,
+        description: res.data.description,
+      });
+      console.log(res.data);
+    });
+  }
+
+  getServiceType() {}
   render() {
     const { errors } = this.state;
     return (
       <>
-        <AdminNavbar brandText="Service Type" link="/admin/service-type" />
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
         <div className="content">
           <Form>
             <Row>
@@ -166,7 +189,7 @@ class ServiceTypeEdit extends Component {
                           type="button"
                           onClick={this.onHandleSubmit}
                         >
-                          Add
+                          Save
                         </button>
                       </div>
                     </div>
@@ -177,11 +200,7 @@ class ServiceTypeEdit extends Component {
           </Form>
         </div>
         <div>
-          <NotificationAlert
-            ref="notify"
-            zIndex={9999}
-            onClick={() => console.log("hey")}
-          />
+          <NotificationAlert ref="notify" zIndex={9999} />
         </div>
       </>
     );

@@ -12,10 +12,12 @@ import {
 
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "assets/css/index.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import serviceTypeApi from "api/serviceTypeApi";
 import CustomPagination from "views/Widgets/Pagination";
 import { useHistory } from "react-router-dom";
+
+import NotificationAlert from "react-notification-alert";
 
 function ServiceTypeTable() {
   const history = useHistory();
@@ -23,6 +25,7 @@ function ServiceTypeTable() {
   const [serviceTypeList, setServiceTypeList] = React.useState(list);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [serviceTypesPerPage] = React.useState(5);
+  const notify = useRef();
 
   const indexOfLastServiceType = currentPage * serviceTypesPerPage;
   const indexOfFirstServiceType = indexOfLastServiceType - serviceTypesPerPage;
@@ -46,11 +49,37 @@ function ServiceTypeTable() {
 
   useEffect(() => {
     fetchServiceTypeList();
+    if (sessionStorage.getItem("addServiceType")) {
+      notifyMessage("Add new service type successfully!!!");
+      sessionStorage.removeItem("addServiceType");
+    }
+    if (sessionStorage.getItem("editService")) {
+      notifyMessage("Edit service type successfully!!!");
+      sessionStorage.removeItem("editService");
+    }
   }, []);
+  const notifyMessage = (message) => {
+    var options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: "success",
+      icon: "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    notify.current.notificationAlert(options);
+  };
   return (
     <>
-      <PanelHeader size="sm" />
       <div className="content">
+        <NotificationAlert
+          ref={notify}
+          zIndex={9999}
+          onClick={() => console.log("hey")}
+        />
         <Row>
           <Col md="12">
             <Card>
@@ -111,22 +140,7 @@ function ServiceTypeTable() {
                               delay={0}
                               target="tooltip26024663"
                             >
-                              Edit
-                            </UncontrolledTooltip>
-                            <Button
-                              className="btn-icon"
-                              color="danger"
-                              id="tooltip930083782"
-                              size="sm"
-                              type="button"
-                            >
-                              <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button>
-                            <UncontrolledTooltip
-                              delay={0}
-                              target="tooltip930083782"
-                            >
-                              Delete
+                              Update
                             </UncontrolledTooltip>
                           </td>
                         </tr>

@@ -2,9 +2,15 @@ import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import { Component, useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { Button, Col, Form, FormGroup, Row } from "reactstrap";
-import Validator from "utils/validation/validator";
-import defaultImage from "assets/img/image_placeholder.jpg";
+import {
+  Button,
+  Col,
+  Form,
+  FormGroup,
+  Modal,
+  ModalHeader,
+  Row,
+} from "reactstrap";
 import branchApi from "api/branchApi";
 import provinceApi from "api/provinceApi";
 import Select from "react-select";
@@ -13,6 +19,7 @@ import NotificationAlert from "react-notification-alert";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import Switch from "react-bootstrap-switch";
+import { Modal as DangerModal, ModalBody, ModalFooter } from "reactstrap";
 
 const hours = [
   { value: "06", label: "06" },
@@ -57,7 +64,12 @@ export default function BranchEdit() {
   const [district, setDistrict] = useState("");
   const [url, setUrl] = useState("");
   const [branchName, setBranchName] = useState("");
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(null);
+  const [branchNameError, setBranchNameError] = useState("");
+  const [provinceError, setProvinceError] = useState("");
+  const [districtError, setDistrictError] = useState("");
+  const [timeError, setTimeError] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const id = useParams().id;
   useEffect(() => {
     getBranchUpdate();
@@ -87,7 +99,7 @@ export default function BranchEdit() {
           label: res.data.closeTime.split(":")[1],
         },
       });
-      setStatus(res.data.status);
+      setStatus(res.data.status === 1);
       setUrl("https://drive.google.com/uc?id=" + res.data.url);
       setDistrict({
         value: res.data.district.id,
@@ -167,7 +179,7 @@ export default function BranchEdit() {
   };
 
   const onHandleSubmit = async (event) => {
-    if (true) {
+    if (ValidateAll()) {
       const formData = new FormData();
       console.log(selectedFile);
       formData.append("url", selectedFile);
@@ -182,15 +194,47 @@ export default function BranchEdit() {
           openTime: `${openTime.hour.value}:${openTime.minute.value}`,
           closeTime: `${closeTime.hour.value}:${closeTime.minute.value}`,
           districtId: district.value,
-          status: status,
+          status: status ? 1 : 2,
         };
         console.log(data);
         await branchApi.updateBranch(data).then((res) => {
-          toast.success("Update branch successfully!!!");
+          sessionStorage.setItem("editBranch", true);
           history.push("/admin/branchs");
         });
       }
     }
+  };
+
+  const ValidateAll = () => {
+    let flag = true;
+    if (branchName.length < 5) {
+      setBranchNameError("true");
+      flag = false;
+    } else {
+      setBranchNameError("false");
+    }
+
+    if (district.value < 0) {
+      setDistrictError("true");
+      flag = false;
+    } else {
+      setDistrictError("false");
+    }
+
+    let open = Number(openTime.hour.value) + Number(openTime.minute.value) / 60;
+    let close =
+      Number(closeTime.hour.value) + Number(closeTime.minute.value) / 60;
+
+    if (open > close - 5) {
+      setTimeError("true");
+      flag = false;
+    } else {
+      setTimeError("false");
+    }
+    if (flag) {
+      setModalOpen(true);
+    }
+    return flag;
   };
 
   // handle data sent back to server
@@ -209,15 +253,13 @@ export default function BranchEdit() {
             openTime: `${openTime.hour.value}:${openTime.minute.value}`,
             closeTime: `${closeTime.hour.value}:${closeTime.minute.value}`,
             districtId: district.value,
-            status: status,
+            status: status ? 1 : 2,
           };
         })
         .then(async () => {
           console.log(data);
           await branchApi.updateBranch(data).then((res) => {
-            // this.notify();
-            toast.success("Update branch successfully!!!");
-            // window.location.replace("/admin/branchs");
+            sessionStorage.setItem("editBranch", true);
             history.push("/admin/branchs");
           });
         });
@@ -230,6 +272,36 @@ export default function BranchEdit() {
   return (
     <div>
       <PanelHeader size="sm" />
+      <DangerModal isOpen={modalOpen} toggle={() => setModalOpen(false)}>
+        <ModalHeader
+          className="text-center"
+          tag={"h3"}
+          style={{ fontWeight: "bolder" }}
+        >
+          Confirm
+        </ModalHeader>
+        <ModalBody>
+          <p>Do you want to save this informatiton</p>
+        </ModalBody>
+        <ModalFooter>
+          <Col className="text-center">
+            <Button
+              style={{ backgroundColor: `green` }}
+              onClick={() => onHandleSubmit()}
+            >
+              Yes
+            </Button>
+          </Col>
+          <Col className="text-center">
+            <Button
+              style={{ backgroundColor: `red` }}
+              onClick={() => setModalOpen(false)}
+            >
+              No
+            </Button>
+          </Col>
+        </ModalFooter>
+      </DangerModal>
       {branchInfo ? (
         <div className="content">
           <Form>
@@ -278,20 +350,19 @@ export default function BranchEdit() {
                                 setBranchName(e.currentTarget.value);
                               }}
                             />
-                            {/* {errors.name && (
-                            <div
-                              className="invalid-feedback"
-                              style={{ display: "block" }}
-                            >
-                              {errors.name}
-                            </div>
-                          )} */}
+                            {branchNameError === "true" ? (
+                              <span>
+                                <p style={{ color: `red` }}>
+                                  Branch name must be greater than 5 character{" "}
+                                </p>
+                              </span>
+                            ) : null}
                           </div>
                         </div>
                       </FormGroup>
                       <FormGroup>
                         <div className="row mt-2">
-                          <div className="col-md-6">
+                          <Col lg={6} md={12}>
                             <label className="labels">Open time*</label>
 
                             <Row>
@@ -334,17 +405,8 @@ export default function BranchEdit() {
                                 />
                               </Col>
                             </Row>
-
-                            {/* {errors.openTime && (
-                            <div
-                              className="invalid-feedback"
-                              style={{ display: "block" }}
-                            >
-                              {errors.openTime}
-                            </div>
-                          )} */}
-                          </div>
-                          <div className="col-md-6">
+                          </Col>
+                          <Col lg={6} md={12}>
                             <label className="labels">Close time*</label>
                             <Row>
                               <Col>
@@ -385,20 +447,18 @@ export default function BranchEdit() {
                                 />
                               </Col>
                             </Row>
-
-                            {/* {errors.closeTime && (
-                            <div
-                              className="invalid-feedback"
-                              style={{ display: "block" }}
-                            >
-                              {errors.closeTime}
-                            </div>
-                          )} */}
-                          </div>
+                          </Col>
                         </div>
                       </FormGroup>
+                      {timeError === "true" ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Open time must after close time is 5 hours.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-2">
-                        <div className="col-md-6">
+                        <Col lg={6} md={12}>
                           <label className="labels">Province*</label>
                           <Select
                             className="react-select"
@@ -410,18 +470,14 @@ export default function BranchEdit() {
                             onChange={(value) => {
                               console.log(value);
                               setProvince(value);
+                              setDistrict({
+                                value: -1,
+                                label: "Select district",
+                              });
                             }}
                           />
-                          {/* {errors.province && (
-                          <div
-                            className="invalid-feedback"
-                            style={{ display: "block" }}
-                          >
-                            {errors.province}
-                          </div>
-                        )} */}
-                        </div>
-                        <div className="col-md-6">
+                        </Col>
+                        <Col lg={6} md={12}>
                           <label className="labels">District*</label>
                           <Select
                             className="react-select"
@@ -432,15 +488,14 @@ export default function BranchEdit() {
                             options={districtList}
                             onChange={(e) => setDistrict(e)}
                           />
-                          {/* {errors.district && (
-                          <div
-                            className="invalid-feedback"
-                            style={{ display: "block" }}
-                          >
-                            {/* {errors.district} *
-                          </div>
-                        )} */}
-                        </div>
+                          {districtError === "true" ? (
+                            <span>
+                              <p style={{ color: `red` }}>
+                                Please choose a district.
+                              </p>
+                            </span>
+                          ) : null}
+                        </Col>
                       </div>
                       <div>
                         <p className="category">With Icons</p>
@@ -450,14 +505,10 @@ export default function BranchEdit() {
                             <i className="now-ui-icons ui-1_simple-remove" />
                           }
                           onChange={(e) => {
-                            console.log("dsfifdbviabi", e.state.value);
-                            if (e.state.value) {
-                              setStatus(1);
-                            } else {
-                              setStatus(2);
-                            }
+                            setStatus(e.state.value);
+                            console.log(e.state.value);
                           }}
-                          defaultValue={status == 1 ? true : false}
+                          value={status}
                         />
                       </div>
                       <div className="row mt-4 ">
@@ -465,9 +516,9 @@ export default function BranchEdit() {
                           <button
                             className="btn btn-info profile-button"
                             type="button"
-                            onClick={() => onHandleSubmit()}
+                            onClick={() => ValidateAll()}
                           >
-                            Add
+                            Save
                           </button>
                         </div>
                         <div className="col-md-2">

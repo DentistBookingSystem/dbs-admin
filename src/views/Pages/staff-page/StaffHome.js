@@ -1,18 +1,17 @@
 import appointmentApi from "api/AppointmentApi";
 import branchApi from "api/branchApi";
 import doctorApi from "api/doctorApi";
-import PanelHeader from "components/PanelHeader/PanelHeader";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col, Container, Row } from "reactstrap";
 import AppointmentTable from "views/Tables/AppointmentTable";
 import "./style.css";
-
+import NotificationAlert from "react-notification-alert";
 const listStatus = [
   { id: [0, 4], value: "Wating" },
-  { id: [1], value: "Done" },
-  { id: [2, 5], value: "Absent" },
+  { id: [1, 5], value: "Done" },
+  { id: [2], value: "Absent" },
   { id: [3], value: "Cancel by customer" },
-  { id: [5], value: "Cancel by center" },
+  { id: [6], value: "Cancel by center" },
 ];
 
 export default function StaffHome(props) {
@@ -24,6 +23,7 @@ export default function StaffHome(props) {
   const [branchList, setBranchList] = useState([]);
   const [doctorList, setDoctorList] = useState([]);
   const [statusSearch, setStatusSearch] = useState("0,4");
+  const notify = useRef(null);
   const getToday = (separator = "") => {
     let newDate = new Date();
     let date = newDate.getDate();
@@ -43,6 +43,27 @@ export default function StaffHome(props) {
       setBranchList(result.data?.branchList);
     }
   };
+
+  const notifyMessage = (message) => {
+    var options = {
+      place: "tr",
+      message: (
+        <div>
+          <div>Login successfully!!!</div>
+        </div>
+      ),
+      type: "success",
+      icon: "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    notify.current.notificationAlert(options);
+  };
+  useEffect(() => {
+    if (sessionStorage.getItem("login")) {
+      notifyMessage("bdavsu");
+      sessionStorage.removeItem("login");
+    }
+  }, []);
 
   const getAppointListForStaff = async () => {
     var data;
@@ -116,10 +137,18 @@ export default function StaffHome(props) {
   useEffect(() => {
     getAllBranch();
     getAllAppointment();
+    if (sessionStorage.getItem("login")) {
+    }
   }, []);
 
   return (
     <div>
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
+
       <div style={{ margin: `0 20px` }}>
         <Container fluid>
           <form className="mt-3">

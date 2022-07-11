@@ -1,33 +1,15 @@
-/*!
-
-=========================================================
-* Now UI Dashboard PRO React - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { useEffect } from "react";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
-// javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
-// react plugin for creating notifications
 import NotificationAlert from "react-notification-alert";
 
-// core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 import StaffNav from "components/Navbars/StaffNav";
+import { ToastContainer } from "react-toastify";
 
 var ps;
 
@@ -131,6 +113,7 @@ function Staff(props) {
   return (
     <div className="wrapper">
       <NotificationAlert ref={notificationAlert} />
+
       <Sidebar
         {...props}
         routes={routes}
@@ -144,19 +127,10 @@ function Staff(props) {
           {getRoutes(routes)}
           {/* <Redirect from="/staff" to="/staff/home" /> */}
         </Switch>
-        {
-          // we don't want the Footer to be rendered on full screen maps page
-          window.location.href.indexOf("full-screen-maps") !== -1 ? null : (
-            <Footer fluid />
-          )
-        }
+        {window.location.href.indexOf("full-screen-maps") !== -1 ? null : (
+          <Footer fluid />
+        )}
       </div>
-      {/* <FixedPlugin
-        handleMiniClick={minimizeSidebar}
-        sidebarMini={sidebarMini}
-        bgColor={backgroundColor}
-        handleColorClick={handleColorClick}
-      /> */}
     </div>
   );
 }

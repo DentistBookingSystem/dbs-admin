@@ -19,7 +19,7 @@ import VectorMap from "views/Maps/VectorMap.js";
 import Charts from "views/Charts/Charts.js";
 import Calendar from "views/Calendar/Calendar.js";
 import Widgets from "views/Widgets/Widgets.js";
-import UserPage from "views/Pages/UserPage.js";
+import UserPage from "views/Pages/dbs-page/UserPage.js";
 import TimelinePage from "views/Pages/TimelinePage.js";
 import RTL from "views/Pages/RTL.js";
 import PricingPage from "views/Pages/PricingPage.js";
@@ -43,22 +43,32 @@ import DoctorEdit from "views/Pages/dbs-page/edit-form/DoctorEdit";
 import ServiceTypeEdit from "views/Pages/dbs-page/edit-form/ServiceTypeEdit";
 import AccountEdit from "views/Pages/dbs-page/edit-form/AccountEdit";
 import FeedbackTableAdmin from "views/Tables/FeedbackTableAdmin";
+import UpdateProfile from "views/Pages/dbs-page/UpdateProfile";
+import NewBranchPage from "views/Pages/dbs-page/Add-page/NewBranchPage";
 
 let routes = [
   //Admin
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    icon: "now-ui-icons design_app",
-    component: Dashboard,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/dashboard",
+  //   name: "Dashboard",
+  //   icon: "now-ui-icons design_app",
+  //   component: Dashboard,
+  //   layout: "/admin",
+  // },
   {
     path: "/branchs",
     name: "Branch",
     icon: "now-ui-icons location_pin",
     component: BranchTable,
     layout: "/admin",
+  },
+  {
+    path: "/branchs/add",
+    name: "Add Branch",
+    icon: "now-ui-icons location_pin",
+    component: NewBranchPage,
+    layout: "/admin",
+    invisible: true,
   },
   {
     path: "/service-type",
@@ -166,6 +176,22 @@ let routes = [
     layout: "/admin",
     invisible: true,
   },
+  {
+    path: "/account/profile",
+    name: "User page",
+    mini: "S",
+    component: UserPage,
+    layout: "/admin",
+    invisible: true,
+  },
+  {
+    path: "/account/edit",
+    name: "User page",
+    mini: "S",
+    component: UpdateProfile,
+    layout: "/admin",
+    invisible: true,
+  },
 
   // Staff
   {
@@ -181,6 +207,23 @@ let routes = [
     icon: "now-ui-icons ui-1_simple-remove",
     component: StaffCancelAppointment,
     layout: "/staff",
+  },
+
+  {
+    path: "/account/profile",
+    name: "User page",
+    mini: "S",
+    component: UserPage,
+    layout: "/staff",
+    invisible: true,
+  },
+  {
+    path: "/account/edit",
+    name: "User page",
+    mini: "S",
+    component: UpdateProfile,
+    layout: "/staff",
+    invisible: true,
   },
 
   // {

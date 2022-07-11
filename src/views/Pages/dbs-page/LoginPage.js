@@ -14,7 +14,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   Button,
-  Toast,
 } from "reactstrap";
 import { Redirect, useHistory } from "react-router-dom";
 // core components
@@ -23,8 +22,8 @@ import nowLogo from "assets/img/logo-rade2.png";
 import bgImage from "assets/img/dentist-office.jpg";
 import authApi from "api/AuthApi";
 import NotificationAlert from "react-notification-alert";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 function LoginPage() {
   const [phoneFocus, setfirstnameFocus] = React.useState(false);
   const [passwordFocus, setlastnameFocus] = React.useState(false);
@@ -47,7 +46,6 @@ function LoginPage() {
         console.log("user token: ", user);
         // console.log("session account", sessionStorage.getItem("role"));
         const role = sessionStorage.getItem("role");
-        // toast.notify("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         window.location.reload();
         if (user !== null) {
           setStateLogin(true);
@@ -57,7 +55,7 @@ function LoginPage() {
       });
     } catch (error) {
       setStateLogin(false);
-      toast.warn("login failed trong login page");
+      toast.warn("login failed");
       console.log("Can not Login>>>>>", error);
     }
   };
@@ -75,7 +73,7 @@ function LoginPage() {
   }, []);
   return sessionStorage.getItem("user") !== null ? (
     sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
-      <Redirect to="/admin/dashboard" />
+      <Redirect to="/admin/branchs" />
     ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
       <Redirect to="/staff/home" />
     ) : (
@@ -83,18 +81,8 @@ function LoginPage() {
     )
   ) : (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
       <NotificationAlert ref={notificationAlert} />
+
       <div className="content">
         <div className="login-page">
           <Container>
