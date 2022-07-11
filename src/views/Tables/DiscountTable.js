@@ -10,17 +10,18 @@ import {
   ModalBody,
   ModalFooter,
   Input,
+  UncontrolledTooltip,
 } from "reactstrap";
 
-import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import discountApi from "api/discountApi";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CustomPagination from "views/Widgets/Pagination";
 import Discount from "views/Pages/dbs-page/edit-form/Discount";
 import { Modal } from "react-bootstrap";
 import Select from "react-select";
 import serviceApi from "api/serviceApi";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import NotificationAlert from "react-notification-alert";
 
 function DiscountTable() {
   const [discountList, setDiscountList] = useState([]);
@@ -40,7 +41,7 @@ function DiscountTable() {
     label: "Select All Service",
   });
   const [discountNameSearch, setDiscountNameSearch] = useState("");
-  const [dateSearch, setDateSearch] = useState(null);
+  const [dateSearch, setDateSearch] = useState();
 
   const indexOfLastDiscount = currentPage * discountsPerPage;
   const indexOfFirstDiscount = indexOfLastDiscount - discountsPerPage;
@@ -49,6 +50,7 @@ function DiscountTable() {
     indexOfLastDiscount
   );
   const history = useHistory();
+  const notify = useRef();
 
   //Pop up alert delete
   const toggleModalMini = () => {
@@ -93,7 +95,31 @@ function DiscountTable() {
     document.getElementById(`button${statusSearch}`).classList +=
       " active-button-status";
     getAllService();
+    if (sessionStorage.getItem("addDiscount")) {
+      notifyMessage("Add discount successfully!!!");
+      sessionStorage.removeItem("addDiscount");
+    }
+    if (sessionStorage.getItem("updateDiscount")) {
+      notifyMessage("Update discount successfully!!!");
+      sessionStorage.removeItem("updateDiscount");
+    }
   }, []);
+
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
+  };
 
   const getAllService = async () => {
     const result = await serviceApi.getServiceList().then((res) => {
@@ -130,13 +156,14 @@ function DiscountTable() {
       endDate: dateSearch,
       serviceId: serviceSearch.value,
     };
+    setCurrentPage(1);
     const result = await discountApi.filterDiscount(data).then((res) => {
       setDiscountList(res);
     });
   };
   return (
     <>
-      <PanelHeader size="sm" />
+      <NotificationAlert ref={notify} zIndex={9999} />
       <div className="content">
         <Row>
           <Col md="12">
@@ -267,7 +294,7 @@ function DiscountTable() {
                           <td>{discount.startDate}</td>
                           <td>{discount.endDate}</td>
                           <td>
-                            {discount.status !== 0 ? (
+                            {discount.status === 1 ? (
                               <div style={{ color: "green" }}>
                                 <i className="fas fa-check-circle"> </i> Active
                               </div>
@@ -286,23 +313,38 @@ function DiscountTable() {
                                 setEditDiscount(discount);
                                 setLgShow(true);
                               }}
+                              id={`detail${discount.id}`}
                               size="sm"
                               type="button"
                             >
                               <i className="now-ui-icons ui-2_settings-90" />
                             </Button>
-                            {/* <Button
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`detail${discount.id}`}
+                            >
+                              Detail
+                            </UncontrolledTooltip>
+                            <Button
                               className="btn-icon"
                               color="danger"
                               size="sm"
                               type="button"
+                              id={`remove${discount.id}`}
                               onClick={() => {
                                 setModalMini(true);
                                 setIdDelete(discount.id);
                               }}
+                              disabled={discount.status === 2}
                             >
                               <i className="now-ui-icons ui-1_simple-remove" />
-                            </Button> */}
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`remove${discount.id}`}
+                            >
+                              Inactive
+                            </UncontrolledTooltip>
                           </td>
                         </tr>
                       );
@@ -438,7 +480,7 @@ function DiscountTable() {
                     history.push("/admin/discount/edit/" + editDiscount.id);
                   }}
                 >
-                  Edit
+                  Update
                 </Button>
               </Col>
             </Row>
@@ -446,10 +488,10 @@ function DiscountTable() {
         </Modal>
         {/* Delete discount  */}
         <Modal
-          isOpen={modalMini}
+          show={modalMini}
           toggle={toggleModalMini}
           size="mini"
-          // modalClassName="modal-info"
+          modalClassName="modal-info"
         >
           <div className="modal-header justify-content-center">
             <div className="modal-profile">
@@ -461,14 +503,14 @@ function DiscountTable() {
           </ModalBody>
           <ModalFooter>
             <Button
-              color="link"
+              color="warning"
               className="btn-neutral"
               onClick={() => disableDiscount()}
             >
               Delete
             </Button>{" "}
             <Button
-              color="link"
+              color="info"
               className="btn-neutral"
               onClick={toggleModalMini}
             >

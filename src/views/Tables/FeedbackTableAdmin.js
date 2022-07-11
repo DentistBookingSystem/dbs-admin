@@ -137,7 +137,7 @@ function FeedbackTableAdmin() {
       <PanelHeader size="sm" />
       <div className="content">
         <Row>
-          <Col md="12">
+          <Col>
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Feedback</CardTitle>
@@ -146,10 +146,10 @@ function FeedbackTableAdmin() {
                   style={{ fontSize: `16px` }}
                 >
                   <Row className="justify-content-center text-center m-2">
-                    <Col lg={3}>
+                    <Col lg={3} md={4} xs={4}>
                       <label style={{ fontSize: `18px` }}>Phone</label>
                     </Col>
-                    <Col lg={5}>
+                    <Col lg={5} md={7} xs={7}>
                       <input
                         type="number"
                         placeholder="Phone"
@@ -167,10 +167,10 @@ function FeedbackTableAdmin() {
                   </Row>
                   {status !== 0 ? (
                     <Row className="justify-content-center text-center m-2">
-                      <Col lg={3}>
+                      <Col lg={3} md={4} xs={4}>
                         <label style={{ fontSize: `18px` }}>Day feedback</label>
                       </Col>
-                      <Col lg={5}>
+                      <Col lg={5} md={7} xs={7}>
                         <input
                           className="p-1"
                           type="date"
@@ -198,14 +198,20 @@ function FeedbackTableAdmin() {
                     ""
                   )}
                   <Row className="justify-content-center text-center m-2">
-                    <Col lg={3}>
+                    <Col lg={3} md={4} xs={4} className="m-2">
                       <label style={{ fontSize: `18px` }}>Status</label>
                     </Col>
-                    <Col lg={5} className="d-flex flex-row">
+                    <Col
+                      lg={5}
+                      md={7}
+                      xs={7}
+                      className="d-flex flex-row m-0"
+                      style={{ flexWrap: `wrap` }}
+                    >
                       <button
                         style={{ borderRadius: `6px` }}
                         id="button0"
-                        className="m-0 mr-2 p-1 pl-2 pr-2"
+                        className="mt-2 mb-2 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(0);
                           setStatus(0);
@@ -216,7 +222,7 @@ function FeedbackTableAdmin() {
                       <button
                         style={{ borderRadius: `6px` }}
                         id="button1"
-                        className="m-0 ml-2 mr-2 p-1 pl-2 pr-2"
+                        className="m-2 ml-2 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(1);
                           setStatus(1);
@@ -227,7 +233,7 @@ function FeedbackTableAdmin() {
                       <button
                         style={{ borderRadius: `6px` }}
                         id="button2"
-                        className="m-0 ml-2 mr-2 p-1 pl-2 pr-2"
+                        className="m-2 ml-2 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(2);
                           setStatus(2);
@@ -238,10 +244,10 @@ function FeedbackTableAdmin() {
                     </Col>
                   </Row>
                   <Row className="justify-content-center text-center m-2">
-                    <Col lg={3}>
+                    <Col lg={3} md={4} xs={4}>
                       <label style={{ fontSize: `18px` }}>Service</label>
                     </Col>
-                    <Col lg={5}>
+                    <Col lg={5} md={7} xs={7}>
                       <select
                         style={{
                           width: `100%`,

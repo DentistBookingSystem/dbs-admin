@@ -173,7 +173,7 @@ class DoctorEdit extends Component {
         console.log("Data", data);
         doctorApi.editDoctor(data).then((result) => {
           console.log(result);
-          console.log("add thành công ");
+          sessionStorage.setItem("updateDoctor", true);
           window.location.replace("/admin/doctors");
         });
       });
@@ -185,6 +185,22 @@ class DoctorEdit extends Component {
     this.setState({
       errors: this.validator.validate(this.state, event),
     });
+    var flag = true;
+    if (!this.state.branchSelect) {
+      this.setState({
+        branchSelectError: true,
+      });
+      flag = false;
+    }
+    if (this.state.description.length === 0) {
+      this.setState({
+        descriptionError: true,
+      });
+      flag = false;
+    }
+    if (!flag) {
+      return;
+    }
     if (this.validator.isValid) {
       // Đưa data xuống ở đây
       const formData = new FormData();
@@ -209,7 +225,7 @@ class DoctorEdit extends Component {
         console.log("data", data);
         doctorApi.editDoctor(data).then((result) => {
           console.log(result);
-          console.log("add thành công ");
+          sessionStorage.setItem("updateDoctor", true);
           window.location.replace("/admin/doctors");
         });
       }
@@ -237,17 +253,7 @@ class DoctorEdit extends Component {
     const { errors } = this.state;
     return (
       <>
-        <PanelHeader size="sm">
-          <Col xs={0.5} md={0.5}>
-            <Link to="/admin/services">
-              <Button className="btn-icon" color="primary" size="sm">
-                <i className="fas fa-angle-double-left"></i>
-              </Button>
-            </Link>
-          </Col>
-        </PanelHeader>
-
-        <div className="content">
+        <div className="container">
           <Form>
             <Row>
               <div className="container rounded bg-white mt-30 mb-15 ml-15">
@@ -273,6 +279,13 @@ class DoctorEdit extends Component {
                       >
                         Select Image
                       </Button>
+                      {this.state.fileError ? (
+                        <span>
+                          <p style={{ color: `#dc3545`, fontSize: `80%` }}>
+                            Please choose a image.
+                          </p>
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                   <div className="col-md-8">
@@ -321,17 +334,16 @@ class DoctorEdit extends Component {
                                 borderRadius: `30px`,
                               }}
                             />
-                            {errors.name && (
-                              <div
-                                className="invalid-feedback"
-                                style={{ display: "block" }}
-                              >
-                                {errors.name}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </FormGroup>
+                      {this.state.descriptionError ? (
+                        <span>
+                          <p style={{ color: `#dc3545`, fontSize: `80%` }}>
+                            Please enter description.
+                          </p>
+                        </span>
+                      ) : null}
                       <FormGroup>
                         <div className="row mt-2">
                           <div className="col-md-12 d-flex flex-column">
@@ -344,7 +356,6 @@ class DoctorEdit extends Component {
                                 });
                               }}
                             >
-                              <option>----Select branch-----</option>
                               {this.state.branchList.map((item, key) => {
                                 if (item.id === this.state.branchSelect) {
                                   return (
@@ -358,17 +369,16 @@ class DoctorEdit extends Component {
                                 );
                               })}
                             </select>
-                            {errors.name && (
-                              <div
-                                className="invalid-feedback"
-                                style={{ display: "block" }}
-                              >
-                                {errors.name}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </FormGroup>
+                      {this.state.branchSelectError ? (
+                        <span>
+                          <p style={{ color: `#dc3545`, fontSize: `80%` }}>
+                            Please choose a branch.
+                          </p>
+                        </span>
+                      ) : null}
 
                       <div className="row mt-4 ">
                         <div className="col-md-2 ml-10">
@@ -377,18 +387,15 @@ class DoctorEdit extends Component {
                             type="button"
                             onClick={this.onHandleSubmit}
                           >
-                            Edit
+                            Add
                           </button>
                         </div>
                         <div className="col-md-2">
                           <button
                             className="btn btn-primary profile-button"
                             type="reset"
-                            onClick={() => {
-                              window.location.replace("/admin/doctors");
-                            }}
                           >
-                            Cancel
+                            Reset
                           </button>
                           {/* chưa reset được */}
                         </div>

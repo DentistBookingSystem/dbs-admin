@@ -41,6 +41,9 @@ class NewDiscountPage extends Component {
       errors: [],
 
       nameError: false,
+      currentServiceError: false,
+      timeError: false,
+      descriptionError: false,
     };
 
     const rules = [];
@@ -91,6 +94,7 @@ class NewDiscountPage extends Component {
       await discountApi.insert(data).then((res) => {
         console.log("res discount: ", res);
         result = true;
+        sessionStorage.setItem("addDiscount", true);
         window.location.replace("/admin/discounts");
       });
     } catch (error) {
@@ -138,9 +142,9 @@ class NewDiscountPage extends Component {
       console.log("data: ", data);
       try {
         const result = await this._inserDiscount(data);
-        if (result) {
-          this.notify();
-        }
+        // if (result) {
+        //   this.notify();
+        // }
       } catch (error) {
         console.log(error);
       }
@@ -158,6 +162,54 @@ class NewDiscountPage extends Component {
     } else {
       this.setState({
         nameError: false,
+      });
+    }
+
+    if (this.state.currentService.length === 0) {
+      this.setState({
+        currentServiceError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({ currentServiceError: false });
+    }
+
+    if (!this.state.endDate) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        timeError: false,
+      });
+    }
+    var startDate = new Date(this.state.startDate);
+    var endDate = new Date(this.state.endDate);
+    if (!this.state.startDate) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else if (startDate.getTime() >= endDate.getTime()) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        timeError: false,
+      });
+    }
+
+    if (this.state.description.length === 0) {
+      this.setState({
+        descriptionError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        descriptionError: false,
       });
     }
     return flag;
@@ -216,11 +268,12 @@ class NewDiscountPage extends Component {
                             type="range"
                             min="0"
                             max="100"
-                            className="form-control"
+                            className="slider slider-primary"
                             placeholder="Branch name"
                             name="percentage"
                             value={this.state.percentage}
                             onChange={this.onHandleChange}
+                            style={{ width: `100% ` }}
                           />
                         </div>
                       </div>
@@ -231,7 +284,7 @@ class NewDiscountPage extends Component {
                           <Select
                             className="react-select primary"
                             classNamePrefix="react-select"
-                            placeholder="Select province"
+                            placeholder="Select servvice"
                             name="province"
                             isMulti
                             value={this.state.currentService}
@@ -240,6 +293,13 @@ class NewDiscountPage extends Component {
                           />
                         </div>
                       </div>
+                      {this.state.currentServiceError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please choose some service.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-2">
                         <div className="col-md-6">
                           <label className="labels">Start date*</label>
@@ -265,15 +325,15 @@ class NewDiscountPage extends Component {
                             min={new Date().toISOString().slice(0, -8)}
                             onChange={this.onHandleChange}
                           />
-                          {/* <ReactDatePicker
-                          className="form-control"
-                            selected={new Date()}
-                            onChange={this.onHandleChange}
-                            minDate={moment().toDate()}
-                            
-                          /> */}
                         </div>
                       </div>
+                      {this.state.timeError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please choose start date must before end date.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-4">
                         <div className="col-md-12">
                           <label className="labels">Description*</label>
@@ -286,6 +346,13 @@ class NewDiscountPage extends Component {
                           ></textarea>
                         </div>
                       </div>
+                      {this.state.descriptionError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please input description about this discount.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-4 ml-10">
                         <button
                           className="btn btn-info profile-button"

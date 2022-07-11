@@ -16,9 +16,8 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-
-import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import { useEffect, useState } from "react";
+import NotificationAlert from "react-notification-alert";
+import { useEffect, useRef, useState } from "react";
 import AccountApi from "api/AccountApi";
 import CustomPagination from "views/Widgets/Pagination";
 import { useHistory } from "react-router-dom";
@@ -41,6 +40,7 @@ function AccountTable() {
   );
   const [showUpdateStatus, setShowUpdateStatus] = useState(false);
   const [modalMini, setMiniModal] = useState(false);
+  const notify = useRef();
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const getAccountListByRoleIdAndStatus = async () => {
@@ -59,6 +59,10 @@ function AccountTable() {
 
   useEffect(() => {
     getAccountListByRoleIdAndStatus(roleId, status, phoneSearch);
+    if (sessionStorage.getItem("addNewStaff")) {
+      notifyMessage("Add new staff's account successfully!!!");
+      sessionStorage.removeItem("addNewStaff");
+    }
   }, []);
 
   useEffect(() => {
@@ -90,46 +94,66 @@ function AccountTable() {
       " active-button-status";
   };
 
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
+  };
+
   return (
     <>
-      <PanelHeader size="sm" />
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
       <div className="content">
         <Row>
           <Col xs={9} md={12}>
             <Card>
               <CardHeader className="d-flex">
                 <CardTitle
-                  id="role3"
-                  tag="h4"
-                  className="pl-2 pr-2"
-                  onClick={() => {
-                    // checkActive(3);
-                    setRoleId(3);
-                  }}
-                >
-                  <span>Staff</span> /
-                </CardTitle>
-                <CardTitle
                   id="role1"
-                  tag="h4"
+                  tag="h5"
                   className="pl-2 pr-2"
                   onClick={() => {
                     // checkActive(1);
                     setRoleId(1);
                   }}
                 >
-                  <span>Admin</span> /
+                  <span>Admin</span> |
+                </CardTitle>
+                <CardTitle
+                  id="role3"
+                  tag="h5"
+                  className="pl-2 pr-2"
+                  onClick={() => {
+                    // checkActive(3);
+                    setRoleId(3);
+                  }}
+                >
+                  <span>Staff</span> |
                 </CardTitle>
                 <CardTitle
                   id="role2"
-                  tag="h4"
+                  tag="h5"
                   className="pl-2 pr-2"
                   onClick={() => {
                     setRoleId(2);
                     // checkActive(2);
                   }}
                 >
-                  <span>Patient</span> /
+                  <span>Patient</span> |
                 </CardTitle>
               </CardHeader>
               <CardHeader className="d-flex p-0 pl-4  ">
@@ -161,10 +185,10 @@ function AccountTable() {
                   style={{
                     width: `100vw`,
                     marginLeft: `10px`,
-                    fontSize: `20px`,
+                    fontSize: `15px`,
                   }}
                 >
-                  <Col lg={4}>
+                  <Col lg={4} md={6} xs={10}>
                     <input
                       type="number"
                       className="m-0 pl-3 pr-3 text-center"
@@ -274,7 +298,7 @@ function AccountTable() {
                                   delay={0}
                                   target="tooltip26024663"
                                 >
-                                  Edit
+                                  Update
                                 </UncontrolledTooltip>
                                 {/* <Button
                                   className="btn-icon"
@@ -347,12 +371,12 @@ function AccountTable() {
           </ModalBody>
           <ModalFooter className="text-center d-flex justify-content-center">
             <Row className="justify-content-center">
-              <Col lg={6}>
+              <Col md={5}>
                 <Button color="success" onClick={() => setMiniModal(true)}>
                   {status === 1 ? "InActive" : "Active"}
                 </Button>
               </Col>
-              <Col lg={6}>
+              <Col md={5}>
                 <Button
                   color="warning"
                   onClick={() => {
@@ -380,37 +404,44 @@ function AccountTable() {
             <p>{"Are sure to delete \n this Service ?"}</p>
           </ModalBody>
           <ModalFooter>
-            <Button
-              color="link"
-              className="btn-neutral"
-              onClick={() => {
-                const data = {
-                  phone: accountDetail.phone,
-                };
-                console.log("phone gửi xuống", data);
-                if (status === 1) {
-                  //đang unban
-                  AccountApi.banAccount(data).then((res) => {
-                    // window.location.reload();
-                    console.log("Kết quả trả về", res);
-                  });
-                } else {
-                  AccountApi.unbanAccount(data).then((res) => {
-                    // window.location.reload();
-                    console.log("Kết quả trả về", res);
-                  });
-                }
-              }}
-            >
-              Ok
-            </Button>{" "}
-            <Button
-              color="link"
-              className="btn-neutral"
-              onClick={() => setMiniModal(false)}
-            >
-              Cancel
-            </Button>
+            <Row>
+              <Col>
+                {" "}
+                <Button
+                  color="link"
+                  className="btn-neutral"
+                  onClick={() => {
+                    const data = {
+                      phone: accountDetail.phone,
+                    };
+                    console.log("phone gửi xuống", data);
+                    if (status === 1) {
+                      //đang unban
+                      AccountApi.banAccount(data).then((res) => {
+                        window.location.reload();
+                        console.log("Kết quả trả về", res);
+                      });
+                    } else {
+                      AccountApi.unbanAccount(data).then((res) => {
+                        window.location.reload();
+                        console.log("Kết quả trả về", res);
+                      });
+                    }
+                  }}
+                >
+                  Ok
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  color="link"
+                  className="btn-neutral"
+                  onClick={() => setMiniModal(false)}
+                >
+                  Cancel
+                </Button>
+              </Col>
+            </Row>
           </ModalFooter>
         </DangerModal>
       </div>

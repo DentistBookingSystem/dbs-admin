@@ -4,7 +4,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar";
 import PanelHeader from "components/PanelHeader/PanelHeader";
 import moment from "moment";
 import { Component } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import Switch from "react-bootstrap-switch";
 import Select from "react-select";
 import { Button, Col, Form, Row } from "reactstrap";
 import Validator from "utils/validation/validator";
@@ -40,6 +40,7 @@ class Discount extends Component {
       currentService: [],
       serviceList: [],
       errors: [],
+      status: true,
 
       nameError: false,
     };
@@ -78,8 +79,77 @@ class Discount extends Component {
         percentage: result.data.percentage,
         startDate: result.data.startDate,
         endDate: result.data.endDate,
+        status: result.data.status === 1,
+
+        nameError: false,
+        currentServiceError: false,
+        timeError: false,
+        descriptionError: false,
       });
     }
+  }
+
+  ValidateAll() {
+    let flag = true;
+    if (this.state.name.length < 8 || this.state.name > 30) {
+      this.setState({
+        nameError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        nameError: false,
+      });
+    }
+
+    if (this.state.currentService.length === 0) {
+      this.setState({
+        currentServiceError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({ currentServiceError: false });
+    }
+
+    if (!this.state.endDate) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        timeError: false,
+      });
+    }
+    var startDate = new Date(this.state.startDate);
+    var endDate = new Date(this.state.endDate);
+    if (!this.state.startDate) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else if (startDate.getTime() >= endDate.getTime()) {
+      this.setState({
+        timeError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        timeError: false,
+      });
+    }
+
+    if (this.state.description.length === 0) {
+      this.setState({
+        descriptionError: true,
+      });
+      flag = false;
+    } else {
+      this.setState({
+        descriptionError: false,
+      });
+    }
+    return flag;
   }
 
   CustomDate = () => {
@@ -110,12 +180,12 @@ class Discount extends Component {
     }
   };
 
-  _inserDiscount = async (data) => {
+  updateDiscount = async (data) => {
     var result = false;
     try {
       await discountApi.updateDiscount(data).then((res) => {
         console.log("res discount: ", res);
-        result = true;
+        sessionStorage.setItem("updateDiscount", true);
         window.location.replace("/admin/discounts");
       });
     } catch (error) {
@@ -136,7 +206,6 @@ class Discount extends Component {
     const target = event.target;
     const name = target.name;
     const value = target.value;
-    console.log(">Type: ", target.value);
     this.setState({
       [name]: value,
     });
@@ -153,7 +222,7 @@ class Discount extends Component {
           name: this.state.name,
           percentage: this.state.percentage,
           description: this.state.description,
-          status: 1,
+          status: this.state.status ? 1 : 2,
           startDate: this.state.startDate,
           endDate: this.state.endDate,
         },
@@ -163,7 +232,7 @@ class Discount extends Component {
       };
       console.log("data: ", data);
       try {
-        const result = await this._inserDiscount(data);
+        const result = await this.updateDiscount(data);
         if (result) {
           this.notify();
         }
@@ -242,11 +311,12 @@ class Discount extends Component {
                             type="range"
                             min="0"
                             max="100"
-                            className="form-control"
+                            className="slider slider-primary"
                             placeholder="Branch name"
                             name="percentage"
                             value={this.state.percentage}
                             onChange={this.onHandleChange}
+                            style={{ width: `100% ` }}
                           />
                         </div>
                       </div>
@@ -257,8 +327,8 @@ class Discount extends Component {
                           <Select
                             className="react-select primary"
                             classNamePrefix="react-select"
-                            placeholder="Select service"
-                            name="Service"
+                            placeholder="Select servvice"
+                            name="province"
                             isMulti
                             value={this.state.currentService}
                             options={this.state.serviceList}
@@ -266,6 +336,13 @@ class Discount extends Component {
                           />
                         </div>
                       </div>
+                      {this.state.currentServiceError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please choose some service.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-2">
                         <div className="col-md-6">
                           <label className="labels">Start date*</label>
@@ -293,6 +370,13 @@ class Discount extends Component {
                           />
                         </div>
                       </div>
+                      {this.state.timeError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please choose start date must before end date.
+                          </p>
+                        </span>
+                      ) : null}
                       <div className="row mt-4">
                         <div className="col-md-12">
                           <label className="labels">Description*</label>
@@ -305,13 +389,40 @@ class Discount extends Component {
                           ></textarea>
                         </div>
                       </div>
+                      {this.state.descriptionError ? (
+                        <span>
+                          <p style={{ color: `red` }}>
+                            Please input description about this discount.
+                          </p>
+                        </span>
+                      ) : null}
+                      <div className="row mt-4">
+                        <div className="col-md-12">
+                          <label className="labels">
+                            Status* &nbsp;&nbsp;&nbsp;&nbsp;
+                          </label>
+                          <Switch
+                            className="form-control"
+                            onText={<i className="now-ui-icons ui-1_check" />}
+                            offText={
+                              <i className="now-ui-icons ui-1_simple-remove" />
+                            }
+                            value={this.state.status}
+                            onChange={() =>
+                              this.setState({
+                                status: !this.state.status,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
                       <div className="row mt-4 ml-10">
                         <button
                           className="btn btn-info profile-button"
                           type="button"
                           onClick={this.onHandleSubmit}
                         >
-                          Add
+                          Save
                         </button>
                       </div>
                     </div>

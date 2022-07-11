@@ -128,17 +128,32 @@ export default function NewAccountStaffPage() {
       flag = false;
     }
     if (!provinceId) {
-      setDistrictId("Not");
+      setprovinceId("Not");
       flag = false;
     }
-    if (!dateOfBirth) {
+    if (!dateOfBirth || dateOfBirth.length === 0 || dateOfBirth === "Not") {
       setDateOfBirth("Not");
       flag = false;
     }
     if (!gender) {
       setGender("Not");
+      flag = false;
     }
-    console.log(confirm);
+    if (!verifyLength(name, 5)) {
+      setName("Not");
+    }
+    if (!verifyNumber(phone) || phone.at(0) != 0) {
+      setPhone("Not");
+    }
+    if (!verifyEmail(email)) {
+      setEmail("has-danger");
+    }
+    if (!verifyLength(password, 8)) {
+      setPassword("Not");
+    }
+    if (!verifyLength(confirm, 8)) {
+      setConfirm("Not");
+    }
     if (
       verifyLength(name, 5) &&
       verifyNumber(phone) &&
@@ -168,7 +183,7 @@ export default function NewAccountStaffPage() {
       const result = AccountApi.AddStaff(data).then((res) => {
         console.log(res);
         if (res === "Register successfully") {
-          toast.success(res);
+          sessionStorage.setItem("addNewStaff", true);
           window.location.replace("/admin/accounts");
         }
       });
@@ -365,7 +380,7 @@ export default function NewAccountStaffPage() {
                             }}
                           />
                         </FormGroup>
-                        {!dateOfBirth && dateOfBirth === "Not" ? (
+                        {dateOfBirth === "Not" ? (
                           <Row>
                             <label
                               className="error pl-4"

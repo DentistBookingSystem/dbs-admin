@@ -14,8 +14,9 @@ import {
   Input,
 } from "reactstrap";
 
+import NotificationAlert from "react-notification-alert";
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import doctorApi from "api/doctorApi";
 import CustomPagination from "views/Widgets/Pagination";
 import { Modal, Image } from "react-bootstrap";
@@ -45,6 +46,7 @@ function DoctorTable() {
     indexOfFirstDoctor,
     indexOfLastDoctor
   );
+  const notify = useRef();
 
   //Pop up alert delete
   const toggleModalMini = () => {
@@ -66,6 +68,22 @@ function DoctorTable() {
         console.log("xóa hk đc", error);
       }
     }
+  };
+
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
   };
 
   const getAllBranch = async () => {
@@ -104,6 +122,14 @@ function DoctorTable() {
     getAllBranch();
     document.getElementById(`button${statusSearch}`).classList +=
       " active-button-status";
+    if (sessionStorage.getItem("addNewDoctor")) {
+      notifyMessage("Add new doctor successfully!!!");
+      sessionStorage.removeItem("addNewDoctor");
+    }
+    if (sessionStorage.getItem("updateDoctor")) {
+      notifyMessage("Update doctor successfully!!!");
+      sessionStorage.removeItem("updateDoctor");
+    }
   }, []);
 
   const buttonStatusClick = (id) => {
@@ -134,7 +160,11 @@ function DoctorTable() {
 
   return (
     <>
-      <PanelHeader size="sm" />
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
       <div className="content">
         <Row>
           <Col md="12">
@@ -274,7 +304,7 @@ function DoctorTable() {
                                 delay={0}
                                 target="tooltip590841497"
                               >
-                                View
+                                Detail
                               </UncontrolledTooltip>
                               <Button
                                 className="btn-icon"
@@ -294,7 +324,7 @@ function DoctorTable() {
                                 delay={0}
                                 target={`edit${doctor.id}`}
                               >
-                                Edit
+                                Update
                               </UncontrolledTooltip>
                               <Button
                                 className="btn-icon"
@@ -314,7 +344,7 @@ function DoctorTable() {
                                 delay={0}
                                 target={`delete${doctor.id}`}
                               >
-                                Delete
+                                Inactive
                               </UncontrolledTooltip>
                             </td>
                           </tr>

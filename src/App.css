@@ -13,3 +13,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.modal .modal-mini .modal-footer button:first-child {
+  opacity: 1;
+}

@@ -11,6 +11,12 @@ import {
   Button,
   Table,
   Input,
+  UncontrolledAlert,
+  UncontrolledTooltip,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "reactstrap";
 import Select from "react-select";
 
@@ -39,7 +45,7 @@ const notVerifiedStatus = (
 
 const listStatus = [
   { value: [0, 1, 2, 3, 4, 5, 6], label: "Select all status" },
-  { value: [0, 4], label: "Wating" },
+  { value: [0], label: "Wating" },
   { value: [1, 5], label: "Done" },
   { value: [2], label: "Absent" },
   { value: [3], label: "Cancel by customer" },
@@ -51,6 +57,7 @@ function BookingTable() {
   const [bookingsPerPage] = useState(10);
   const [isEdit, setIsEdit] = useState(false);
   const [updateBooking, setUpdateBooking] = useState({});
+  const [bookingSerivceDetailList, setBookingServiceList] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const [branchSearch, SetBranchSearch] = useState({
@@ -63,11 +70,18 @@ function BookingTable() {
     label: "Select all doctor",
   });
   const [branchList, setBranchList] = useState([]);
-  const [doctorList, setDoctorList] = useState([]);
+  const [doctorList, setDoctorList] = useState([
+    {
+      value: 0,
+      label: "Select all doctor",
+    },
+  ]);
   const [statusSearch, setStatusSearch] = useState({
-    value: [0, 4],
+    value: [0],
     label: "Waiting",
   });
+
+  const [modalDetail, setModalDetail] = useState(false);
 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
@@ -80,14 +94,23 @@ function BookingTable() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const fetchAppoinmentList = async () => {
-    try {
-      await appointmentApi.getAppointList().then((res) => {
-        console.log(res.content);
-        setBookingList(res.content);
+    var data;
+    data = {
+      status: statusSearch.value,
+      date: getToday(),
+      phone: searchValue,
+      branchId: branchSearch.value,
+      doctorId: doctorSearch.value,
+      serviceId: 0,
+    };
+    console.log("data appoitment", data);
+    const result = await appointmentApi
+      .getAppointListForAdmin(data)
+      .then((res) => {
+        console.log("appointment", res.data);
+        setBookingList(res.data);
+        setCurrentPage(1);
       });
-    } catch (error) {
-      console.log("Failed to fetch API", error);
-    }
   };
 
   useEffect(() => {
@@ -120,7 +143,12 @@ function BookingTable() {
 
   const getDoctorByBranchId = async () => {
     if (branchSearch.value === 0) {
-      setDoctorList(null);
+      setDoctorList([
+        {
+          value: 0,
+          label: "Select all doctor",
+        },
+      ]);
       return;
     }
     var data;
@@ -130,12 +158,15 @@ function BookingTable() {
       status: 0,
     };
     const result = doctorApi.filterDoctor(data).then((res) => {
-      let x = res.map((item) => {
-        return {
-          value: item.id,
-          label: item.name,
-        };
-      });
+      let x;
+      if (res.length !== 0) {
+        x = res.map((item) => {
+          return {
+            value: item.id,
+            label: item.name,
+          };
+        });
+      }
       setDoctorList([
         {
           value: 0,
@@ -177,13 +208,13 @@ function BookingTable() {
     var data;
     data = {
       status: statusSearch.value,
-      date: dateSearch ? dateSearch : null,
+      date: dateSearch,
       phone: searchValue,
       branchId: branchSearch.value,
       doctorId: doctorSearch.value,
       serviceId: 0,
     };
-    console.log("data", data);
+    console.log("data appoitment", data);
     const result = await appointmentApi
       .getAppointListForAdmin(data)
       .then((res) => {
@@ -193,248 +224,338 @@ function BookingTable() {
       });
   };
 
+  const getAppointmentDetail = async (id) => {
+    try {
+      const result = await appointmentApi.getAppointmentDetailForStaff(id);
+      console.log("booking detail", result);
+      if (result) {
+        setBookingServiceList(result.appointmentDetailList);
+      }
+    } catch {
+      console.log("Can not load appointment detail");
+    }
+  };
+
+  useEffect(() => {
+    getAppointmentDetail(updateBooking?.id);
+  }, [updateBooking]);
+
   return (
     <>
-      {isEdit ? (
-        <Appointment {...updateBooking} />
-      ) : (
-        <>
-          <div className="content">
-            <Row>
-              <Col md="12">
-                <Card>
-                  <CardHeader>
-                    <CardTitle tag="h4">Appoinment</CardTitle>
-                    <div>
-                      <Row className="justify-content-center mb-3">
-                        <Col md={3} className="text-center">
-                          <label
-                            style={{
-                              fontSize: `14px`,
-                              fontWeight: `bold`,
-                            }}
-                          >
-                            Search phone
-                          </label>
-                        </Col>
-                        <Col md={5}>
-                          <Input
-                            style={{ fontSize: `15px` }}
-                            class="form-control p-2"
-                            id="inputdefault"
-                            type="text"
-                            value={searchValue}
-                            placeholder="Enter the number phone"
-                            onChange={(e) => {
-                              setSearchValue(e.target.value.trim());
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="justify-content-center mb-3">
-                        <Col md={3} className="text-center">
-                          <label
-                            style={{
-                              fontSize: `14px`,
-                              fontWeight: `bold`,
-                            }}
-                          >
-                            Search date
-                          </label>
-                        </Col>
-                        <Col md={5}>
-                          <Input
-                            style={{ fontSize: `15px` }}
-                            class="form-control p-2"
-                            id="inputdefault"
-                            type="date"
-                            value={dateSearch}
-                            pattern="yyyy-mm-dd"
-                            placeholder="Enter the date"
-                            onChange={(e) => {
-                              setDateSearch(e.target.value);
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="justify-content-center mb-3">
-                        <Col md={3} className="text-center">
-                          {" "}
-                          <label
-                            style={{ fontSize: `14px`, fontWeight: `bold` }}
-                          >
-                            Branch
-                          </label>
-                        </Col>
-                        <Col md={5}>
-                          <Select
-                            className="react-select"
-                            classNamePrefix="react-select"
-                            placeholder="Select branch "
-                            value={branchSearch}
-                            options={branchList}
-                            onChange={(e) => {
-                              SetBranchSearch(e);
-                            }}
-                            defaultValue="0"
-                          />
-                        </Col>
-                      </Row>
+      <div className="content">
+        <Row>
+          <Col md="12">
+            <Card>
+              <CardHeader>
+                <CardTitle tag="h4">Appoinment</CardTitle>
+                <div>
+                  <Row className="justify-content-center mb-3">
+                    <Col md={3} className="text-center">
+                      <label
+                        style={{
+                          fontSize: `14px`,
+                          fontWeight: `bold`,
+                        }}
+                      >
+                        Search phone
+                      </label>
+                    </Col>
+                    <Col md={5}>
+                      <Input
+                        style={{ fontSize: `15px` }}
+                        class="form-control p-2"
+                        id="inputdefault"
+                        type="text"
+                        value={searchValue}
+                        placeholder="Enter the number phone"
+                        onChange={(e) => {
+                          setSearchValue(e.target.value.trim());
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center mb-3">
+                    <Col md={3} className="text-center">
+                      <label
+                        style={{
+                          fontSize: `14px`,
+                          fontWeight: `bold`,
+                        }}
+                      >
+                        Search date
+                      </label>
+                    </Col>
+                    <Col md={5}>
+                      <Input
+                        style={{ fontSize: `15px` }}
+                        class="form-control p-2"
+                        id="inputdefault"
+                        type="date"
+                        value={dateSearch}
+                        pattern="yyyy-mm-dd"
+                        placeholder="Enter the date"
+                        onChange={(e) => {
+                          setDateSearch(e.target.value);
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center mb-3">
+                    <Col md={3} className="text-center">
+                      {" "}
+                      <label style={{ fontSize: `14px`, fontWeight: `bold` }}>
+                        Branch
+                      </label>
+                    </Col>
+                    <Col md={5}>
+                      <Select
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        placeholder="Select branch "
+                        value={branchSearch}
+                        options={branchList}
+                        onChange={(e) => {
+                          SetBranchSearch(e);
+                        }}
+                        defaultValue="0"
+                      />
+                    </Col>
+                  </Row>
 
-                      <Row className="justify-content-center mb-3">
-                        <Col md={3} className="text-center">
-                          <label
-                            style={{ fontSize: `14px`, fontWeight: `bold` }}
-                          >
-                            Doctor in branch
-                          </label>
-                        </Col>
-                        <Col md={5}>
-                          <Select
-                            className="react-select"
-                            classNamePrefix="react-select"
-                            value={doctorSearch}
-                            placeholder="Enter the number phone"
-                            onChange={(e) => {
-                              setDoctorSearch(e);
-                            }}
-                            options={doctorList}
-                          />
-                        </Col>
-                      </Row>
-                      <Row className="justify-content-center">
-                        <Col md={3} className="text-center">
-                          {" "}
-                          <label
-                            for="inputdefault"
-                            style={{ fontSize: `14px`, fontWeight: `bold` }}
-                          >
-                            Status
-                          </label>
-                        </Col>
-                        <Col md={5}>
-                          <Select
-                            className="react-select"
-                            classNamePrefix="react-select"
-                            value={statusSearch}
-                            placeholder="Select status"
-                            options={listStatus}
-                            onChange={(value) => {
-                              setStatusSearch(value);
-                            }}
-                          />
-                        </Col>
-                      </Row>
-                    </div>
-                  </CardHeader>
-                  <CardBody>
-                    <Table responsive>
-                      <thead className="text-primary">
+                  <Row className="justify-content-center mb-3">
+                    <Col md={3} className="text-center">
+                      <label style={{ fontSize: `14px`, fontWeight: `bold` }}>
+                        Doctor in branch
+                      </label>
+                    </Col>
+                    <Col md={5}>
+                      <Select
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        value={doctorSearch}
+                        placeholder="Enter the number phone"
+                        onChange={(e) => {
+                          setDoctorSearch(e);
+                        }}
+                        options={doctorList}
+                      />
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center">
+                    <Col md={3} className="text-center">
+                      {" "}
+                      <label
+                        for="inputdefault"
+                        style={{ fontSize: `14px`, fontWeight: `bold` }}
+                      >
+                        Status
+                      </label>
+                    </Col>
+                    <Col md={5}>
+                      <Select
+                        className="react-select"
+                        classNamePrefix="react-select"
+                        value={statusSearch}
+                        placeholder="Select status"
+                        options={listStatus}
+                        onChange={(value) => {
+                          setStatusSearch(value);
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                </div>
+              </CardHeader>
+              <CardBody>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th className="text-center">#</th>
+                      <th style={{ fontWeight: `bold` }}>Patient</th>
+                      <th style={{ fontWeight: `bold` }}>Date</th>
+                      <th style={{ fontWeight: `bold` }}>Shift</th>
+                      <th style={{ fontWeight: `bold` }}>Doctor</th>
+                      <th style={{ fontWeight: `bold` }}>Status</th>
+                      <th style={{ fontWeight: `bold`, textAlign: `center` }}>
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentBookings.map((booking, index) => {
+                      return (
                         <tr>
-                          <th className="text-center">#</th>
-                          <th style={{ fontWeight: `bold` }}>Patient</th>
-                          <th style={{ fontWeight: `bold` }}>Date</th>
-                          <th style={{ fontWeight: `bold` }}>Shift</th>
-                          <th style={{ fontWeight: `bold` }}>Doctor</th>
-                          <th style={{ fontWeight: `bold` }}>Status</th>
-                          {/* <th
-                            style={{ fontWeight: `bold`, textAlign: `center` }}
-                          >
-                            Actions
-                          </th> */}
+                          <td className="text-center">{index + 1}</td>
+                          <td>{booking.account.fullName}</td>
+                          <td>{booking.appointmentDate}</td>
+                          <td>{booking.appointmentTime}</td>
+                          <td>{booking.doctor.name}</td>
+                          <td>
+                            {booking.status === 0 || booking.status === 4 ? (
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Watting
+                              </div>
+                            ) : null}
+                            {booking.status === 1 || booking.status === 5 ? (
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Done
+                              </div>
+                            ) : null}
+                            {booking.status === 2 ? (
+                              <div style={{ color: "green" }}>
+                                <i className="fas fa-check-circle"> </i> Absent
+                              </div>
+                            ) : null}
+                            {booking.status === 3 ? (
+                              <div style={{ color: "gray" }}>
+                                <i className="fas fa-check-circle"> </i> Cancel
+                                by customer
+                              </div>
+                            ) : null}
+                            {booking.status === 6 ? (
+                              <div style={{ color: "gray" }}>
+                                <i className="fas fa-check-circle"> </i> Cancel
+                                by center
+                              </div>
+                            ) : null}
+                          </td>
+                          <td className="text-center btns-mr-5">
+                            <Button
+                              className="btn-icon"
+                              color="info"
+                              size="sm"
+                              type="button"
+                              id={`detail${booking.id}`}
+                              onClick={() => {
+                                setModalDetail(true);
+                                setUpdateBooking(booking);
+                              }}
+                            >
+                              <i className="now-ui-icons users_single-02" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`detail${booking.id}`}
+                            >
+                              Detail
+                            </UncontrolledTooltip>
+                            <Button
+                              className="btn-icon"
+                              color="success"
+                              size="sm"
+                              type="button"
+                              onClick={() => {
+                                setIsEdit(true);
+                                setUpdateBooking(booking);
+                                setModalDetail(true);
+                                console.log("appointment update", booking);
+                              }}
+                              id={`Update${booking.id}`}
+                            >
+                              <i className="now-ui-icons ui-2_settings-90" />
+                            </Button>
+                            <UncontrolledTooltip
+                              delay={0}
+                              target={`Update${booking.id}`}
+                            >
+                              Update
+                            </UncontrolledTooltip>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {currentBookings.map((booking, index) => {
-                          return (
-                            <tr>
-                              <td className="text-center">{index + 1}</td>
-                              <td>{booking.account.fullName}</td>
-                              <td>{booking.appointmentDate}</td>
-                              <td>{booking.appointmentTime}</td>
-                              <td>{booking.doctor.name}</td>
-                              <td>
-                                {booking.status === 0 ||
-                                booking.status === 4 ? (
-                                  <div style={{ color: "green" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Watting
-                                  </div>
-                                ) : null}
-                                {booking.status === 1 ||
-                                booking.status === 5 ? (
-                                  <div style={{ color: "green" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Done
-                                  </div>
-                                ) : null}
-                                {booking.status === 2 ? (
-                                  <div style={{ color: "green" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Absent
-                                  </div>
-                                ) : null}
-                                {booking.status === 3 ? (
-                                  <div style={{ color: "gray" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Cancel by customer
-                                  </div>
-                                ) : null}
-                                {booking.status === 6 ? (
-                                  <div style={{ color: "gray" }}>
-                                    <i className="fas fa-check-circle"> </i>{" "}
-                                    Cancel by center
-                                  </div>
-                                ) : null}
-                              </td>
-                              {/* <td className="text-center btns-mr-5">
-                                <Button
-                                  className="btn-icon"
-                                  color="info"
-                                  size="sm"
-                                  type="button"
-                                >
-                                  <i className="now-ui-icons users_single-02" />
-                                </Button>
-                                <Button
-                                  className="btn-icon"
-                                  color="success"
-                                  size="sm"
-                                  type="button"
-                                  onClick={() => {
-                                    setIsEdit(!isEdit);
-                                    setUpdateBooking(booking);
-                                  }}
-                                >
-                                  <i className="now-ui-icons ui-2_settings-90" />
-                                </Button>
-
-                                <Button
-                                  className="btn-icon"
-                                  color="danger"
-                                  size="sm"
-                                  type="button"
-                                >
-                                  <i className="now-ui-icons ui-1_simple-remove" />
-                                </Button>
-                              </td> */}
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </Table>
-                  </CardBody>
-                </Card>
-                <CustomPagination
-                  itemsPerPage={bookingsPerPage}
-                  totalItems={bookingList.length}
-                  paginate={paginate}
-                />
-              </Col>
-            </Row>
-          </div>
-        </>
-      )}
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+            <CustomPagination
+              itemsPerPage={bookingsPerPage}
+              totalItems={bookingList.length}
+              paginate={paginate}
+            />
+          </Col>
+          <Modal
+            isOpen={modalDetail}
+            toggle={() => setModalDetail(false)}
+            size="md"
+          >
+            <ModalHeader>Appointment detail</ModalHeader>
+            <ModalBody>
+              <Row>
+                <Col md={3}>
+                  <label>Name:</label>
+                </Col>
+                <Col md={9}>{updateBooking?.account?.fullName}</Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <label>Date & Time:</label>
+                </Col>
+                <Col md={9}>
+                  {updateBooking?.appointmentTime} <br />
+                  {updateBooking?.appointmentDate}
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <label>Doctor:</label>
+                </Col>
+                <Col md={9}>{updateBooking?.doctor?.name}</Col>
+              </Row>
+              <Row>
+                <Col md={3}>
+                  <label>Service:</label>
+                </Col>
+                <Col md={12}>
+                  <Table>
+                    <thead>
+                      <th style={{ color: `blue` }}>Service name</th>
+                      <th style={{ color: `blue` }}>Price</th>
+                      <th style={{ color: `blue` }}>Discount</th>
+                    </thead>
+                    <tbody>
+                      {bookingSerivceDetailList &&
+                      bookingSerivceDetailList?.length !== 0
+                        ? bookingSerivceDetailList.map((item) => {
+                            return (
+                              <tr>
+                                <td>{item.name}</td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            );
+                          })
+                        : null}
+                    </tbody>
+                  </Table>
+                </Col>
+              </Row>
+            </ModalBody>
+            <ModalFooter className="justify-content-center text-center">
+              {isEdit ? (
+                <Button
+                  color="info"
+                  className="btn-neutral"
+                  onClick={() => {
+                    setModalDetail(false);
+                  }}
+                >
+                  Save
+                </Button>
+              ) : null}
+              <Button
+                color="info"
+                className="btn-neutral"
+                onClick={() => {
+                  setModalDetail(false);
+                }}
+              >
+                Close
+              </Button>
+            </ModalFooter>
+          </Modal>
+        </Row>
+      </div>
     </>
   );
 }

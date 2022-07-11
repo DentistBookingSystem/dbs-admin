@@ -178,7 +178,7 @@ function ExtendedForms() {
               <CardBody>
                 <Row>
                   <Col xs={12} md={6}>
-                    <CardTitle tag="h4">Toggle Buttons</CardTitle>
+                    <CardTitle tag="h4">Toggle But tons</CardTitle>
                     <Row>
                       <Col xs={12} md={4}>
                         <p className="category">Default</p>
