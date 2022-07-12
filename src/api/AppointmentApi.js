@@ -35,6 +35,19 @@ class AppointmentApi {
     return axiosClient.post(mainUrl);
   };
 
+  getAppointmentDetailForAdmin = (data) => {
+    const url = "/appointment/find/" + data;
+    return axiosClient.post(url);
+    // const url = "http://localhost:8080/rade/admin/appointment/find/" + data;
+    // console.log("url", url);
+    // return axios.post(url, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+    //   },
+    // });
+  };
+
   checkMarkDone = (id) => {
     const url = "/appointment/markdone/" + id;
     const mainUrl = axiosClient.getUri().replace("admin", "staff") + url;
@@ -48,6 +61,28 @@ class AppointmentApi {
     console.log(mainUrl);
     return axiosClient.post(mainUrl, data);
   };
+
+  getHistoryAppointmentForStaff(phone) {
+    const url = "http://localhost:8080/rade/staff/appointment/history";
+    // const url = "/appointment/history";
+    // return axiosClient.post(url, phone);
+    return axios.post(url, phone, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  submitAddNoteForAppointment(data) {
+    const url = "http://localhost:8080/rade/staff/appointment/note";
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
 }
 const appointmentApi = new AppointmentApi();
 export default appointmentApi;

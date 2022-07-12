@@ -216,6 +216,8 @@ function StaffNav(props) {
             ? "Check feedback"
             : window.location.href.includes("/home")
             ? "Check-in appointment"
+            : window.location.href.includes("/history")
+            ? "History appointment"
             : "Profile"}
         </h2>
       </div>

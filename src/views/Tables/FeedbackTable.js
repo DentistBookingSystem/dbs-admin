@@ -306,7 +306,7 @@ function FeedbackTable() {
                               >
                                 Detail
                               </UncontrolledTooltip>
-                              {item.status === 0 ? (
+                              {item.status === 2 || item.status === 0 ? (
                                 <>
                                   <Button
                                     className="btn-icon"
@@ -328,6 +328,10 @@ function FeedbackTable() {
                                   >
                                     Approve
                                   </UncontrolledTooltip>
+                                </>
+                              ) : null}
+                              {item.status === 1 || item.status === 0 ? (
+                                <>
                                   <Button
                                     className="btn-icon"
                                     color="danger"

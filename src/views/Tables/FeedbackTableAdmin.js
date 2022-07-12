@@ -324,46 +324,54 @@ function FeedbackTableAdmin() {
                               >
                                 Detail
                               </UncontrolledTooltip>
-                              <Button
-                                className="btn-icon"
-                                color="success"
-                                id="tooltip26024663"
-                                size="sm"
-                                type="button"
-                                onClick={() => {
-                                  setModalMini(true);
-                                  setApprove(true);
-                                  setFeedbackDetail(item);
-                                }}
-                              >
-                                <i className="now-ui-icons ui-1_check" />
-                              </Button>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip26024663"
-                              >
-                                Approve
-                              </UncontrolledTooltip>
-                              <Button
-                                className="btn-icon"
-                                color="danger"
-                                id="tooltip930083782"
-                                size="sm"
-                                type="button"
-                                onClick={() => {
-                                  setModalMini(true);
-                                  setApprove(false);
-                                  setFeedbackDetail(item);
-                                }}
-                              >
-                                <i className="now-ui-icons ui-1_simple-remove" />
-                              </Button>
-                              <UncontrolledTooltip
-                                delay={0}
-                                target="tooltip930083782"
-                              >
-                                Disapprove
-                              </UncontrolledTooltip>
+                              {item.status === 2 || item.status === 0 ? (
+                                <>
+                                  <Button
+                                    className="btn-icon"
+                                    color="success"
+                                    id="tooltip26024663"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => {
+                                      setModalMini(true);
+                                      setApprove(true);
+                                      setFeedbackDetail(item);
+                                    }}
+                                  >
+                                    <i className="now-ui-icons ui-1_check" />
+                                  </Button>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip26024663"
+                                  >
+                                    Approve
+                                  </UncontrolledTooltip>
+                                </>
+                              ) : null}
+                              {item.status === 1 || item.status === 0 ? (
+                                <>
+                                  <Button
+                                    className="btn-icon"
+                                    color="danger"
+                                    id="tooltip930083782"
+                                    size="sm"
+                                    type="button"
+                                    onClick={() => {
+                                      setModalMini(true);
+                                      setApprove(false);
+                                      setFeedbackDetail(item);
+                                    }}
+                                  >
+                                    <i className="now-ui-icons ui-1_simple-remove" />
+                                  </Button>
+                                  <UncontrolledTooltip
+                                    delay={0}
+                                    target="tooltip930083782"
+                                  >
+                                    Disapprove
+                                  </UncontrolledTooltip>
+                                </>
+                              ) : null}
                             </td>
                           </tr>
                         );

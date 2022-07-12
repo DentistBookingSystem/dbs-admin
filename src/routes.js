@@ -45,6 +45,8 @@ import AccountEdit from "views/Pages/dbs-page/edit-form/AccountEdit";
 import FeedbackTableAdmin from "views/Tables/FeedbackTableAdmin";
 import UpdateProfile from "views/Pages/dbs-page/UpdateProfile";
 import NewBranchPage from "views/Pages/dbs-page/Add-page/NewBranchPage";
+import HistoryAppointmentTableStaff from "views/Tables/HistoryAppointmentTableStaff";
+import HistoryAppointmentStaff from "views/Pages/staff-page/HistoryAppointmentStaff";
 
 let routes = [
   //Admin
@@ -206,6 +208,13 @@ let routes = [
     name: "Cancel",
     icon: "now-ui-icons ui-1_simple-remove",
     component: StaffCancelAppointment,
+    layout: "/staff",
+  },
+  {
+    path: "/appointment/history",
+    name: "History",
+    icon: "now-ui-icons files_single-copy-04",
+    component: HistoryAppointmentStaff,
     layout: "/staff",
   },
 

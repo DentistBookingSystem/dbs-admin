@@ -51,6 +51,13 @@ const listStatus = [
   { value: [3], label: "Cancel by customer" },
   { value: [6], label: "Cancel by center" },
 ];
+const listStatusUpdate = [
+  { value: [0], label: "Wating" },
+  { value: [1, 5], label: "Done" },
+  { value: [2], label: "Absent" },
+  { value: [3], label: "Cancel by customer" },
+  { value: [6], label: "Cancel by center" },
+];
 function BookingTable() {
   const [bookingList, setBookingList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,6 +65,7 @@ function BookingTable() {
   const [isEdit, setIsEdit] = useState(false);
   const [updateBooking, setUpdateBooking] = useState({});
   const [bookingSerivceDetailList, setBookingServiceList] = useState(null);
+  const [statusUpdate, setStatusUpdate] = useState(null);
 
   const [searchValue, setSearchValue] = useState("");
   const [branchSearch, SetBranchSearch] = useState({
@@ -226,10 +234,19 @@ function BookingTable() {
 
   const getAppointmentDetail = async (id) => {
     try {
-      const result = await appointmentApi.getAppointmentDetailForStaff(id);
+      const result = await appointmentApi.getAppointmentDetailForAdmin(id);
       console.log("booking detail", result);
       if (result) {
         setBookingServiceList(result.appointmentDetailList);
+        setStatusUpdate({
+          value: updateBooking.status,
+          label: listStatusUpdate.map((item) => {
+            if (item.value.includes(updateBooking.status)) {
+              return item.label;
+            }
+          }),
+        });
+        console.log("status", statusUpdate);
       }
     } catch {
       console.log("Can not load appointment detail");
@@ -448,7 +465,6 @@ function BookingTable() {
                                 setIsEdit(true);
                                 setUpdateBooking(booking);
                                 setModalDetail(true);
-                                console.log("appointment update", booking);
                               }}
                               id={`Update${booking.id}`}
                             >
@@ -504,6 +520,33 @@ function BookingTable() {
               </Row>
               <Row>
                 <Col md={3}>
+                  <label>Status:</label>
+                </Col>
+                {isEdit ? (
+                  <Col md={9}>
+                    <Select
+                      options={listStatusUpdate}
+                      value={statusUpdate}
+                      placeholder="Select status..."
+                      className="react-select"
+                      classNamePrefix="react-select"
+                      onChange={(e) => {
+                        setStatusUpdate(e);
+                      }}
+                    ></Select>
+                  </Col>
+                ) : (
+                  <Col md={9}>
+                    {listStatus.map((item) => {
+                      if (item.value == updateBooking?.status) {
+                        return item.label;
+                      }
+                    })}
+                  </Col>
+                )}
+              </Row>
+              <Row>
+                <Col md={3}>
                   <label>Service:</label>
                 </Col>
                 <Col md={12}>
@@ -519,9 +562,16 @@ function BookingTable() {
                         ? bookingSerivceDetailList.map((item) => {
                             return (
                               <tr>
-                                <td>{item.name}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{item?.service?.name}</td>
+                                <td>
+                                  {item?.service?.minPrice} ~{" "}
+                                  {item?.service?.maxPrice}
+                                </td>
+                                <td>
+                                  {item?.discount?.name
+                                    ? item.discount.name
+                                    : "No discount"}
+                                </td>
                               </tr>
                             );
                           })
@@ -533,25 +583,31 @@ function BookingTable() {
             </ModalBody>
             <ModalFooter className="justify-content-center text-center">
               {isEdit ? (
+                <Col>
+                  <Button
+                    color="success"
+                    className="btn-neutral"
+                    onClick={() => {
+                      setModalDetail(false);
+                      setIsEdit(false);
+                    }}
+                  >
+                    Save
+                  </Button>
+                </Col>
+              ) : null}
+              <Col>
                 <Button
                   color="info"
                   className="btn-neutral"
                   onClick={() => {
                     setModalDetail(false);
+                    setIsEdit(false);
                   }}
                 >
-                  Save
+                  Close
                 </Button>
-              ) : null}
-              <Button
-                color="info"
-                className="btn-neutral"
-                onClick={() => {
-                  setModalDetail(false);
-                }}
-              >
-                Close
-              </Button>
+              </Col>
             </ModalFooter>
           </Modal>
         </Row>

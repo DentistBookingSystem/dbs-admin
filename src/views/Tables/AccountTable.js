@@ -126,6 +126,7 @@ function AccountTable() {
                   id="role1"
                   tag="h5"
                   className="pl-2 pr-2"
+                  style={{ cursor: `pointer` }}
                   onClick={() => {
                     // checkActive(1);
                     setRoleId(1);
@@ -137,6 +138,7 @@ function AccountTable() {
                   id="role3"
                   tag="h5"
                   className="pl-2 pr-2"
+                  style={{ cursor: `pointer` }}
                   onClick={() => {
                     // checkActive(3);
                     setRoleId(3);
@@ -148,6 +150,7 @@ function AccountTable() {
                   id="role2"
                   tag="h5"
                   className="pl-2 pr-2"
+                  style={{ cursor: `pointer` }}
                   onClick={() => {
                     setRoleId(2);
                     // checkActive(2);
