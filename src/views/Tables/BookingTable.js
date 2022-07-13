@@ -591,6 +591,7 @@ function BookingTable() {
                       setModalDetail(false);
                       setIsEdit(false);
                     }}
+                    style={{ fontSize: `16px` }}
                   >
                     Save
                   </Button>
@@ -604,6 +605,7 @@ function BookingTable() {
                     setModalDetail(false);
                     setIsEdit(false);
                   }}
+                  style={{ fontSize: `16px` }}
                 >
                   Close
                 </Button>

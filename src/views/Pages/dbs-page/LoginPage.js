@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 // reactstrap components
 import {
@@ -32,6 +32,7 @@ function LoginPage() {
   const [formValue, setFormValue] = React.useState(initialValue);
   const [stateLogin, setStateLogin] = React.useState(false);
   const history = useHistory();
+  const notify = useRef();
   const notificationAlert = React.useRef();
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,22 +67,50 @@ function LoginPage() {
     //validate
   };
   React.useEffect(() => {
-    document.body.classList.add("login-page");
-    return function cleanup() {
-      document.body.classList.remove("login-page");
-    };
+    // document.body.classList.add("login-page");
+    // return function cleanup() {
+    //   document.body.classList.remove("login-page");
+    // };
+    if (sessionStorage.getItem("loginFailed")) {
+      notifyMessage("Login failed", "danger", "now-ui-icons travel_info");
+      sessionStorage.removeItem("loginFailed");
+    }
   }, []);
+
+  const RoleUser = () => {
+    sessionStorage.clear();
+    sessionStorage.setItem("loginFailed", true);
+    window.location.replace("/");
+  };
+
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
+  };
+
   return sessionStorage.getItem("user") !== null ? (
     sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
       <Redirect to="/admin/branchs" />
     ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
       <Redirect to="/staff/home" />
     ) : (
-      <Redirect to="/admin/login-page" />
+      <RoleUser />
     )
   ) : (
     <>
       <NotificationAlert ref={notificationAlert} />
+      <NotificationAlert ref={notify} />
 
       <div className="content">
         <div className="login-page">

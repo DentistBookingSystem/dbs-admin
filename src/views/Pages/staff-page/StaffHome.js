@@ -65,6 +65,10 @@ export default function StaffHome(props) {
     }
   }, []);
 
+  useEffect(() => {
+    getAppointListForStaff();
+  }, [statusSearch, searchValue, branchSearch, doctorSearch]);
+
   const getAppointListForStaff = async () => {
     var data;
 
@@ -152,181 +156,177 @@ export default function StaffHome(props) {
       <div style={{ margin: `0 20px` }}>
         <Container fluid>
           <form className="mt-3">
-            <div className="form-group d-flex flex-column text-center">
-              <Row className="justify-content-center">
-                <label
-                  // for="inputdefault"
-                  style={{ fontSize: `16px`, width: `10vw` }}
-                  className="m-3"
-                >
-                  Search phone
-                </label>
-                <div
-                  class="form-group d-flex flex-row"
-                  style={{ width: `30vw` }}
-                >
-                  <input
-                    class="form-control"
-                    id="inputdefault"
-                    style={{
-                      width: `100%`,
-                      padding: `0px 15px`,
-                      fontSize: `16px`,
-                      backgroundColor: `white`,
-                      borderColor: `black`,
-                      textAlign: `center`,
-                      borderRadius: `6px`,
-                    }}
-                    type="text"
-                    value={searchValue}
-                    placeholder="Enter the number phone"
-                    onChange={(e) => {
-                      setSearchValue(e.target.value.trim());
-                    }}
-                  ></input>
-                </div>
-              </Row>
-              <Row className="justify-content-center">
-                <label
-                  for="inputdefault"
-                  style={{ fontSize: `16px`, width: `10vw` }}
-                  className="m-3"
-                >
-                  Branch
-                </label>
-                <div
-                  class="form-group d-flex flex-row"
-                  style={{ width: `30vw` }}
-                >
-                  <select
-                    class="form-control"
-                    id="inputdefault"
-                    style={{
-                      width: `100%`,
-                      padding: `0px 15px`,
-                      fontSize: `16px`,
-                      backgroundColor: `white`,
-                      borderColor: `black`,
-                      borderRadius: `6px`,
-                    }}
-                    type="text"
-                    value={branchSearch}
-                    placeholder="Enter the number phone"
-                    onChange={(e) => {
-                      SetBranchSearch(e.target.value);
-                    }}
-                    // defaultValue="0"
-                  >
-                    <option className="text-center" value="0">
-                      ---Select all branch---
-                    </option>
-                    {branchList.map((item) => {
-                      return (
-                        <option className="text-center" value={item.id}>
-                          {item.name}
+            <div className="form-group d-flex flex-column text-left justify-content-center">
+              <Row>
+                <Col lg={6} md={6} xs={12}>
+                  <Row className="justify-content-center">
+                    <Col lg={2} md={3} xs={12}>
+                      <label
+                        // for="inputdefault"
+                        style={{ fontSize: `16px`, width: `10vw` }}
+                        className="m-3"
+                      >
+                        Phone
+                      </label>
+                    </Col>
+                    <Col lg={8} md={8} xs={12}>
+                      <input
+                        class="form-control"
+                        id="inputdefault"
+                        style={{
+                          fontSize: `16px`,
+                          backgroundColor: `white`,
+                          borderColor: `black`,
+                          textAlign: `center`,
+                          borderRadius: `6px`,
+                        }}
+                        type="text"
+                        value={searchValue}
+                        placeholder="Enter the number phone"
+                        onChange={(e) => {
+                          setSearchValue(e.target.value.trim());
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center">
+                    <Col lg={2} md={3} xs={12}>
+                      <label
+                        for="inputdefault"
+                        style={{ fontSize: `16px`, width: `10vw` }}
+                        className="m-3"
+                      >
+                        Branch
+                      </label>
+                    </Col>
+                    <Col lg={8} md={8} xs={12}>
+                      {" "}
+                      <select
+                        class="form-control"
+                        id="inputdefault"
+                        style={{
+                          fontSize: `16px`,
+                          backgroundColor: `white`,
+                          borderColor: `black`,
+                          borderRadius: `6px`,
+                        }}
+                        type="text"
+                        value={branchSearch}
+                        placeholder="Enter the number phone"
+                        onChange={(e) => {
+                          SetBranchSearch(e.target.value);
+                        }}
+                        // defaultValue="0"
+                      >
+                        <option className="text-center" value="0">
+                          ---Select all branch---
                         </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              </Row>
-
-              <Row className="justify-content-center">
-                <label
-                  for="inputdefault"
-                  style={{ fontSize: `16px`, width: `10vw` }}
-                  className="m-3"
-                >
-                  Doctor in branch
-                </label>
-                <div
-                  class="form-group d-flex flex-row"
-                  style={{ width: `30vw` }}
-                >
-                  <select
-                    class="form-control"
-                    id="inputdefault"
-                    style={{
-                      width: `100%`,
-                      padding: `0px 15px`,
-                      fontSize: `16px`,
-                      backgroundColor: `white`,
-                      borderColor: `black`,
-                      borderRadius: `6px`,
-                    }}
-                    type="text"
-                    value={doctorSearch}
-                    placeholder="Enter the number phone"
-                    onChange={(e) => {
-                      setDoctorSearch(e.target.value);
-                    }}
-                    // defaultValue="0"
-                  >
-                    <option className="text-center" value="0">
-                      ---Select all doctor---
-                    </option>
-                    {doctorList.map((item, key) => {
-                      return (
+                        {branchList.map((item) => {
+                          return (
+                            <option className="text-center" value={item.id}>
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col lg={6} md={6} xs={12}>
+                  <Row className="justify-content-center">
+                    <Col lg={2} md={3} xs={12}>
+                      {" "}
+                      <label
+                        for="inputdefault"
+                        style={{ fontSize: `16px`, width: `10vw` }}
+                        className="m-3"
+                      >
+                        Doctor
+                      </label>
+                    </Col>
+                    <Col lg={8} md={8} xs={12}>
+                      {" "}
+                      <select
+                        class="form-control"
+                        id="inputdefault"
+                        style={{
+                          fontSize: `16px`,
+                          backgroundColor: `white`,
+                          borderColor: `black`,
+                          borderRadius: `6px`,
+                        }}
+                        type="text"
+                        value={doctorSearch}
+                        placeholder="Enter the number phone"
+                        onChange={(e) => {
+                          setDoctorSearch(e.target.value);
+                        }}
+                        // defaultValue="0"
+                      >
+                        <option className="text-center" value="0">
+                          ---Select all doctor---
+                        </option>
+                        {doctorList.map((item, key) => {
+                          return (
+                            <option
+                              className="text-center"
+                              value={item.id}
+                              key={key}
+                            >
+                              {item.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </Col>
+                  </Row>
+                  <Row className="justify-content-center">
+                    <Col lg={2} md={3} xs={12}>
+                      <label
+                        for="inputdefault"
+                        style={{ fontSize: `16px`, width: `10vw` }}
+                        className="m-3"
+                      >
+                        Status
+                      </label>
+                    </Col>
+                    <Col lg={8} md={8} xs={12}>
+                      <select
+                        class="form-control"
+                        id="inputdefault"
+                        style={{
+                          fontSize: `16px`,
+                          backgroundColor: `white`,
+                          borderColor: `black`,
+                          borderRadius: `6px`,
+                        }}
+                        type="text"
+                        value={statusSearch}
+                        onChange={(e) => {
+                          setStatusSearch(e.target.value);
+                        }}
+                        // defaultValue="0"
+                      >
                         <option
                           className="text-center"
-                          value={item.id}
-                          key={key}
+                          value={[0, 1, 2, 3, 4, 5, 6]}
                         >
-                          {item.name}
+                          ---Select all status---
                         </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              </Row>
-              <Row className="justify-content-center">
-                <label
-                  for="inputdefault"
-                  style={{ fontSize: `16px`, width: `10vw` }}
-                  className="m-3"
-                >
-                  Status
-                </label>
-                <div
-                  class="form-group d-flex flex-row"
-                  style={{ width: `30vw` }}
-                >
-                  <select
-                    class="form-control"
-                    id="inputdefault"
-                    style={{
-                      width: `100%`,
-                      padding: `0px 15px`,
-                      fontSize: `16px`,
-                      backgroundColor: `white`,
-                      borderColor: `black`,
-                      borderRadius: `6px`,
-                    }}
-                    type="text"
-                    value={statusSearch}
-                    onChange={(e) => {
-                      setStatusSearch(e.target.value);
-                    }}
-                    // defaultValue="0"
-                  >
-                    <option
-                      className="text-center"
-                      value={[0, 1, 2, 3, 4, 5, 6]}
-                    >
-                      ---Select all status---
-                    </option>
-                    {listStatus.map((item) => {
-                      return (
-                        <option className="text-center" value={item.id}>
-                          {item.value}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
+                        {listStatus.map((item) => {
+                          return (
+                            <option className="text-center" value={item.id}>
+                              {item.value}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </Col>
+                  </Row>
+                </Col>
               </Row>
             </div>
-            <button
+            {/* <button
               className="button-search mb-4"
               type="submit"
               onClick={(e) => {
@@ -338,7 +338,7 @@ export default function StaffHome(props) {
                 <p className="m-0"> Search </p>
                 <i className="now-ui-icons ui-1_zoom-bold m-1" />
               </div>
-            </button>
+            </button> */}
           </form>
         </Container>
         <AppointmentTable bookingList={bookingList} />

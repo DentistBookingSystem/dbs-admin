@@ -199,6 +199,7 @@ function FeedbackTable() {
                     <Col lg={5} className="d-flex flex-row">
                       <button
                         id="button0"
+                        style={{ borderRadius: `4px` }}
                         className="m-0 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(0);
@@ -209,6 +210,7 @@ function FeedbackTable() {
                       </button>
                       <button
                         id="button1"
+                        style={{ borderRadius: `4px` }}
                         className="m-0 ml-2 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(1);
@@ -219,6 +221,7 @@ function FeedbackTable() {
                       </button>
                       <button
                         id="button2"
+                        style={{ borderRadius: `4px` }}
                         className="m-0 ml-2 mr-2 p-1 pl-2 pr-2"
                         onClick={() => {
                           clickToActive(2);

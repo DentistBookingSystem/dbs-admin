@@ -165,7 +165,7 @@ export default function NewAccountStaffPage() {
     } else {
       flag = false;
     }
-    if (phone.length < 10 || phone.length > 11) {
+    if (phone.length !== 10) {
       flag = false;
       setPhone("Not");
     }

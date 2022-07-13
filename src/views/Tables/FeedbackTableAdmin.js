@@ -13,8 +13,8 @@ import {
   ModalFooter,
 } from "reactstrap";
 
-import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import { useEffect, useState } from "react";
+import NotificationAlert from "react-notification-alert";
+import { useEffect, useRef, useState } from "react";
 import serviceApi from "api/serviceApi";
 import FeedbackApi from "api/FeedbackApi";
 import { Modal } from "react-bootstrap";
@@ -39,6 +39,7 @@ function FeedbackTableAdmin() {
   const indexOfLast = currentPage * itemPerPage;
   const indexOfFirst = indexOfLast - itemPerPage;
   const currentList = feedbackList.slice(indexOfFirst, indexOfLast);
+  const notify = useRef();
 
   //Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -103,6 +104,22 @@ function FeedbackTableAdmin() {
       " active-button-status";
   };
 
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
+  };
+
   const approveFeedback = async () => {
     try {
       const result = await FeedbackApi.approveFeedbackForAdmin(
@@ -110,7 +127,7 @@ function FeedbackTableAdmin() {
       );
       if (result) {
         console.log("feedback successfully");
-        // setRender(!render);
+        notifyMessage("Approve feedback successfully!!!");
         searchFeedback();
       } else {
         console.log("feedback failed");
@@ -125,7 +142,7 @@ function FeedbackTableAdmin() {
       );
       if (result) {
         console.log("disapproveFeedback feedback successfully");
-        // setRender(!render);
+        notifyMessage("Disapprove feedback successfully!!!");
         searchFeedback();
       } else {
         console.log(" disapproveFeedback feedback failed");
@@ -134,7 +151,12 @@ function FeedbackTableAdmin() {
   };
   return (
     <>
-      <PanelHeader size="sm" />
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
+
       <div className="content">
         <Row>
           <Col>
