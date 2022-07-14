@@ -155,8 +155,10 @@ export default function NewAccountStaffPage() {
     if (!verifyNumber(phone) || phone.at(0) != 0) {
       setPhone("Not");
     }
-    if (!verifyEmail(email)) {
-      setEmail("has-danger");
+    if (email.length != 0) {
+      if (!verifyEmail(email)) {
+        setEmail("has-danger");
+      }
     }
     if (!verifyLength(password, 8)) {
       setPassword("Not");
@@ -318,6 +320,7 @@ export default function NewAccountStaffPage() {
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
                           <Input
+                            maxLength={30}
                             style={{ width: `100%` }}
                             type="text"
                             placeholder="Full Name..."
