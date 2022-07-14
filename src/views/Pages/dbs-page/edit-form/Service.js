@@ -236,7 +236,7 @@ function Service(service) {
       await serviceApi.editService(data).then((res) => {
         console.log("edit done");
         console.log(res);
-        // window.location.href = "/admin/service";
+        window.location.href = "/admin/service";
       });
     } catch (error) {
       console.log("Cannot edit service", error);
@@ -280,7 +280,7 @@ function Service(service) {
           await serviceApi.editService(dataUpdate).then((res) => {
             console.log("trả về", res);
             sessionStorage.setItem("editService", true);
-            // window.location.href = "/admin/service";
+            window.location.href = "/admin/service";
           });
         });
       } catch (error) {
@@ -289,10 +289,6 @@ function Service(service) {
     } else {
       if (validator.isValid) {
         editService(data);
-        sessionStorage.setItem("editService", true);
-        // setTimeout(() => {
-        //   window.location.href = "/admin/service";
-        // }, 3000);
       }
     }
   };
@@ -482,7 +478,8 @@ function Service(service) {
                         name="description"
                         value={description}
                         onChange={(event) => setDescription(event.target.value)}
-                        rows="10"
+                        rows="100"
+                        // style={{ height: `150px` }}
                       ></textarea>
                       {errors.description && (
                         <div

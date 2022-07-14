@@ -68,10 +68,17 @@ class ServiceApi {
     });
   };
   editService = async (data) => {
-    const url = this.SERVICE_PATH + "/edit";
-    return await axiosClient.post(url, data).then((res) => {
-      console.log("edit: ", res);
-      console.log("service url", res.url);
+    // const url = this.SERVICE_PATH + "/edit";
+    const url = "http://localhost:8080/rade/admin/service/edit";
+    // return await axiosClient.post(url, data).then((res) => {
+    //   console.log("edit: ", res);
+    //   console.log("service url", res.url);
+    // });
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("user")}`,
+      },
     });
   };
 

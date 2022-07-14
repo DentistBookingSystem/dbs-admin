@@ -134,6 +134,16 @@ export default function NewAccountStaffPage() {
     if (!dateOfBirth || dateOfBirth.length === 0 || dateOfBirth === "Not") {
       setDateOfBirth("Not");
       flag = false;
+    } else {
+      var dob = new Date(dateOfBirth);
+      var now = new Date().now;
+      if (
+        dob.getFullYear() > now.getFullYear() - 18 ||
+        dob.getFullYear() < now.getFullYear() - 60
+      ) {
+        setDateOfBirth("NotE");
+        flag = false;
+      }
     }
     if (!gender) {
       setGender("Not");
@@ -387,6 +397,16 @@ export default function NewAccountStaffPage() {
                               style={{ color: `red` }}
                             >
                               Please enter a valid date.
+                            </label>
+                          </Row>
+                        ) : null}
+                        {dateOfBirth === "NotE" ? (
+                          <Row>
+                            <label
+                              className="error pl-4"
+                              style={{ color: `red` }}
+                            >
+                              Inappropriate age.
                             </label>
                           </Row>
                         ) : null}

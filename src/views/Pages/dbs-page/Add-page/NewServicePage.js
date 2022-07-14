@@ -225,7 +225,7 @@ class NewServicePage extends Component {
         await serviceApi.insertService(data).then((res) => {
           console.log(res);
           sessionStorage.setItem("addNewService", "true");
-          // window.location.replace("/admin/service ");
+          window.location.replace("/admin/service ");
         });
       });
     } catch (error) {
@@ -435,7 +435,7 @@ class NewServicePage extends Component {
                             name="description"
                             value={this.state.description}
                             onChange={this.onHandleChange}
-                            rows="5"
+                            rows="100"
                           ></textarea>
                           {errors.description && (
                             <div

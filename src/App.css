@@ -17,3 +17,6 @@ input::-webkit-inner-spin-button {
 .modal .modal-mini .modal-footer button:first-child {
   opacity: 1;
 }
+textarea.form-control {
+  max-height: 200px !important;
+}
