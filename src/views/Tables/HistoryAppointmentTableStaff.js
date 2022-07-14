@@ -304,9 +304,9 @@ function HistoryAppointmentTableStaff(props) {
                                     {service.service.maxPrice}
                                   </td>
                                   <td>
-                                    {service?.discount === null
-                                      ? "No discount"
-                                      : service.discount.description}
+                                    {service?.discount?.percentage
+                                      ? `${service.discount.percentage}%`
+                                      : "No discount"}
                                   </td>
                                 </tr>
                               );

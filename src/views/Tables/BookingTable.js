@@ -456,7 +456,7 @@ function BookingTable() {
                             >
                               Detail
                             </UncontrolledTooltip>
-                            <Button
+                            {/* <Button
                               className="btn-icon"
                               color="success"
                               size="sm"
@@ -475,7 +475,7 @@ function BookingTable() {
                               target={`Update${booking.id}`}
                             >
                               Update
-                            </UncontrolledTooltip>
+                            </UncontrolledTooltip> */}
                           </td>
                         </tr>
                       );
@@ -561,15 +561,15 @@ function BookingTable() {
                       bookingSerivceDetailList?.length !== 0
                         ? bookingSerivceDetailList.map((item) => {
                             return (
-                              <tr>
+                              <tr className="text-center">
                                 <td>{item?.service?.name}</td>
                                 <td>
                                   {item?.service?.minPrice} ~{" "}
                                   {item?.service?.maxPrice}
                                 </td>
                                 <td>
-                                  {item?.discount?.name
-                                    ? item.discount.name
+                                  {item?.discount?.percentage
+                                    ? `${item.discount.percentage}%`
                                     : "No discount"}
                                 </td>
                               </tr>

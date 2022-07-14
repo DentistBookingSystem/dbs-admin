@@ -158,7 +158,7 @@ class NewDoctorPage extends Component {
         doctorApi.insertDoctor(data).then((result) => {
           console.log(result);
           sessionStorage.setItem("addNewDoctor", true);
-          window.location.replace("/admin/doctors");
+          window.location.replace("/admin/doctor");
         });
       });
     } catch (error) {}

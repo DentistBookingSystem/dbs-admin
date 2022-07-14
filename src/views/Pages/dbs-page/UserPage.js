@@ -204,7 +204,7 @@ function UserPage() {
                     )
                   }
                 >
-                  Edit
+                  Update
                 </Button>
               </CardFooter>
             </Card>

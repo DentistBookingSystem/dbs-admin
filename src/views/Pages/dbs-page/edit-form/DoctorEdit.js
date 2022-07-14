@@ -177,7 +177,7 @@ class DoctorEdit extends Component {
         doctorApi.editDoctor(data).then((result) => {
           console.log(result);
           sessionStorage.setItem("updateDoctor", true);
-          window.location.replace("/admin/doctors");
+          window.location.replace("/admin/doctor");
         });
       });
     } catch (error) {}
@@ -229,7 +229,7 @@ class DoctorEdit extends Component {
         doctorApi.editDoctor(data).then((result) => {
           console.log(result);
           sessionStorage.setItem("updateDoctor", true);
-          window.location.replace("/admin/doctors");
+          window.location.replace("/admin/doctor");
         });
       }
     }

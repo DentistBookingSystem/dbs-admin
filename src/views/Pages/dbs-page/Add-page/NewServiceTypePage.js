@@ -145,6 +145,7 @@ class NewServiceTypePage extends Component {
                         <div className="col-md-12">
                           <label className="labels">Service type Name*</label>
                           <input
+                            maxLength={30}
                             type="text"
                             className="form-control"
                             placeholder="Service name"
