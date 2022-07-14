@@ -95,7 +95,7 @@ class NewDiscountPage extends Component {
         console.log("res discount: ", res);
         result = true;
         sessionStorage.setItem("addDiscount", true);
-        window.location.replace("/admin/discounts");
+        window.location.replace("/admin/discount");
       });
     } catch (error) {
       console.log("can not add errr", error);
