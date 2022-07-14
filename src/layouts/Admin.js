@@ -41,6 +41,7 @@ import NewServiceTypePage from "views/Pages/dbs-page/Add-page/NewServiceTypePage
 import NewDiscountPage from "views/Pages/dbs-page/Add-page/NewDiscountPage";
 import NewDoctorPage from "views/Pages/dbs-page/Add-page/NewDoctorPage";
 import NewAccountStaffPage from "views/Pages/dbs-page/Add-page/NewAccountStaffPage";
+import BranchEdit from "views/Pages/dbs-page/edit-form/BranchEdit";
 
 var ps;
 
@@ -117,6 +118,7 @@ function Admin(props) {
       if (prop.layout === "/admin") {
         return (
           <Route
+            exact
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
@@ -160,13 +162,12 @@ function Admin(props) {
       <div className="main-panel" ref={mainPanel}>
         <AdminNavbar {...props} brandText={getActiveRoute(routes)} />
         <Switch>
-          <Route path="/admin/branchs/add" component={NewBranchPage} />
-          <Route path="/admin/services/add" component={NewServicePage} />
-          <Route path="/admin/discounts/add" component={NewDiscountPage} />
-          <Route path="/admin/doctors/add" component={NewDoctorPage} />
-          <Route path="/admin/accounts/add" component={NewAccountStaffPage} />
+          {/* <Route path="/admin/service/add" component={NewServicePage} /> */}
+          {/* <Route path="/admin/discount/add" component={NewDiscountPage} /> */}
+          {/* <Route path="/admin/doctor/add" component={NewDoctorPage} /> */}
+          {/* <Route path="/admin/account/add" component={NewAccountStaffPage} /> */}
           <Route
-            path="/admin/service-type/add"
+            path="/admin/type-service/add"
             component={NewServiceTypePage}
           />
           {sessionStorage.getItem("user") !== null ? (

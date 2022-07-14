@@ -123,11 +123,11 @@ function DoctorTable() {
     document.getElementById(`button${statusSearch}`).classList +=
       " active-button-status";
     if (sessionStorage.getItem("addNewDoctor")) {
-      notifyMessage("Add new doctor successfully!!!");
+      notifyMessage("Add new doctor successfully");
       sessionStorage.removeItem("addNewDoctor");
     }
     if (sessionStorage.getItem("updateDoctor")) {
-      notifyMessage("Update doctor successfully!!!");
+      notifyMessage("Update doctor successfully");
       sessionStorage.removeItem("updateDoctor");
     }
   }, []);
@@ -344,7 +344,7 @@ function DoctorTable() {
                                 delay={0}
                                 target={`delete${doctor.id}`}
                               >
-                                Inactive
+                                Disable
                               </UncontrolledTooltip>
                             </td>
                           </tr>

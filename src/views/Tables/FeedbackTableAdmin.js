@@ -127,7 +127,7 @@ function FeedbackTableAdmin() {
       );
       if (result) {
         console.log("feedback successfully");
-        notifyMessage("Approve feedback successfully!!!");
+        notifyMessage("Approve feedback successfully");
         searchFeedback();
       } else {
         console.log("feedback failed");
@@ -142,7 +142,7 @@ function FeedbackTableAdmin() {
       );
       if (result) {
         console.log("disapproveFeedback feedback successfully");
-        notifyMessage("Disapprove feedback successfully!!!");
+        notifyMessage("Disapprove feedback successfully");
         searchFeedback();
       } else {
         console.log(" disapproveFeedback feedback failed");

@@ -107,7 +107,7 @@ function AdminNavbar(props) {
     for (let index = 0; index < routes.length; index++) {
       const name = routes[index].name;
       if (name === branchText) {
-        return routes[index].layout + routes[index].path;
+        return routes[index].layout + routes[index].path.replace("/add", "");
       }
     }
     return "/";
@@ -117,7 +117,8 @@ function AdminNavbar(props) {
 
   const navigate = useHistory();
   function navigateToPage() {
-    navigate.push(path + "/add");
+    navigate.push(path);
+    // window.location.replace("/admin/branchadd");
   }
 
   const toggle = () => {
@@ -225,7 +226,7 @@ function AdminNavbar(props) {
 
 AdminNavbar.defaultProps = {
   brandText: "Default Brand Text",
-  link: "/admin/",
+  link: "/admin/branchs",
 };
 
 AdminNavbar.propTypes = {

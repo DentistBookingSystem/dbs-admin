@@ -110,11 +110,11 @@ function ServiceTable() {
     fetchServiceList();
     getAllServivceType();
     if (sessionStorage.getItem("addNewService")) {
-      notifyMessage("Add new service successfully!!!");
+      notifyMessage("Add new service successfully");
       sessionStorage.removeItem("addNewService");
     }
     if (sessionStorage.getItem("editService")) {
-      notifyMessage("Edit service successfully!!!");
+      notifyMessage("Edit service successfully");
       sessionStorage.removeItem("editService");
     }
   }, []);
@@ -532,7 +532,7 @@ function ServiceTable() {
                                     delay={0}
                                     target={`Inactive${service.id}`}
                                   >
-                                    Inactive
+                                    Disable
                                   </UncontrolledTooltip>
                                 </td>
                               </tr>

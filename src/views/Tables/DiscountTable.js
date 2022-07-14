@@ -96,11 +96,11 @@ function DiscountTable() {
       " active-button-status";
     getAllService();
     if (sessionStorage.getItem("addDiscount")) {
-      notifyMessage("Add discount successfully!!!");
+      notifyMessage("Add discount successfully");
       sessionStorage.removeItem("addDiscount");
     }
     if (sessionStorage.getItem("updateDiscount")) {
-      notifyMessage("Update discount successfully!!!");
+      notifyMessage("Update discount successfully");
       sessionStorage.removeItem("updateDiscount");
     }
   }, []);
@@ -343,7 +343,7 @@ function DiscountTable() {
                               delay={0}
                               target={`remove${discount.id}`}
                             >
-                              Inactive
+                              Disable
                             </UncontrolledTooltip>
                           </td>
                         </tr>

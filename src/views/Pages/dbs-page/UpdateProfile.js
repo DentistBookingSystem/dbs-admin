@@ -294,7 +294,12 @@ export default function UpdateProfile() {
                     </CardHeader>
                     <CardBody>
                       <Form>
-                        <label className="ml-3">Phone</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Phone
+                        </label>
                         <InputGroup
                           className={firstnameFocus ? "input-group-focus" : ""}
                         >
@@ -313,7 +318,12 @@ export default function UpdateProfile() {
                           />
                         </InputGroup>
                         {/* Old password  */}
-                        <label className="ml-3">Old Password</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Old Password
+                        </label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
@@ -350,7 +360,12 @@ export default function UpdateProfile() {
                           ) : null}
                         </InputGroup>
                         {/* Password  */}
-                        <label className="ml-3">New Password</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          New Password
+                        </label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
@@ -377,7 +392,12 @@ export default function UpdateProfile() {
                           ) : null}
                         </InputGroup>
                         {/* Confirm  */}
-                        <label className="ml-3">Confirm password</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Confirm password
+                        </label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
@@ -414,7 +434,12 @@ export default function UpdateProfile() {
                           ) : null}
                         </InputGroup>
                         {/* Name  */}
-                        <label className="ml-3">Name</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Name
+                        </label>
                         <InputGroup
                           className={lastnameFocus ? "input-group-focus" : ""}
                         >
@@ -442,7 +467,12 @@ export default function UpdateProfile() {
                         </InputGroup>
 
                         {/* Email  */}
-                        <label className="ml-3">Email</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Email
+                        </label>
                         <InputGroup
                           className={emailFocus ? "input-group-focus" : ""}
                           style={{ display: `flex`, flexDirection: `column` }}
@@ -470,7 +500,12 @@ export default function UpdateProfile() {
                           ) : null}
                         </InputGroup>
                         {/* DAte of birth  */}
-                        <label className="ml-3">Date of birth</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Date of birth
+                        </label>
                         <FormGroup>
                           <Datetime
                             timeFormat={false}
@@ -496,7 +531,12 @@ export default function UpdateProfile() {
                         ) : null}
 
                         {/* Gender  */}
-                        <label className="ml-3">Gender</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Gender
+                        </label>
                         <Col className="p-0 pb-2">
                           <Select
                             className="react-select "
@@ -519,7 +559,12 @@ export default function UpdateProfile() {
                           </Row>
                         ) : null}
                         {/* Provinvce  */}
-                        <label className="ml-3">Province</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          Province
+                        </label>
                         <Col className="p-0 pb-2">
                           <Select
                             style={{ color: `black` }}
@@ -549,7 +594,12 @@ export default function UpdateProfile() {
                           </Row>
                         ) : null}
                         {/* District  */}
-                        <label className="ml-3">District</label>
+                        <label
+                          className="ml-3"
+                          style={{ color: `black`, fontSize: `16px` }}
+                        >
+                          District
+                        </label>
                         <Col className="p-0">
                           <Select
                             style={{ color: `black` }}

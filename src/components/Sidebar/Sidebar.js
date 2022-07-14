@@ -1,20 +1,3 @@
-/*!
-
-=========================================================
-* Now UI Dashboard PRO React - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-pro-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-/*eslint-disable*/
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 // used for making the prop types of this component
@@ -27,7 +10,7 @@ import { Nav, Collapse, Button, Toast } from "reactstrap";
 
 // core components
 import avatar from "assets/img/avatar.png";
-import logo from "assets/img/logo-rade.jpg";
+import logo from "assets/img/logoBooking.png";
 import authApi from "api/AuthApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -179,7 +162,11 @@ function Sidebar(props) {
       <div className="sidebar" data-color={props.backgroundColor}>
         <div className="logo">
           <a
-            href="https://www.creative-tim.com?ref=nudr-sidebar"
+            href={
+              sessionStorage.getItem("role") === "ROLE_STAFF"
+                ? "/staff/home"
+                : "admin/branch"
+            }
             className="simple-text logo-mini"
             target="_blank"
           >
@@ -188,13 +175,17 @@ function Sidebar(props) {
             </div>
           </a>
           <a
-            href="https://www.creative-tim.com?ref=nudr-sidebar"
+            href={
+              sessionStorage.getItem("role") === "ROLE_STAFF"
+                ? "/staff/home"
+                : "admin/branchs"
+            }
             className="simple-text logo-normal"
             target="_blank"
           >
             RADE System
           </a>
-          <div className="navbar-minimize">
+          {/* <div className="navbar-minimize">
             <Button
               outline
               className="btn-round btn-icon"
@@ -205,7 +196,7 @@ function Sidebar(props) {
               <i className="now-ui-icons text_align-center visible-on-sidebar-regular" />
               <i className="now-ui-icons design_bullet-list-67 visible-on-sidebar-mini" />
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <div className="sidebar-wrapper" ref={sidebar}>

@@ -260,6 +260,7 @@ class NewBranchPage extends Component {
 
     if (!this.state.selectedFile) {
       this.setState({ FileError: true });
+      flag = false;
     } else {
       this.setState({ FileError: false });
     }
@@ -289,7 +290,7 @@ class NewBranchPage extends Component {
           await branchApi.insertBranch(data).then((res) => {
             // this.notify();
             sessionStorage.setItem("add", true);
-            window.location.replace("/admin/branchs");
+            window.location.replace("/admin/branch");
           });
         });
     } catch (error) {
@@ -351,6 +352,7 @@ class NewBranchPage extends Component {
                       <input
                         style={{ display: "none" }}
                         type="file"
+                        accept="image/*"
                         onChange={this.onFileChange}
                         ref={(fileInput) => (this.fileInput = fileInput)}
                       />

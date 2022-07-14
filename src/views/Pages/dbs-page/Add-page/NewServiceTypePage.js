@@ -95,7 +95,7 @@ class NewServiceTypePage extends Component {
           console.log("Insert", res);
           console.log("asdoasd");
           sessionStorage.setItem("addServiceType", "fbnjfbfdh");
-          window.location.replace("/admin/service-type");
+          window.location.replace("/admin/type-service");
         })
         .catch((error) => {
           console.log("dvnindivn", error);

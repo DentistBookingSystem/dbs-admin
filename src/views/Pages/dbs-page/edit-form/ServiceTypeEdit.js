@@ -102,7 +102,7 @@ class ServiceTypeEdit extends Component {
       .then((res) => {
         console.log(res);
         sessionStorage.setItem("editService", " true");
-        window.location.replace("/admin/service-type");
+        window.location.replace("/admin/type-service");
       })
       .catch((error) => {
         console.log("error", error);

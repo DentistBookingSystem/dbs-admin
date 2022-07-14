@@ -54,8 +54,11 @@ function Service(service) {
     value: service.serviceType.id,
   };
   const currentImage = "https://drive.google.com/uc?id=" + service.url;
-  const currentMinPrice = { label: formatMinPrice, value: formatMinPrice };
-  const currentMaxPrice = { label: formatMaxPrice, value: formatMaxPrice };
+  const currentMinPrice = {
+    label: formatMinPrice,
+    value: service.minPrice,
+  };
+  const currentMaxPrice = { label: formatMaxPrice, value: service.maxPrice };
   const [name, setName] = useState(service.name);
   const [serviceType, setServiceType] = useState(currentServiceType);
   const [minPrice, setMinPrice] = useState(currentMinPrice);
@@ -67,9 +70,10 @@ function Service(service) {
   const [listMaxPrice, setListMaxPrice] = useState([
     { label: "Choose max price", value: -1 },
   ]);
-  const [estimateTime, setEstimateTime] = useState([
-    { label: service.estimatedTime, value: -1 },
-  ]);
+  const [estimateTime, setEstimateTime] = useState({
+    label: service.estimatedTime,
+    value: service.estimatedTime,
+  });
   const [serviceTypeList, setServiceTypeList] = useState([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(currentImage);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -187,12 +191,18 @@ function Service(service) {
   //Handle select
   const onHandleMinPriceSelect = (event) => {
     setMaxPrice({ label: "Choose max price", value: -1 });
-    setMinPrice(event);
+    if (listMinPrice.includes(event)) {
+      setMinPrice(event);
+      console.log(event);
+    }
+
     rangeMaxPrice(event.value);
   };
   const onHandleMaxPriceSelect = (event) => {
-    console.log(event);
-    setMaxPrice(event);
+    if (listMaxPrice.includes(event)) {
+      setMaxPrice(event);
+      console.log(event);
+    }
   };
   const onHandleServiceTypeSelect = (event) => {
     console.log(event);
@@ -226,7 +236,7 @@ function Service(service) {
       await serviceApi.editService(data).then((res) => {
         console.log("edit done");
         console.log(res);
-        window.location.href = "/admin/services";
+        // window.location.href = "/admin/service";
       });
     } catch (error) {
       console.log("Cannot edit service", error);
@@ -239,8 +249,8 @@ function Service(service) {
       id: service.id,
       name: name,
       serviceTypeId: serviceType.value,
-      minPrice: parseFloat(minPrice.value),
-      maxPrice: parseFloat(maxPrice.value),
+      minPrice: minPrice.value,
+      maxPrice: maxPrice.value,
       description: description,
       url: service.url,
       estimatedTime: parseFloat(estimateTime.value),
@@ -270,7 +280,7 @@ function Service(service) {
           await serviceApi.editService(dataUpdate).then((res) => {
             console.log("trả về", res);
             sessionStorage.setItem("editService", true);
-            window.location.href = "/admin/services";
+            // window.location.href = "/admin/service";
           });
         });
       } catch (error) {
@@ -280,9 +290,9 @@ function Service(service) {
       if (validator.isValid) {
         editService(data);
         sessionStorage.setItem("editService", true);
-        setTimeout(() => {
-          window.location.href = "/admin/services";
-        }, 3000);
+        // setTimeout(() => {
+        //   window.location.href = "/admin/service";
+        // }, 3000);
       }
     }
   };
@@ -290,6 +300,7 @@ function Service(service) {
   useEffect(() => {
     rangeMinPrice();
     getServiceTypeList();
+    console.log("min", minPrice);
   }, []);
 
   return (
@@ -354,7 +365,7 @@ function Service(service) {
           <Col md="8">
             <Card>
               <CardHeader>
-                <h5 className="title">Edit Service</h5>
+                <h5 className="title">Update Service</h5>
               </CardHeader>
               <CardBody>
                 <Form>
@@ -490,9 +501,21 @@ function Service(service) {
                       </label>
                       <Switch
                         className="form-control"
-                        onText={<i className="now-ui-icons ui-1_check" />}
+                        onText={
+                          <i
+                            className="now-ui-icons ui-1_check"
+                            style={{
+                              color: `#1be611`,
+                            }}
+                          />
+                        }
                         offText={
-                          <i className="now-ui-icons ui-1_simple-remove" />
+                          <i
+                            className="now-ui-icons ui-1_simple-remove"
+                            style={{
+                              color: `red`,
+                            }}
+                          />
                         }
                         value={status}
                         onChange={() => setStatus(!status)}
@@ -516,7 +539,7 @@ function Service(service) {
                         className="btn btn-primary"
                         type="button"
                         onClick={() => {
-                          window.location.href = "/admin/services";
+                          window.location.href = "/admin/service";
                         }}
                       >
                         Back

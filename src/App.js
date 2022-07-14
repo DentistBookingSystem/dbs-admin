@@ -82,12 +82,12 @@ class App extends Component {
             {/* <Route path="/service/:id" children={<ServiceDetailPage />} /> */}
             {/* <Ro ute path="/doctor/:id" children={<DoctorDetail />} /> */}
 
-            <Route path="/branchs/add" children={<NewBranchPage />} />
-            <Route path="/service-type/add" children={<NewServiceTypePage />} />
+            {/* <Route path="/branchs/add" children={<NewBranchPage />} />
+            <Route path="/type-service/add" children={<NewServiceTypePage />} />
             <Route path="/services/add" children={<NewServicePage />} />
             <Route path="/discounts/add" children={<NewDiscountPage />} />
             <Route path="/doctors/add" children={<NewDoctorPage />} />
-            <Route path="/accounts/add" children={<NewAccountStaffPage />} />
+            <Route path="/accounts/add" children={<NewAccountStaffPage />} /> */}
             {/* <Redirect to="/auth/login-page" /> */}
             {/* {showAdminBoard && <Redirect to="/admin/dashboard" />} */}
             {showLoginPage && <Redirect to="/auth/login-page" />}

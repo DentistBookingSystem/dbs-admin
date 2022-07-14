@@ -186,7 +186,7 @@ class Discount extends Component {
       await discountApi.updateDiscount(data).then((res) => {
         console.log("res discount: ", res);
         sessionStorage.setItem("updateDiscount", true);
-        window.location.replace("/admin/discounts");
+        window.location.replace("/admin/discount");
       });
     } catch (error) {
       console.log("can not add errr", error);
@@ -403,9 +403,23 @@ class Discount extends Component {
                           </label>
                           <Switch
                             className="form-control"
-                            onText={<i className="now-ui-icons ui-1_check" />}
+                            onText={
+                              <i
+                                className="now-ui-icons ui-1_check"
+                                style={{
+                                  color: `#1be611`,
+                                  // backgroundColor: `green`,
+                                }}
+                              />
+                            }
                             offText={
-                              <i className="now-ui-icons ui-1_simple-remove" />
+                              <i
+                                className="now-ui-icons ui-1_simple-remove"
+                                style={{
+                                  color: `red`,
+                                  // backgroundColor: `green`,
+                                }}
+                              />
                             }
                             value={this.state.status}
                             onChange={() =>

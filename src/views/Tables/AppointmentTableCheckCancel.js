@@ -240,13 +240,18 @@ function AppointmentTableCheckCancel(props) {
                     </Table>
                     <Row className="justify-content-center">
                       <Button
-                        style={{ fontSize: `16px` }}
+                        style={{ fontSize: `16px`, backgroundColor: `red` }}
                         onClick={() => {
-                          setLgShow(true);
+                          if (
+                            cancelappointmentList.length !== 0 ||
+                            !cancelappointmentList
+                          ) {
+                            setLgShow(true);
+                          }
                           console.log(cancelappointmentList);
                         }}
                       >
-                        Delete
+                        Cancel
                       </Button>
                     </Row>
                   </CardBody>

@@ -199,7 +199,7 @@ export default function BranchEdit() {
         console.log(data);
         await branchApi.updateBranch(data).then((res) => {
           sessionStorage.setItem("editBranch", true);
-          history.push("/admin/branchs");
+          history.push("/admin/branch");
         });
       }
     }
@@ -271,7 +271,7 @@ export default function BranchEdit() {
 
   return (
     <div>
-      <PanelHeader size="sm" />
+      {/* <PanelHeader size="sm" /> */}
       <DangerModal isOpen={modalOpen} toggle={() => setModalOpen(false)}>
         <ModalHeader
           className="text-center"
@@ -317,6 +317,7 @@ export default function BranchEdit() {
                       <input
                         style={{ display: "none" }}
                         type="file"
+                        accept="image/*"
                         onChange={(e) => onFileChange(e)}
                         ref={fileInput}
                       />
@@ -497,20 +498,38 @@ export default function BranchEdit() {
                           ) : null}
                         </Col>
                       </div>
-                      <div>
-                        <p className="category">With Icons</p>
-                        <Switch
-                          onText={<i className="now-ui-icons ui-1_check" />}
-                          offText={
-                            <i className="now-ui-icons ui-1_simple-remove" />
-                          }
-                          onChange={(e) => {
-                            setStatus(e.state.value);
-                            console.log(e.state.value);
-                          }}
-                          value={status}
-                        />
-                      </div>
+                      <FormGroup>
+                        <div className="row mt-2">
+                          <div className="col-md-12">
+                            <label className="labels mr-5">Status*</label>
+                            <Switch
+                              onText={
+                                <i
+                                  className="now-ui-icons ui-1_check"
+                                  style={{
+                                    color: `#1be611`,
+                                    // backgroundColor: `green`,
+                                  }}
+                                />
+                              }
+                              offText={
+                                <i
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  style={{
+                                    color: `red`,
+                                    // backgroundColor: `green`,
+                                  }}
+                                />
+                              }
+                              onChange={(e) => {
+                                setStatus(e.state.value);
+                                console.log(e.state.value);
+                              }}
+                              value={status}
+                            />
+                          </div>
+                        </div>
+                      </FormGroup>
                       <div className="row mt-4 ">
                         <div className="col-md-2 ml-10">
                           <button

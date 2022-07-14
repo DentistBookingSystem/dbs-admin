@@ -60,7 +60,7 @@ function AccountTable() {
   useEffect(() => {
     getAccountListByRoleIdAndStatus(roleId, status, phoneSearch);
     if (sessionStorage.getItem("addNewStaff")) {
-      notifyMessage("Add new staff's account successfully!!!");
+      notifyMessage("Add new staff's account successfully");
       sessionStorage.removeItem("addNewStaff");
     }
   }, []);
@@ -375,13 +375,16 @@ function AccountTable() {
           <ModalFooter className="text-center d-flex justify-content-center">
             <Row className="justify-content-center">
               <Col md={5}>
-                <Button color="success" onClick={() => setMiniModal(true)}>
-                  {status === 1 ? "InActive" : "Active"}
+                <Button
+                  color={status === 1 ? "warning" : "success"}
+                  onClick={() => setMiniModal(true)}
+                >
+                  {status === 1 ? "Disable" : "Enable"}
                 </Button>
               </Col>
               <Col md={5}>
                 <Button
-                  color="warning"
+                  color="info"
                   onClick={() => {
                     setShowUpdateStatus(false);
                   }}

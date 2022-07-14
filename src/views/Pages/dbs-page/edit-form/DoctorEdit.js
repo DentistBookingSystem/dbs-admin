@@ -13,6 +13,7 @@ import NotificationAlert from "react-notification-alert";
 import { toast } from "react-toastify";
 import doctorApi from "api/doctorApi";
 import reactSelect from "react-select";
+import Switch from "react-bootstrap-switch";
 
 var options = {};
 options = {
@@ -43,6 +44,7 @@ class DoctorEdit extends Component {
       description: "",
       branchSelect: "",
       doctorinfo: {},
+      status: true,
     };
 
     const rules = [
@@ -95,6 +97,7 @@ class DoctorEdit extends Component {
         description: res.description,
         branchSelect: res.branch.id,
         imagePreviewUrl: "https://drive.google.com/uc?id=" + res.url,
+        status: res.status === 1,
       });
     });
   }
@@ -154,7 +157,7 @@ class DoctorEdit extends Component {
       // url: res.data,
       branchId: this.state.branchSelect,
       description: this.state.description,
-      status: 1,
+      status: this.state.status ? 1 : 2,
     };
     const url = window.location.href;
     const id = url.split("/edit/")[1];
@@ -168,7 +171,7 @@ class DoctorEdit extends Component {
           url: res.data,
           branchId: this.state.branchSelect,
           description: this.state.description,
-          status: 1,
+          status: this.state.status ? 1 : 2,
         };
         console.log("Data", data);
         doctorApi.editDoctor(data).then((result) => {
@@ -220,7 +223,7 @@ class DoctorEdit extends Component {
           url: this.state.doctorinfo.url,
           branchId: this.state.branchSelect,
           description: this.state.description,
-          status: 1,
+          status: this.state.status ? 1 : 2,
         };
         console.log("data", data);
         doctorApi.editDoctor(data).then((result) => {
@@ -379,7 +382,40 @@ class DoctorEdit extends Component {
                           </p>
                         </span>
                       ) : null}
-
+                      <FormGroup>
+                        <div className="row mt-2">
+                          <div className="col-md-12">
+                            <label className="labels mr-5">Status*</label>
+                            <Switch
+                              onText={
+                                <i
+                                  className="now-ui-icons ui-1_check"
+                                  style={{
+                                    color: `#1be611 `,
+                                    // backgroundColor: `green`,
+                                  }}
+                                />
+                              }
+                              offText={
+                                <i
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  style={{
+                                    color: `red`,
+                                    // backgroundColor: `green`,
+                                  }}
+                                />
+                              }
+                              onChange={(e) => {
+                                this.setState({
+                                  status: e.state.value,
+                                });
+                                console.log(e.state.value);
+                              }}
+                              value={this.state.status}
+                            />
+                          </div>
+                        </div>
+                      </FormGroup>
                       <div className="row mt-4 ">
                         <div className="col-md-2 ml-10">
                           <button
@@ -387,7 +423,7 @@ class DoctorEdit extends Component {
                             type="button"
                             onClick={this.onHandleSubmit}
                           >
-                            Add
+                            Save
                           </button>
                         </div>
                         <div className="col-md-2">

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import axiosClient from "./axiosClient";
 class AuthApi {
   login = async (data) => {
@@ -20,7 +19,6 @@ class AuthApi {
         });
     } catch (error) {
       console.log("Login failed trong authapi");
-      toast.warn("login failed trong authapi");
     } finally {
       return null;
     }

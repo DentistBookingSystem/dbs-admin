@@ -111,7 +111,7 @@ function HistoryAppointmentTableStaff(props) {
     try {
       const result = await appointmentApi.submitAddNoteForAppointment(data);
       if (result) {
-        notifyMessage("Add note successfully!!!");
+        notifyMessage("Add note successfully");
         setModalDanger(false);
         setAddNoteModal(false);
         setAddNoteText("");

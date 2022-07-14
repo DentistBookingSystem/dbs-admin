@@ -50,11 +50,11 @@ function ServiceTypeTable() {
   useEffect(() => {
     fetchServiceTypeList();
     if (sessionStorage.getItem("addServiceType")) {
-      notifyMessage("Add new service type successfully!!!");
+      notifyMessage("Add new service type successfully");
       sessionStorage.removeItem("addServiceType");
     }
     if (sessionStorage.getItem("editService")) {
-      notifyMessage("Edit service type successfully!!!");
+      notifyMessage("Edit service type successfully");
       sessionStorage.removeItem("editService");
     }
   }, []);
@@ -130,11 +130,11 @@ function ServiceTypeTable() {
                               type="button"
                               onClick={() => {
                                 history.push(
-                                  "/admin/service_type/edit/" + serviceType.id
+                                  "/admin/type-service/edit/" + serviceType.id
                                 );
                               }}
                             >
-                              <i className="now-ui-icons ui-2_settings-90" />
+                              <i className="now-ui-icons ui-2_settings-90"></i>
                             </Button>
                             <UncontrolledTooltip
                               delay={0}

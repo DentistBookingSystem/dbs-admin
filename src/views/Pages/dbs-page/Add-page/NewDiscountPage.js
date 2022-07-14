@@ -245,6 +245,7 @@ class NewDiscountPage extends Component {
                             className="form-control"
                             placeholder="name"
                             name="name"
+                            maxLength={30}
                             value={this.state.name}
                             onChange={this.onHandleChange}
                           />

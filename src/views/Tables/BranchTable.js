@@ -70,11 +70,11 @@ function BranchTable() {
   useEffect(() => {
     fetchBranchList();
     if (sessionStorage.getItem("add")) {
-      notifyMessage("Add branch successfully!!!");
+      notifyMessage("Add branch successfully");
       sessionStorage.removeItem("add");
     }
     if (sessionStorage.getItem("editBranch")) {
-      notifyMessage("Edit branch successfully!!!");
+      notifyMessage("Edit branch successfully");
       console.log("abcdj");
       sessionStorage.removeItem("editBranch");
     }
@@ -235,7 +235,7 @@ function BranchTable() {
                                   delay={0}
                                   target={`delete${branch.id}`}
                                 >
-                                  Inactive
+                                  Disable
                                 </UncontrolledTooltip>
                               </td>
                             </tr>

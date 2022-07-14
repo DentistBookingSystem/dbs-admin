@@ -225,7 +225,7 @@ class NewServicePage extends Component {
         await serviceApi.insertService(data).then((res) => {
           console.log(res);
           sessionStorage.setItem("addNewService", "true");
-          window.location.replace("/admin/services");
+          // window.location.replace("/admin/service ");
         });
       });
     } catch (error) {
@@ -369,14 +369,14 @@ class NewServicePage extends Component {
                                   })
                                 }
                               />
-                              {errors.min_price && (
+                              {/* {errors.min_price && (
                                 <div
                                   className="invalid-feedback"
                                   style={{ display: "block" }}
                                 >
                                   {errors.min_price}
                                 </div>
-                              )}
+                              )} */}
                             </div>
                           </div>
                           <div className="row mt-2">

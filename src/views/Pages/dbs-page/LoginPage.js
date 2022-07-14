@@ -33,7 +33,6 @@ function LoginPage() {
   const [stateLogin, setStateLogin] = React.useState(false);
   const history = useHistory();
   const notify = useRef();
-  const notificationAlert = React.useRef();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValue({ ...formValue, [name]: value });
@@ -52,12 +51,12 @@ function LoginPage() {
           setStateLogin(true);
         } else {
           setStateLogin(false);
+          sessionStorage.setItem("loginFailed", true);
         }
       });
     } catch (error) {
       setStateLogin(false);
-      toast.warn("login failed");
-      console.log("Can not Login>>>>>", error);
+      sessionStorage.setItem("loginFailed", true);
     }
   };
 
@@ -101,7 +100,7 @@ function LoginPage() {
 
   return sessionStorage.getItem("user") !== null ? (
     sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
-      <Redirect to="/admin/branchs" />
+      <Redirect to="/admin/branch" />
     ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
       <Redirect to="/staff/home" />
     ) : (
@@ -109,7 +108,6 @@ function LoginPage() {
     )
   ) : (
     <>
-      <NotificationAlert ref={notificationAlert} />
       <NotificationAlert ref={notify} />
 
       <div className="content">
