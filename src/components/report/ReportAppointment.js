@@ -72,7 +72,10 @@ export default function ReportAppointment() {
     if (Number(year.value) === now.getFullYear()) {
       initialMonthAndYear();
     } else {
-      setListMonthShow({ value: 0, label: "Select all month" }, ...listMonth);
+      let tmp = [{ value: 0, label: "Select all month" }];
+      tmp = [...tmp, ...listMonth];
+      console.log(tmp);
+      setListMonthShow(tmp);
     }
   }, [year]);
 
@@ -101,7 +104,7 @@ export default function ReportAppointment() {
             <CardHeader>
               <h5 className="card-category">Report</h5>
               <Row>
-                <Col>
+                <Col lg={2} md={3}>
                   <Select
                     className="react-select"
                     classNamePrefix="react-select"
@@ -111,7 +114,7 @@ export default function ReportAppointment() {
                     onChange={(e) => setMonth(e)}
                   />
                 </Col>
-                <Col>
+                <Col lg={2} md={3}>
                   <Select
                     className="react-select"
                     classNamePrefix="react-select"
