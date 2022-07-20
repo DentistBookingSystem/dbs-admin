@@ -476,18 +476,18 @@ function DoctorTable() {
             </div>
           </div>
           <ModalBody>
-            <p>{"Are sure to delete \n this doctor ?"}</p>
+            <p>{"Are sure to disable \n this doctor ?"}</p>
           </ModalBody>
           <ModalFooter>
             <Button color="red" className="btn-neutral" onClick={deleteDoctor}>
-              Delete
+              Yes
             </Button>
             <Button
               color="info"
               className="btn-neutral"
               onClick={toggleModalMini}
             >
-              Cancel
+              No
             </Button>
           </ModalFooter>
         </Modal>

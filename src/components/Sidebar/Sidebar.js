@@ -165,10 +165,10 @@ function Sidebar(props) {
             href={
               sessionStorage.getItem("role") === "ROLE_STAFF"
                 ? "/staff/home"
-                : "admin/branch"
+                : "/admin/booking"
             }
             className="simple-text logo-mini"
-            target="_blank"
+            // target="_blank"
           >
             <div className="logo-img">
               <img src={logo} alt="react-logo" />
@@ -178,10 +178,10 @@ function Sidebar(props) {
             href={
               sessionStorage.getItem("role") === "ROLE_STAFF"
                 ? "/staff/home"
-                : "admin/branchs"
+                : "/admin/booking"
             }
             className="simple-text logo-normal"
-            target="_blank"
+            // target="_blank"
           >
             RADE System
           </a>

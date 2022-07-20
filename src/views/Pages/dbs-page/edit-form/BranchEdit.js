@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import Switch from "react-bootstrap-switch";
 import { Modal as DangerModal, ModalBody, ModalFooter } from "reactstrap";
-
+import * as ReactBoostrap from "react-bootstrap";
 const hours = [
   { value: "06", label: "06" },
   { value: "07", label: "07" },
@@ -70,6 +70,7 @@ export default function BranchEdit() {
   const [districtError, setDistrictError] = useState("");
   const [timeError, setTimeError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const id = useParams().id;
   useEffect(() => {
     getBranchUpdate();
@@ -185,6 +186,7 @@ export default function BranchEdit() {
       formData.append("url", selectedFile);
       // formData.append("branchDTO", data);
       if (selectedFile) {
+        setIsLoading(true);
         _insertNewData(formData);
       } else {
         const data = {
@@ -260,18 +262,50 @@ export default function BranchEdit() {
           console.log(data);
           await branchApi.updateBranch(data).then((res) => {
             sessionStorage.setItem("editBranch", true);
-            history.push("/admin/branchs");
+            history.push("/admin/branch");
           });
         });
     } catch (error) {
       console.log("Insert data failed", error);
       this.notify(error.response.data.message);
+      setIsLoading(false);
     }
   };
 
   return (
     <div>
-      {/* <PanelHeader size="sm" /> */}
+      {isLoading ? (
+        <div
+          style={{
+            position: `fixed`,
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            backgroundColor: `rgba(128, 128, 128, 0.5)`,
+            zIndex: 99999,
+            textAlign: `center`,
+            margin: `auto`,
+          }}
+        >
+          <div
+            style={{
+              position: `fixed`,
+              top: `50%`,
+              bottom: `50%`,
+              right: 0,
+              left: 0,
+            }}
+          >
+            <ReactBoostrap.Spinner
+              animation="border"
+              variant="info"
+              size="lg"
+              style={{ width: `100px`, height: `100px` }}
+            />
+          </div>
+        </div>
+      ) : null}
       <DangerModal isOpen={modalOpen} toggle={() => setModalOpen(false)}>
         <ModalHeader
           className="text-center"

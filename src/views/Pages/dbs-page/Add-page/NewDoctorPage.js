@@ -1,18 +1,11 @@
-import AdminNavbar from "components/Navbars/AdminNavbar";
-import PanelHeader from "components/PanelHeader/PanelHeader";
 import { Component } from "react";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { Button, Col, Form, FormGroup, Row } from "reactstrap";
 import Validator from "utils/validation/validator";
 import defaultImage from "assets/img/image_placeholder.jpg";
 import branchApi from "api/branchApi";
-import provinceApi from "api/provinceApi";
-import Select from "react-select";
-import districtApi from "api/districtApi";
 import NotificationAlert from "react-notification-alert";
-import { toast } from "react-toastify";
 import doctorApi from "api/doctorApi";
-import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import * as ReactBoostrap from "react-bootstrap";
 
 var options = {};
 options = {
@@ -45,6 +38,7 @@ class NewDoctorPage extends Component {
       fileError: false,
       descriptionError: false,
       branchSelectError: false,
+      isLoading: false,
     };
 
     const rules = [
@@ -145,6 +139,7 @@ class NewDoctorPage extends Component {
     };
     console.log(data);
     try {
+      this.setState({ isLoading: true });
       await doctorApi.addImageDoctor(formData).then((res) => {
         console.log("result add image:----", res);
         data = {
@@ -161,7 +156,9 @@ class NewDoctorPage extends Component {
           window.location.replace("/admin/doctor");
         });
       });
-    } catch (error) {}
+    } catch (error) {
+      this.setState({ isLoading: false });
+    }
     // try {
     //   await branchApi
     //     .insert(formData)
@@ -240,6 +237,38 @@ class NewDoctorPage extends Component {
     const { errors } = this.state;
     return (
       <>
+        {this.state.isLoading ? (
+          <div
+            style={{
+              position: `fixed`,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: `rgba(128, 128, 128, 0.5)`,
+              zIndex: 99999,
+              textAlign: `center`,
+              margin: `auto`,
+            }}
+          >
+            <div
+              style={{
+                position: `fixed`,
+                top: `50%`,
+                bottom: `50%`,
+                right: 0,
+                left: 0,
+              }}
+            >
+              <ReactBoostrap.Spinner
+                animation="border"
+                variant="info"
+                size="lg"
+                style={{ width: `100px`, height: `100px` }}
+              />
+            </div>
+          </div>
+        ) : null}
         <div className="container">
           <Form>
             <Row>

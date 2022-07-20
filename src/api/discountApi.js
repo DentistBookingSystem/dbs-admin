@@ -28,22 +28,34 @@ class DiscountApi {
 
   getDiscountById(id) {
     const url = "http://localhost:8080/rade/admin/discount/" + id;
-    return axios.get(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return axios
+      .get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          window.location.replace("/auth/login-page");
+        }
+      });
   }
 
   updateDiscount(data) {
     const url = "http://localhost:8080/rade/admin/discount/edit";
-    return axios.post(url, data, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return axios
+      .post(url, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((error) => {
+        if (error.response.status === 401) {
+          window.location.replace("/auth/login-page");
+        }
+      });
   }
 }
 

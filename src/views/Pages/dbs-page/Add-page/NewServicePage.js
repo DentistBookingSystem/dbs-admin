@@ -8,7 +8,8 @@ import serviceTypeApi from "api/serviceTypeApi";
 import serviceApi from "api/serviceApi";
 import Validator from "utils/validation/validator";
 import defaultImage from "assets/img/image_placeholder.jpg";
-
+import * as ReactBoostrap from "react-bootstrap";
+import NotificationAlert from "react-notification-alert";
 const time = [
   { value: "0.5", label: "0.5" },
   { value: "1", label: "1" },
@@ -39,6 +40,7 @@ class NewServicePage extends Component {
       errors: {},
       timeEstimated: { value: "0.5", label: "0.5" },
       FileError: false,
+      isLoading: false,
     };
 
     const rules = [
@@ -207,6 +209,7 @@ class NewServicePage extends Component {
 
   _inserNewService = async (Formdata) => {
     try {
+      this.setState({ isLoading: true });
       await serviceApi.addImageService(Formdata).then(async (res) => {
         console.log("HERE");
         console.log(res);
@@ -229,9 +232,33 @@ class NewServicePage extends Component {
         });
       });
     } catch (error) {
-      console.log("Can not insert new service", error);
+      console.log("Insert data failed", error);
+      this.notifyMessage(
+        error.response?.data?.message,
+        "danger",
+        "now-ui-icons travel_info"
+      );
+      this.setState({
+        isLoading: false,
+      });
     }
   };
+
+  notifyMessage(message, type, icon) {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    this.refs.notify.notificationAlert(options1);
+  }
 
   onHandleSubmit(event) {
     event.preventDefault();
@@ -268,6 +295,43 @@ class NewServicePage extends Component {
     const { errors } = this.state;
     return (
       <>
+        <NotificationAlert
+          ref="notify"
+          zIndex={9999}
+          onClick={() => console.log("hey")}
+        />
+        {this.state.isLoading ? (
+          <div
+            style={{
+              position: `fixed`,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: `rgba(128, 128, 128, 0.5)`,
+              zIndex: 99999,
+              textAlign: `center`,
+              margin: `auto`,
+            }}
+          >
+            <div
+              style={{
+                position: `fixed`,
+                top: `50%`,
+                bottom: `50%`,
+                right: 0,
+                left: 0,
+              }}
+            >
+              <ReactBoostrap.Spinner
+                animation="border"
+                variant="info"
+                size="lg"
+                style={{ width: `100px`, height: `100px` }}
+              />
+            </div>
+          </div>
+        ) : null}
         <div className="content">
           <Form>
             <Row>

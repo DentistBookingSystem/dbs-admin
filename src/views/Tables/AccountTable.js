@@ -407,7 +407,7 @@ function AccountTable() {
             </div>
           </div>
           <ModalBody>
-            <p>{"Are sure to delete \n this Service ?"}</p>
+            <p>{"Are sure to disable \n this Service ?"}</p>
           </ModalBody>
           <ModalFooter>
             <Row>
@@ -435,7 +435,7 @@ function AccountTable() {
                     }
                   }}
                 >
-                  Ok
+                  Yes
                 </Button>
               </Col>
               <Col>
@@ -444,7 +444,7 @@ function AccountTable() {
                   className="btn-neutral"
                   onClick={() => setMiniModal(false)}
                 >
-                  Cancel
+                  No
                 </Button>
               </Col>
             </Row>

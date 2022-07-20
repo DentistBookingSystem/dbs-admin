@@ -44,6 +44,8 @@ class NewDiscountPage extends Component {
       currentServiceError: false,
       timeError: false,
       descriptionError: false,
+      today: "",
+      minEndDate: "",
     };
 
     const rules = [];
@@ -56,8 +58,48 @@ class NewDiscountPage extends Component {
     this.notify = this.notify.bind(this);
   }
 
+  getCurrentDate(separator = "") {
+    let newDate = new Date();
+    // newDate.setDate(newDate.getDate());
+    let date = newDate.getDate() + 1;
+    let month = newDate.getMonth() + 1;
+    let year = newDate.getFullYear();
+    console.log(
+      `${year}${separator}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`
+    );
+    this.setState({
+      today: `${year}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`,
+    });
+    return `${year}-
+    ${month < 10 ? `0${month}` : `${month}`}-${
+      date < 10 ? `0${date}` : `${date}`
+    }`;
+  }
+
+  getMinEndDate(separator = "") {
+    var tmp = new Date(this.state.startDate);
+    let date = tmp.getDate();
+    let month = tmp.getMonth() + 1;
+    let year = tmp.getFullYear();
+    console.log(
+      `${year}${separator}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`
+    );
+    this.setState({
+      minEndDate: `${year}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`,
+    });
+  }
+
   componentDidMount() {
     this.getServiceList();
+    this.getCurrentDate();
   }
 
   CustomDate = () => {
@@ -119,6 +161,11 @@ class NewDiscountPage extends Component {
     this.setState({
       [name]: value,
     });
+
+    if (name === "startDate") {
+      console.log("ckdabvd");
+      this.getMinEndDate();
+    }
   }
   async onHandleSubmit(event) {
     if (!this.ValidateAll()) {
@@ -305,13 +352,16 @@ class NewDiscountPage extends Component {
                         <div className="col-md-6">
                           <label className="labels">Start date*</label>
                           <input
-                            type="Date"
+                            type="date"
                             className="form-control"
                             placeholder="Address"
                             name="startDate"
                             value={this.state.startDate}
                             onChange={this.onHandleChange}
-                            is
+                            min={this.state.today}
+
+                            // min="2022-07-16"
+                            // is
                           />
                         </div>
                         <div className="col-md-6">
@@ -321,9 +371,11 @@ class NewDiscountPage extends Component {
                             className="form-control"
                             placeholder="Address"
                             name="endDate"
+                            min={this.state.startDate}
                             value={this.state.endDate}
                             // min={new Date().getDate()}
-                            min={new Date().toISOString().slice(0, -8)}
+                            // min={new Date().toISOString().slice(0, -8)}
+                            // min={this.state.startDate}
                             onChange={this.onHandleChange}
                           />
                         </div>

@@ -242,7 +242,11 @@ export default function UpdateProfile() {
       .then((res) => {
         console.log(res);
         sessionStorage.setItem("update", "true");
-        window.location.replace("/staff/account/profile");
+        if (sessionStorage.getItem("role") === "ROLE_STAFF") {
+          window.location.replace("/staff/account/profile");
+        } else if (sessionStorage.getItem("role") === "ROLE_ADMIN") {
+          window.location.replace("/admin/account/profile");
+        }
       })
       .catch((error) => {
         if (error.response.status === 406) {
@@ -271,7 +275,6 @@ export default function UpdateProfile() {
   };
   useEffect(() => {
     if (sessionStorage.getItem("login")) {
-      notifyMessage("bdavsu");
       sessionStorage.removeItem("login");
     }
   }, []);

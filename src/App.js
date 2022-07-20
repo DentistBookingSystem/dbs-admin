@@ -44,6 +44,10 @@ class App extends Component {
     }
   }
 
+  componentWillUnmount() {
+    sessionStorage.clear();
+  }
+
   logOut() {
     authApi.logout();
   }

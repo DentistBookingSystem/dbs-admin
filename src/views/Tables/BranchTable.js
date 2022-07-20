@@ -113,7 +113,7 @@ function BranchTable() {
 
   return (
     <>
-      <NotificationAlert ref={notify} zIndex={9999} />
+      <NotificationAlert ref={notify} />
       {loading ? (
         <>
           <div className="content">
@@ -156,7 +156,8 @@ function BranchTable() {
                               </td>
                               <td>
                                 <div to={`/branch/${branch.id}`}>
-                                  {branch.openTime} - {branch.closeTime}
+                                  {branch.openTime.slice(0, 5)} -{" "}
+                                  {branch.closeTime.slice(0, 5)}
                                 </div>
                               </td>
                               <td>

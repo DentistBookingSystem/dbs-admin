@@ -9,7 +9,7 @@ import Switch from "react-bootstrap-switch";
 import serviceApi from "api/serviceApi";
 import NotificationAlert from "react-notification-alert";
 import Validator from "utils/validation/validator";
-
+import * as ReactBoostrap from "react-bootstrap";
 import {
   ModalHeader,
   Modal as DangerModal,
@@ -82,7 +82,8 @@ function Service(service) {
   const notifyAlert = useRef();
   const [errors, setErrors] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const notify = useRef();
   //Validation
   const validDropdownServiceType = (service_type) => {
     if (service_type.value === -1) {
@@ -210,9 +211,9 @@ function Service(service) {
   };
 
   //Notification
-  const notify = () => {
-    notifyAlert.current.notificationAlert(options);
-  };
+  // const notify = () => {
+  //   notifyAlert.current.notificationAlert(options);
+  // };
 
   // On file select (from the pop up)
   const onFileChange = (event) => {
@@ -240,6 +241,11 @@ function Service(service) {
       });
     } catch (error) {
       console.log("Cannot edit service", error);
+      notifyMessage(
+        error.response?.data?.message,
+        "danger",
+        "now-ui-icons travel_info"
+      );
     }
   };
 
@@ -263,6 +269,7 @@ function Service(service) {
 
     if (selectedFile) {
       try {
+        setIsLoading(true);
         await serviceApi.addImageService(formData).then(async (res) => {
           var dataUpdate = {
             id: service.id,
@@ -284,13 +291,35 @@ function Service(service) {
           });
         });
       } catch (error) {
-        console.log("Can not insert new service", error);
+        console.log("Insert data failed", error);
+        notifyMessage(
+          error.response?.data?.message,
+          "danger",
+          "now-ui-icons travel_info"
+        );
+        setIsLoading(false);
       }
     } else {
       if (validator.isValid) {
         editService(data);
       }
     }
+  };
+
+  const notifyMessage = (message, type, icon) => {
+    var options1 = {
+      place: "tr",
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
+    };
+    console.log("option", options1);
+    notify.current.notificationAlert(options1);
   };
 
   useEffect(() => {
@@ -301,6 +330,43 @@ function Service(service) {
 
   return (
     <>
+      <NotificationAlert
+        ref={notify}
+        zIndex={9999}
+        onClick={() => console.log("hey")}
+      />
+      {isLoading ? (
+        <div
+          style={{
+            position: `fixed`,
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            backgroundColor: `rgba(128, 128, 128, 0.5)`,
+            zIndex: 99999,
+            textAlign: `center`,
+            margin: `auto`,
+          }}
+        >
+          <div
+            style={{
+              position: `fixed`,
+              top: `50%`,
+              bottom: `50%`,
+              right: 0,
+              left: 0,
+            }}
+          >
+            <ReactBoostrap.Spinner
+              animation="border"
+              variant="info"
+              size="lg"
+              style={{ width: `100px`, height: `100px` }}
+            />
+          </div>
+        </div>
+      ) : null}
       <DangerModal isOpen={modalOpen} toggle={() => setModalOpen(false)}>
         <ModalHeader
           className="text-center"
@@ -336,7 +402,7 @@ function Service(service) {
           <Col md="4">
             <Card className="card-user">
               <div className="thumbnail">
-                <img src={imagePreviewUrl} />
+                <img src={imagePreviewUrl} style={{ width: `100%` }} />
               </div>
 
               <div className="d-flex flex-column align-items-center text-center p-3 py-5">

@@ -326,7 +326,7 @@ function AppointmentTableCheckCancel(props) {
                 </div>
               </div>
               <ModalBody>
-                <p>{"Are sure to delete this Appointment ?"}</p>
+                <p>{"Are sure to cancel this Appointment ?"}</p>
               </ModalBody>
               <ModalFooter>
                 <Button
@@ -334,14 +334,14 @@ function AppointmentTableCheckCancel(props) {
                   className="btn-neutral"
                   onClick={() => deleteAppointment()}
                 >
-                  Delete
+                  Yes
                 </Button>{" "}
                 <Button
                   color="link"
                   className="btn-neutral"
                   onClick={toggleModalMini}
                 >
-                  Cancel
+                  No
                 </Button>
               </ModalFooter>
             </DangerModal>

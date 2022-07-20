@@ -136,10 +136,11 @@ export default function NewAccountStaffPage() {
       flag = false;
     } else {
       var dob = new Date(dateOfBirth);
-      var now = new Date().now;
+      var n = new Date();
+      console.log("sdvbdabv", dob.getFullYear());
       if (
-        dob.getFullYear() > now.getFullYear() - 18 ||
-        dob.getFullYear() < now.getFullYear() - 60
+        Number(dob.getFullYear()) > Number(n.getFullYear()) - 18 ||
+        Number(dob.getFullYear()) < Number(n.getFullYear()) - 60
       ) {
         setDateOfBirth("NotE");
         flag = false;
@@ -169,7 +170,6 @@ export default function NewAccountStaffPage() {
     if (
       verifyLength(name, 5) &&
       verifyNumber(phone) &&
-      verifyEmail(email) &&
       verifyLength(password, 8) &&
       verifyLength(confirm, 8) &&
       compare(password, confirm)
@@ -196,7 +196,7 @@ export default function NewAccountStaffPage() {
         console.log(res);
         if (res === "Register successfully") {
           sessionStorage.setItem("addNewStaff", true);
-          window.location.replace("/admin/accounts");
+          window.location.replace("/admin/account");
         }
       });
     }

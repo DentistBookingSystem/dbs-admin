@@ -157,6 +157,20 @@ let routes = [
   //list
 
   {
+    path: "/booking",
+    name: "Booking",
+    icon: "now-ui-icons education_paper",
+    component: BookingTable,
+    layout: "/admin",
+  },
+  {
+    path: "/feedback",
+    name: "Feedback",
+    icon: "now-ui-icons education_glasses",
+    component: FeedbackTable,
+    layout: "/staff",
+  },
+  {
     path: "/branch",
     name: "Branch",
     icon: "now-ui-icons location_pin",
@@ -197,13 +211,6 @@ let routes = [
     name: "Doctor",
     icon: "now-ui-icons business_badge",
     component: DoctorTable,
-    layout: "/admin",
-  },
-  {
-    path: "/booking",
-    name: "Booking",
-    icon: "now-ui-icons education_paper",
-    component: BookingTable,
     layout: "/admin",
   },
 
@@ -261,13 +268,6 @@ let routes = [
     name: "History",
     icon: "now-ui-icons files_single-copy-04",
     component: HistoryAppointmentStaff,
-    layout: "/staff",
-  },
-  {
-    path: "/feedback",
-    name: "Feedback",
-    icon: "now-ui-icons education_glasses",
-    component: FeedbackTable,
     layout: "/staff",
   },
 

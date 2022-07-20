@@ -523,7 +523,7 @@ function ServiceTable() {
                                       setIdDelete(service.id);
                                     }}
                                     disabled={
-                                      service.status !== 0 ? false : true
+                                      service.status === 1 ? false : true
                                     }
                                   >
                                     <i className="now-ui-icons ui-1_simple-remove" />
@@ -585,8 +585,17 @@ function ServiceTable() {
                           </Row>
                           <Row className="mt-2">
                             <Col>
-                              <b>Price: </b> {service.minPrice}đ -{" "}
-                              {service.maxPrice}đ
+                              <b>Price: </b>
+                              {Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(service.minPrice)}{" "}
+                              ~{" "}
+                              {Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              }).format(service.maxPrice)}
+                              {/* {service.minPrice}đ - {service.maxPrice}đ */}
                             </Col>
                             <Col>
                               <b>Duration: </b> {service.estimatedTime} hour(s)

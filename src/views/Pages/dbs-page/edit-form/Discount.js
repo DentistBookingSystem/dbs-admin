@@ -9,6 +9,7 @@ import Select from "react-select";
 import { Button, Col, Form, Row } from "reactstrap";
 import Validator from "utils/validation/validator";
 import NotificationAlert from "react-notification-alert";
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 
 var options = {};
 options = {
@@ -41,8 +42,9 @@ class Discount extends Component {
       serviceList: [],
       errors: [],
       status: true,
-
+      today: "",
       nameError: false,
+      disabledStartDate: false,
     };
 
     const rules = [];
@@ -55,9 +57,39 @@ class Discount extends Component {
     this.notify = this.notify.bind(this);
   }
 
+  getCurrentDate(separator = "") {
+    let newDate = new Date();
+    // newDate.setDate(newDate.getDate());
+    let date = newDate.getDate() + 1;
+    let month = newDate.getMonth() + 1;
+    let year = newDate.getFullYear();
+    console.log(
+      `${year}${separator}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`
+    );
+    this.setState({
+      today: `${year}-${month < 10 ? `0${month}` : `${month}`}-${
+        date < 10 ? `0${date}` : `${date}`
+      }`,
+    });
+    return `${year}-
+    ${month < 10 ? `0${month}` : `${month}`}-${
+      date < 10 ? `0${date}` : `${date}`
+    }`;
+  }
+
   componentDidMount() {
     this.getServiceList();
     this.getDiscount();
+    this.getCurrentDate();
+    console.log(
+      "vsdfnbdfnv",
+      new Date(this.state.today).getTime(),
+      new Date(this.state.startDate).getTime(),
+      new Date(this.state.today).getTime() <
+        new Date(this.state.startDate).getTime()
+    );
   }
 
   async getDiscount() {
@@ -85,6 +117,8 @@ class Discount extends Component {
         currentServiceError: false,
         timeError: false,
         descriptionError: false,
+        disabledStartDate:
+          new Date(result.data.startDate).getTime() < new Date().getTime(),
       });
     }
   }
@@ -352,6 +386,8 @@ class Discount extends Component {
                             placeholder="Address"
                             name="startDate"
                             value={this.state.startDate}
+                            min={this.state.today}
+                            disabled={this.state.disabledStartDate}
                             onChange={this.onHandleChange}
                             is
                           />
@@ -364,8 +400,9 @@ class Discount extends Component {
                             placeholder="Address"
                             name="endDate"
                             value={this.state.endDate}
+                            min={this.state.startDate}
                             // min={new Date().getDate()}
-                            min={new Date().toISOString().slice(0, -8)}
+                            // min={new Date().toISOString().slice(0, -8)}
                             onChange={this.onHandleChange}
                           />
                         </div>

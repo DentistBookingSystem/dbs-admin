@@ -100,7 +100,7 @@ function LoginPage() {
 
   return sessionStorage.getItem("user") !== null ? (
     sessionStorage.getItem("role") === "ROLE_ADMIN" ? (
-      <Redirect to="/admin/branch" />
+      <Redirect to="/admin/booking" />
     ) : sessionStorage.getItem("role") === "ROLE_STAFF" ? (
       <Redirect to="/staff/home" />
     ) : (
@@ -136,6 +136,7 @@ function LoginPage() {
                       <Input
                         type="text"
                         name="phone"
+                        maxLength={10}
                         placeholder="Phone number..."
                         onFocus={(e) => setfirstnameFocus(true)}
                         onBlur={(e) => setfirstnameFocus(false)}

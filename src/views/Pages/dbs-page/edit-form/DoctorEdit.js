@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import doctorApi from "api/doctorApi";
 import reactSelect from "react-select";
 import Switch from "react-bootstrap-switch";
-
+import * as ReactBoostrap from "react-bootstrap";
 var options = {};
 options = {
   place: "tr",
@@ -45,6 +45,7 @@ class DoctorEdit extends Component {
       branchSelect: "",
       doctorinfo: {},
       status: true,
+      isLoading: false,
     };
 
     const rules = [
@@ -163,6 +164,7 @@ class DoctorEdit extends Component {
     const id = url.split("/edit/")[1];
     console.log(data);
     try {
+      this.setState({ isLoading: true });
       await doctorApi.addImageDoctor(formData).then((res) => {
         console.log("result add image:----", res);
         data = {
@@ -180,7 +182,9 @@ class DoctorEdit extends Component {
           window.location.replace("/admin/doctor");
         });
       });
-    } catch (error) {}
+    } catch (error) {
+      this.setState({ isLoading: false });
+    }
   };
 
   async onHandleSubmit(event) {
@@ -256,6 +260,39 @@ class DoctorEdit extends Component {
     const { errors } = this.state;
     return (
       <>
+        {" "}
+        {this.state.isLoading ? (
+          <div
+            style={{
+              position: `fixed`,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: `rgba(128, 128, 128, 0.5)`,
+              zIndex: 99999,
+              textAlign: `center`,
+              margin: `auto`,
+            }}
+          >
+            <div
+              style={{
+                position: `fixed`,
+                top: `50%`,
+                bottom: `50%`,
+                right: 0,
+                left: 0,
+              }}
+            >
+              <ReactBoostrap.Spinner
+                animation="border"
+                variant="info"
+                size="lg"
+                style={{ width: `100px`, height: `100px` }}
+              />
+            </div>
+          </div>
+        ) : null}
         <div className="container">
           <Form>
             <Row>

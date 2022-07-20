@@ -10,7 +10,7 @@ import provinceApi from "api/provinceApi";
 import Select from "react-select";
 import districtApi from "api/districtApi";
 import NotificationAlert from "react-notification-alert";
-import { toast } from "react-toastify";
+import * as ReactBoostrap from "react-bootstrap";
 var options = {};
 options = {
   place: "tr",
@@ -76,6 +76,7 @@ class NewBranchPage extends Component {
 
       TimeError: false,
       FileError: false,
+      isLoading: false,
     };
 
     const rules = [
@@ -130,21 +131,20 @@ class NewBranchPage extends Component {
     this.refs.notify.notificationAlert(options);
   }
 
-  notify(message) {
-    var options = {};
-    options = {
+  notifyMessage(message, type, icon) {
+    var options1 = {
       place: "tr",
       message: (
         <div>
           <div>{message}</div>
         </div>
       ),
-      type: "success",
-      icon: "now-ui-icons ui-1_bell-53",
-      autoDismiss: 4,
+      type: type ? type : "success",
+      icon: icon ? icon : "now-ui-icons ui-1_bell-53",
+      autoDismiss: 5,
     };
-
-    this.refs.notify.notificationAlert(options);
+    console.log("option", options1);
+    this.refs.notify.notificationAlert(options1);
   }
 
   componentDidMount() {
@@ -272,6 +272,9 @@ class NewBranchPage extends Component {
     var data;
     console.log("click add");
     try {
+      this.setState({
+        isLoading: true,
+      });
       await branchApi
         .insert(formData)
         .then((res) => {
@@ -295,7 +298,14 @@ class NewBranchPage extends Component {
         });
     } catch (error) {
       console.log("Insert data failed", error);
-      this.notify(error.response.data.message);
+      this.notifyMessage(
+        error.response?.data?.message,
+        "danger",
+        "now-ui-icons travel_info"
+      );
+      this.setState({
+        isLoading: false,
+      });
     }
   };
 
@@ -338,6 +348,38 @@ class NewBranchPage extends Component {
     const { errors } = this.state;
     return (
       <>
+        {this.state.isLoading ? (
+          <div
+            style={{
+              position: `fixed`,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              backgroundColor: `rgba(128, 128, 128, 0.5)`,
+              zIndex: 99999,
+              textAlign: `center`,
+              margin: `auto`,
+            }}
+          >
+            <div
+              style={{
+                position: `fixed`,
+                top: `50%`,
+                bottom: `50%`,
+                right: 0,
+                left: 0,
+              }}
+            >
+              <ReactBoostrap.Spinner
+                animation="border"
+                variant="info"
+                size="lg"
+                style={{ width: `100px`, height: `100px` }}
+              />
+            </div>
+          </div>
+        ) : null}
         <div className="content">
           <Form>
             <Row>

@@ -80,6 +80,9 @@ function AppointmentTable(props) {
   };
 
   useEffect(() => {
+    if (sessionStorage.getItem("checkin")) {
+      sessionStorage.removeItem("checkin");
+    }
     setBookingList(props.bookingList);
     // fetchAppoinmentList();
   }, [props]);
@@ -102,6 +105,8 @@ function AppointmentTable(props) {
       const result = await appointmentApi.checkMarkDone(id);
       if (result) {
         console.log("done appointment");
+
+        sessionStorage.setItem("checkin", true);
         window.location.reload();
       }
     } catch {
@@ -268,8 +273,15 @@ function AppointmentTable(props) {
                                   <tr key={service.id.serviceId}>
                                     <td>{service.service.name}</td>
                                     <td>
-                                      {service.service.minPrice} ~{" "}
-                                      {service.service.maxPrice}
+                                      {Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      }).format(service.service.minPrice)}{" "}
+                                      ~{" "}
+                                      {Intl.NumberFormat("vi-VN", {
+                                        style: "currency",
+                                        currency: "VND",
+                                      }).format(service.service.maxPrice)}
                                     </td>
                                     <td>
                                       {service?.discount?.percentage

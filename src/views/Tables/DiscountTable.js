@@ -499,7 +499,7 @@ function DiscountTable() {
             </div>
           </div>
           <ModalBody>
-            <p>{"Are sure to delete \n this doctor ?"}</p>
+            <p>{"Are sure to disable \n this discount ?"}</p>
           </ModalBody>
           <ModalFooter>
             <Button
@@ -507,14 +507,14 @@ function DiscountTable() {
               className="btn-neutral"
               onClick={() => disableDiscount()}
             >
-              Delete
+              Yes
             </Button>{" "}
             <Button
               color="info"
               className="btn-neutral"
               onClick={toggleModalMini}
             >
-              Cancel
+              No
             </Button>
           </ModalFooter>
         </Modal>

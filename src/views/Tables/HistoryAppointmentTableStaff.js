@@ -167,6 +167,7 @@ function HistoryAppointmentTableStaff(props) {
                           </th>
                           <th style={{ fontWeight: `bold` }}>Name</th>
                           <th style={{ fontWeight: `bold` }}>Phone</th>
+                          <th style={{ fontWeight: `bold` }}>Date</th>
                           <th style={{ fontWeight: `bold` }}>Time</th>
                           <th
                             style={{ fontWeight: `bold` }}
@@ -184,6 +185,7 @@ function HistoryAppointmentTableStaff(props) {
 
                               <td>{booking.account.fullName}</td>
                               <td>{booking.account.phone}</td>
+                              <td>{booking.appointmentDate}</td>
 
                               <td>{booking.appointmentTime}</td>
                               <td className="text-center btns-mr-5">
@@ -265,26 +267,42 @@ function HistoryAppointmentTableStaff(props) {
                             </p>
                           </Col>
                         </Row> */}
-                      <Row>
-                        <Col lg={3} sm={5} xs={3}>
+                      {/* <Row>
+                        <Col lg="auto">
                           <label>Doctor: </label>
                         </Col>
-                        <Col>
+                        <Col lg="auto">
                           <p>{bookingDetail?.doctor?.name}</p>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg={3} sm={5} xs={3}>
+                        </Col> */}
+                      <Col>
+                        <Row>
+                          <label>Doctor: </label>
+                          <p className="ml-3">{bookingDetail?.doctor?.name}</p>
+                        </Row>
+                      </Col>
+                      <Col>
+                        <Row>
                           <label>Branch: </label>
-                        </Col>
-                        <Col>
-                          <p>
+                          <p className="ml-3">
                             {bookingDetail?.branch?.name},{" "}
                             {bookingDetail?.branch?.district?.name},{" "}
                             {bookingDetail?.branch?.district?.province?.name}
                           </p>
+                        </Row>
+                      </Col>
+                      {/* </Row> */}
+                      {/* <Row>
+                        <Col lg={3} sm={5} xs={3}>
+                          <Row>
+                            <label>Branch: </label>
+                            <p>
+                              {bookingDetail?.branch?.name},{" "}
+                              {bookingDetail?.branch?.district?.name},{" "}
+                              {bookingDetail?.branch?.district?.province?.name}
+                            </p>
+                          </Row>
                         </Col>
-                      </Row>
+                      </Row> */}
                       <Row>
                         <Table striped bordered hover className="">
                           <thead>
@@ -300,8 +318,17 @@ function HistoryAppointmentTableStaff(props) {
                                 <tr key={service.id.serviceId}>
                                   <td>{service.service.name}</td>
                                   <td>
-                                    {service.service.minPrice} ~{" "}
-                                    {service.service.maxPrice}
+                                    {Intl.NumberFormat("vi-VN", {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }).format(service.service.minPrice)}{" "}
+                                    ~{" "}
+                                    {Intl.NumberFormat("vi-VN", {
+                                      style: "currency",
+                                      currency: "VND",
+                                    }).format(service.service.maxPrice)}
+                                    {/* {service.service.minPrice} ~{" "}
+                                      {service.service.maxPrice} */}
                                   </td>
                                   <td>
                                     {service?.discount?.percentage
@@ -317,7 +344,7 @@ function HistoryAppointmentTableStaff(props) {
                       {addNoteText ? (
                         <Row>
                           <Col lg={3} sm={5} xs={3}>
-                            <label>Branch: </label>
+                            <label>Note: </label>
                           </Col>
                           <Col>
                             <p style={{ whiteSpace: `pre-line` }}>

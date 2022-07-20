@@ -508,8 +508,8 @@ function BookingTable() {
                   <label>Date & Time:</label>
                 </Col>
                 <Col md={9}>
-                  {updateBooking?.appointmentTime} <br />
-                  {updateBooking?.appointmentDate}
+                  {updateBooking?.appointmentDate} -{" "}
+                  {updateBooking?.appointmentTime}
                 </Col>
               </Row>
               <Row>
@@ -564,8 +564,17 @@ function BookingTable() {
                               <tr className="text-center">
                                 <td>{item?.service?.name}</td>
                                 <td>
-                                  {item?.service?.minPrice} ~{" "}
-                                  {item?.service?.maxPrice}
+                                  {Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }).format(item?.service?.minPrice)}{" "}
+                                  ~{" "}
+                                  {Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  }).format(item?.service?.maxPrice)}
+                                  {/* {item?.service?.minPrice} ~{" "}
+                                  {item?.service?.maxPrice} */}
                                 </td>
                                 <td>
                                   {item?.discount?.percentage
