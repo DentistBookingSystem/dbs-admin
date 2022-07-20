@@ -51,7 +51,7 @@ axiosClient.interceptors.response.use(
   (error) => {
     console.log("error here", error);
     if (error.response.status == 401) {
-      authApi.logout();
+      authApi.logoutz();
     }
     return error;
   }

@@ -17,7 +17,12 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  UncontrolledDropdown,
 } from "reactstrap";
+
 import Select from "react-select";
 
 // core components
@@ -27,6 +32,7 @@ import CustomPagination from "views/Widgets/Pagination";
 import Appointment from "views/Pages/dbs-page/edit-form/Appointment";
 import branchApi from "api/branchApi";
 import doctorApi from "api/doctorApi";
+import ReportAppointment from "components/report/ReportAppointment";
 
 const verifiedStatus = (
   <div className="stock-status in-stock">
@@ -58,6 +64,7 @@ const listStatusUpdate = [
   { value: [3], label: "Cancel by customer" },
   { value: [6], label: "Cancel by center" },
 ];
+
 function BookingTable() {
   const [bookingList, setBookingList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -265,6 +272,7 @@ function BookingTable() {
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Appoinment</CardTitle>
+                <ReportAppointment />
                 <div>
                   <Row className="justify-content-center mb-3">
                     <Col md={3} className="text-center">

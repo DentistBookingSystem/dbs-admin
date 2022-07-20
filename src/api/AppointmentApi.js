@@ -76,7 +76,31 @@ class AppointmentApi {
 
   submitAddNoteForAppointment(data) {
     const url = "http://localhost:8080/rade/staff/appointment/note";
-    return axios.post(url, data , {
+    return axios.post(url, data, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  getReportForAdminByMonth(month, year) {
+    const url =
+      "http://localhost:8080/rade/admin/appointment/month/" +
+      month +
+      "/" +
+      year;
+    return axios.get(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+
+  getReportForAdminByYear(year) {
+    const url = "http://localhost:8080/rade/admin/appointment/year/" + year;
+    return axios.get(url, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
