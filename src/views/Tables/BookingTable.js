@@ -266,13 +266,14 @@ function BookingTable() {
 
   return (
     <>
+      <PanelHeader size="lg" content={<ReportAppointment />} />
       <div className="content">
         <Row>
           <Col md="12">
             <Card>
               <CardHeader>
                 <CardTitle tag="h4">Appoinment</CardTitle>
-                <ReportAppointment />
+                {/* <ReportAppointment /> */}
                 <div>
                   <Row className="justify-content-center mb-3">
                     <Col md={3} className="text-center">

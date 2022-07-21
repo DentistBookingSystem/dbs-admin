@@ -10,6 +10,8 @@ import serviceApi from "api/serviceApi";
 import NotificationAlert from "react-notification-alert";
 import Validator from "utils/validation/validator";
 import * as ReactBoostrap from "react-bootstrap";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
   ModalHeader,
   Modal as DangerModal,
@@ -328,6 +330,12 @@ function Service(service) {
     console.log("min", minPrice);
   }, []);
 
+  const handleCKeditorChange = (event, editor) => {
+    const data = editor.getData();
+    console.log(data);
+    setDescription(data);
+  };
+
   return (
     <>
       <NotificationAlert
@@ -539,14 +547,22 @@ function Service(service) {
                   <div className="row mt-2">
                     <div className="col-md-12">
                       <label className="labels">Description*</label>
-                      <textarea
+                      {/* <textarea
                         className="form-control"
                         name="description"
                         value={description}
                         onChange={(event) => setDescription(event.target.value)}
                         rows="100"
                         // style={{ height: `150px` }}
-                      ></textarea>
+                      ></textarea> */}
+                      <CKEditor
+                        editor={ClassicEditor}
+                        value={description}
+                        data={description}
+                        onChange={(event, editor) =>
+                          handleCKeditorChange(event, editor)
+                        }
+                      />
                       {errors.description && (
                         <div
                           className="invalid-feedback"

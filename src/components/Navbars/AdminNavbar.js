@@ -217,7 +217,7 @@ function AdminNavbar(props) {
           </Collapse>
         </Container>
       </Navbar>
-      {!window.location.href.includes("dashboard") ? (
+      {!window.location.href.includes("booking") ? (
         <PanelHeader size="sm" />
       ) : null}
     </>

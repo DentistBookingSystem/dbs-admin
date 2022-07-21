@@ -13,6 +13,11 @@ import {
   Input,
   UncontrolledTooltip,
 } from "reactstrap";
+import ReactHtmlParser, {
+  processNodes,
+  convertNodeToElement,
+  htmlparser2,
+} from "react-html-parser";
 import React, { useEffect, useRef, useState } from "react";
 import NotificationAlert from "react-notification-alert";
 
@@ -606,7 +611,7 @@ function ServiceTable() {
                               <span>
                                 <b>Mô tả: </b>
                               </span>
-                              <p>{service.description}</p>
+                              {ReactHtmlParser(service.description)}
                             </Col>
                           </Row>
                         </Col>

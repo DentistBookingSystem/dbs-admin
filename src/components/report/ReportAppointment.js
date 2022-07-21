@@ -100,27 +100,32 @@ export default function ReportAppointment() {
     <>
       <Row>
         <Col xs={12} md={12}>
-          <Card className="card-stats card-raised">
+          <Card
+            className="card-stats card-raised"
+            style={{ backgroundColor: `#282828`, color: `white` }}
+          >
             <CardHeader>
-              <h5 className="card-category">Report</h5>
+              <h5 style={{ fontSize: `20px` }}>Report</h5>
               <Row>
-                <Col lg={2} md={3}>
+                <Col lg={2} md={3} className="select-report">
                   <Select
                     className="react-select"
                     classNamePrefix="react-select"
                     placeholder="Select month"
                     options={listMonthShow}
                     value={month}
+                    style={{ backgroundColor: `#282828`, color: `white` }}
                     onChange={(e) => setMonth(e)}
                   />
                 </Col>
-                <Col lg={2} md={3}>
+                <Col lg={2} md={3} className="select-report">
                   <Select
-                    className="react-select"
+                    className="react-select "
                     classNamePrefix="react-select"
                     placeholder="Select month"
                     options={listYear}
                     value={year}
+                    style={{ backgroundColor: `white`, color: `white` }}
                     onChange={(e) => setYear(e)}
                   />
                 </Col>
@@ -134,8 +139,18 @@ export default function ReportAppointment() {
                       <div className="icon icon-primary">
                         <i className="newDate-ui-icons ui-2_chat-round" />
                       </div>
-                      <h3 className="info-title">{report.total}</h3>
-                      <h6 className="stats-title">Total</h6>
+                      <h3
+                        className="info-title"
+                        style={{ backgroundColor: `#282828`, color: `white` }}
+                      >
+                        {report.total}
+                      </h3>
+                      <h6
+                        className="stats-title"
+                        style={{ backgroundColor: `#282828`, color: `white` }}
+                      >
+                        Total
+                      </h6>
                     </div>
                   </div>
                 </Col>
@@ -145,11 +160,19 @@ export default function ReportAppointment() {
                       <div className="icon icon-success">
                         <i className="newDate-ui-icons business_money-coins" />
                       </div>
-                      <h3 className="info-title">
+                      <h3
+                        className="info-title"
+                        style={{ backgroundColor: `#282828`, color: `#1be611` }}
+                      >
                         {/* <small>$</small> */}
                         {report.done}
                       </h3>
-                      <h6 className="stats-title">Done</h6>
+                      <h6
+                        className="stats-title"
+                        style={{ backgroundColor: `#282828`, color: `#1be611` }}
+                      >
+                        Done
+                      </h6>
                     </div>
                   </div>
                 </Col>
@@ -159,8 +182,21 @@ export default function ReportAppointment() {
                       <div className="icon icon-info">
                         <i className="newDate-ui-icons users_single-02" />
                       </div>
-                      <h3 className="info-title">{report.cancelByCustomer}</h3>
-                      <h6 className="stats-title">Cancel by customer</h6>
+                      <h3
+                        className="info-title"
+                        style={{ backgroundColor: `#282828`, color: `#f9ee00` }}
+                      >
+                        {report.cancelByCustomer}
+                      </h3>
+                      <h6
+                        className="stats-title"
+                        style={{
+                          backgroundColor: `#282828`,
+                          color: `#f9ee00`,
+                        }}
+                      >
+                        Cancel by customer
+                      </h6>
                     </div>
                   </div>
                 </Col>
@@ -170,8 +206,18 @@ export default function ReportAppointment() {
                       <div className="icon icon-danger">
                         <i className="newDate-ui-icons objects_support-17" />
                       </div>
-                      <h3 className="info-title">{report.cancelByStaff}</h3>
-                      <h6 className="stats-title">Cancel by Staff</h6>
+                      <h3
+                        className="info-title"
+                        style={{ backgroundColor: `#282828`, color: `#faad14` }}
+                      >
+                        {report.cancelByStaff}
+                      </h3>
+                      <h6
+                        className="stats-title"
+                        style={{ backgroundColor: `#282828`, color: `#faad14` }}
+                      >
+                        Cancel by Staff
+                      </h6>
                     </div>
                   </div>
                 </Col>
@@ -181,8 +227,24 @@ export default function ReportAppointment() {
                       <div className="icon icon-danger">
                         <i className="newDate-ui-icons objects_support-17" />
                       </div>
-                      <h3 className="info-title">{report.absent}</h3>
-                      <h6 className="stats-title">Absent</h6>
+                      <h3
+                        className="info-title"
+                        style={{
+                          backgroundColor: `#282828`,
+                          color: `#fe0000 `,
+                        }}
+                      >
+                        {report.absent}
+                      </h3>
+                      <h6
+                        className="stats-title"
+                        style={{
+                          backgroundColor: `#282828`,
+                          color: `#fe0000 `,
+                        }}
+                      >
+                        Absent
+                      </h6>
                     </div>
                   </div>
                 </Col>

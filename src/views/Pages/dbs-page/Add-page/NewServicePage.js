@@ -10,6 +10,8 @@ import Validator from "utils/validation/validator";
 import defaultImage from "assets/img/image_placeholder.jpg";
 import * as ReactBoostrap from "react-bootstrap";
 import NotificationAlert from "react-notification-alert";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 const time = [
   { value: "0.5", label: "0.5" },
   { value: "1", label: "1" },
@@ -244,6 +246,13 @@ class NewServicePage extends Component {
     }
   };
 
+  handleCKeditorChange(event, editor) {
+    const data = editor.getData();
+    // console.log(data);
+    this.setState({
+      description: data,
+    });
+  }
   notifyMessage(message, type, icon) {
     var options1 = {
       place: "tr",
@@ -494,13 +503,17 @@ class NewServicePage extends Component {
                       <div className="row mt-4">
                         <div className="col-md-12">
                           <label className="labels">Description*</label>
-                          <textarea
+                          {/* <textarea
                             className="form-control"
                             name="description"
                             value={this.state.description}
                             onChange={this.onHandleChange}
                             rows="100"
-                          ></textarea>
+                          ></textarea> */}
+                          <CKEditor
+                            editor={ClassicEditor}
+                            onChange={this.handleCKeditorChange}
+                          />
                           {errors.description && (
                             <div
                               className="invalid-feedback"
