@@ -90,6 +90,7 @@ class NewServicePage extends Component {
     this.onHandleServiceTypeSelect = this.onHandleServiceTypeSelect.bind(this);
     this.selectedImageHandler = this.selectedImageHandler.bind(this);
     this.validator = new Validator(rules);
+    this.handleCKeditorChange = this.handleCKeditorChange.bind(this);
   }
 
   //Validation
