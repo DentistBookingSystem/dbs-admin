@@ -77,7 +77,7 @@ function Service(service) {
   const [serviceTypeList, setServiceTypeList] = useState([]);
   const [imagePreviewUrl, setImagePreviewUrl] = useState(currentImage);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [status, setStatus] = useState(service.status);
+  const [status, setStatus] = useState(service.status === 1);
   const fileInput = useRef(null);
   const notifyAlert = useRef();
   const [errors, setErrors] = useState({});
@@ -260,7 +260,7 @@ function Service(service) {
       description: description,
       url: service.url,
       estimatedTime: parseFloat(estimateTime.value),
-      status: status ? 1 : 0,
+      status: status ? 1 : 2,
     };
     const formData = new FormData();
 

@@ -657,7 +657,7 @@ function ServiceTable() {
               </div>
             </div>
             <ModalBody>
-              <p>{"Are sure to delete \n this Service ?"}</p>
+              <p>{"Are sure to disable \n this Service ?"}</p>
             </ModalBody>
             <ModalFooter>
               <Button
@@ -665,14 +665,14 @@ function ServiceTable() {
                 className="btn-neutral"
                 onClick={disableService}
               >
-                Delete
+                Yes
               </Button>{" "}
               <Button
                 color="link"
                 className="btn-neutral"
                 onClick={toggleModalMini}
               >
-                Cancel
+                No
               </Button>
             </ModalFooter>
           </DangerModal>
